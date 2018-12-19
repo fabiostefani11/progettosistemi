@@ -20,7 +20,6 @@ int main()
     Ombrellone ombrellone[100] = {0};
 
     int i, n = 1;
-    int A[10];
     int j = 1;
 
     FILE *f;

@@ -10,20 +10,21 @@
 #define BUFFERSIZE 512
 #define PROTOPORT 5193
 
-int main()
+int main(int argc, char *argv[])
 {
 
-    struct sockaddr_in sa; //struttura della socket
-    int sd;                //valore della funzione socket
+    struct sockaddr_in sa;      //struttura della socket
+    memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
+    int mySocket;               //valore della funzione socket
     int ret;
     char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
 
     // creazione del socket
-    sd = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
-    if (sd < 0)
+    mySocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
+    if (mySocket < 0)
     {
         printf("Fallimento nella creazione della Socket.\n");
-        closesocket(sd);
+        closesocket(mySocket);
     }
 
     // inizializzazione dell'indirizzo del server
@@ -32,10 +33,10 @@ int main()
     sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
-    if (connect(sd, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette alla socket, restituisce 0 se ha successo, altrimenti -1
+    if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette alla socket, restituisce 0 se ha successo, altrimenti -1
     {
         printf("Connessione Fallita.\n");
-        closesocket(sd);
+        closesocket(mySocket);
         printf("Socket chiusa.\n");
     }
 
@@ -44,10 +45,10 @@ int main()
     printf("Scrivi il messaggio: ");
     scanf("%s", msg);
 
-    if (write(sd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+    if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
     {
         printf("Errore nella ricezione della lunghezza del messaggio");
-        closesocket(sd);
+        closesocket(mySocket);
         printf("Socket chiusa.\n");
     }
 
@@ -59,10 +60,10 @@ int main()
 
     while (totBytesRicevuti < sizeof(msg))
     {
-        if ((bytesRicevuti = recv(sd, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+        if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
         {
             printf("Ricezione fallita.\n");
-            closesocket(sd);
+            closesocket(mySocket);
         }
         totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
         buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
@@ -70,7 +71,7 @@ int main()
     }
 
     // chiusura della socket
-    closesocket(sd);
+    closesocket(mySocket);
     printf("Socket chiusa per termine del messaggio.\n");
 
     return 0;

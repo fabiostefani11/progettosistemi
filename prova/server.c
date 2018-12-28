@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
-#include <strings.h>
 
-// WARNING: manca la gestione degli ERRORI
+#define PROTOPORT 5193 //numero della porta di default
+#define QLEN 6         //grandezza della coda
 
 int go = 1;
-int msd; // master socket descriptor
+int masterSocket; // descrittore del master socket
 
-void sighand(int sig)
+/*void sighand(int sig)
 {
     if (sig == SIGINT)
     {
@@ -25,92 +26,54 @@ void sighand(int sig)
     {
         printf("received signal SIGCHLD.\n");
     }
-}
+}*/
 
-int main()
+int main(int argc, char *argv[])
 {
 
     int csd; // client socket descriptor
 
-    int status, ret;
+    int port;
 
-    pid_t pid;
+    if (argc > 1)
+    {
+        port = atoi(argv[1]); //se come argomento si dà l'indizirizzo di una porta, atoi la converte in binario
+    }
+    else
+        port = PROTOPORT;
+    if (port < 0)
+    {
+        printf("Errore nel numero della porta %s. \n", argv[1]);
+    }
 
-    char cmd[256], buf[256];
+    struct sockaddr_in sa;      //struttura per l'indirizzo del server
+    memset(&sa, 0, sizeof(sa)); //inizializza tutti i dati della struttura
 
-    struct sockaddr_in sa;
+    sa.sin_family = AF_INET;                     //famiglia indirizzi
+    sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
+    sa.sin_port = htons(port);                   //porta del server  htons->converte dall'ordine di 16-bit dell'host all'ordine del network
 
     signal(SIGINT, sighand);
     signal(SIGCHLD, sighand);
 
-    // create master socket
-    msd = socket(AF_INET, SOCK_STREAM, 0);
-
-    // init address
-    bzero(&sa, sizeof(struct sockaddr_in)); // clear structure
-
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(1111);
-    sa.sin_addr.s_addr = INADDR_ANY; // automatically fill with my IP
-
-    // bind socket to an address
-    bind(msd, (struct sockaddr *)&sa, sizeof(sa));
-
-    // create a request queue of 10 elements
-    listen(msd, 10);
-
-    while (go)
+    // creazione del master socket
+    masterSocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
+    if (masterSocket < 0)
     {
-
-        // II argomento puntatore indirizzo del client remoto
-        csd = accept(msd, NULL, 0);
-
-        if (csd < 0)
-        {
-
-            go = 0;
-        }
-        else
-        {
-            pid = fork();
-
-            if (pid == 0)
-            { // child process
-
-                close(msd); // closing master socket
-
-                // read command of maximum 1000 characters
-                read(csd, buf, 256);
-
-                sprintf(cmd, "/bin/%s", buf);
-
-                // execute command
-                fprintf(stderr, "executing commmand: %s\n", cmd);
-
-                ret = 0;
-
-                if (execl(cmd, cmd, NULL) < 0)
-                {
-                    fprintf(stderr, "ERROR: executing %s command\n", cmd);
-                    ret = -1;
-                }
-
-                return (ret);
-            }
-            else
-            { // father process
-
-                // wait ends of command execution
-                wait(&status);
-
-                // send back result
-                write(csd, &status, sizeof(status));
-
-                // ends communication
-                close(csd);
-            }
-        }
+        printf("Fallimento nella creazione della Socket.\n");
+        closesocket(masterSocket);
     }
 
-    return 0;
-}
+    if (bind(masterSocket, (struct sockaddr *)&sa, sizeof(sa)) < 0)
+    {
+        printf("bind() fallita.\n");
+        closesocket(masterSocket);
+    }
+
+    if (listen(masterSocket, QLEN) < 0) //QLEN->la massima lunghezza della code delle connessioni entranti
+    {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
+        printf("listen() fallita.\n");
+        closesocket(masterSocket);
+    }
+    /////////////////////////////////DA QUI IN GIU' SERVE SCRIVERE IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
+    ///////////////PRENDERE SPUNTO DA CODICI MESSI DAL PROFESSORE SUL SITO//////////////////////////////////////

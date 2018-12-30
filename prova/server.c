@@ -11,6 +11,7 @@
 
 #define PROTOPORT 5193 //numero della porta di default
 #define QLEN 6         //grandezza della coda
+#define BUFFERSIZE 256
 
 int go = 1;
 int masterSocket; // descrittore del master socket
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
     int port;
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 
-    char buf[256]; //array di stringhe che serve come buffer di transito dei dati dai due socket
+    char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
 
     pid_t pid;
 

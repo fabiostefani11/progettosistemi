@@ -52,6 +52,8 @@ int main(int argc, char *argv[])
         printf("Socket chiusa.\n");
     }
 
+    ///////////////DA QUI IN GIU' NON HO CAPITO BENE BENE BENE COSA FA QUESTO PEZZO DI CODICE, CHE INFATTI E' QUELLO CHE MI CREA ERRORI//////////////////////
+
     // ricezione dati dal server
     int bytesRicevuti;
     int totBytesRicevuti = 0;

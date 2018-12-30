@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)https://s0.2mdn.net/8266897/1542306478737/PPBRAN_DYBAN_SET09_300x600/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="ad.size" content="width=300,height=600">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="./style.css">
+	<script type="text/javascript" src="./ad-scripts.js"></script>
+	<script type="text/javascript">var clickTag = "http://www.google.fr";</script>
+<script type="text/javascript">
+    
+      (function() {
+        var relegateNavigation = '';
+        var handleClickTagMessage = function(e) {
+          try {
+            var eventData = JSON.parse(e.data);
+          } catch (err) {
+            return;
+          }
+          if (eventData.isInitClickTag) {
+            if (eventData.clickTags) {
+              for (var i = 0; i < eventData.clickTags.length; i++) {
+                var clkTag = eventData.clickTags[i];
+                window[clkTag.name] = clkTag.url;
+              }
+            } else if (eventData.clickTag) {
+              window.clickTag = eventData.clickTag;
+            }
+            relegateNavigation = eventData.relegateNavigation;
+          }
+        };
+
+        if (open.call) {
+          window.open = function(open) {
+            return function(url, name, features) {
+              if (relegateNavigation === 'parent') {
+                var message = {'clickTag': url, 'isPostClickTag': true};
+                parent.postMessage(JSON.stringify(message), '*');
+              } else {
+                var args = [url, name];
+                if (features) {
+                  args.push(features);
+                }
+                open.apply(window, args);
+              }
+            };
+          }(window.open);
+        }
+
+        if (window.addEventListener) {
+          window.addEventListener(
+              'message', handleClickTagMessage, false);
+        } else {
+          window.attachEvent('onmessage', handleClickTagMessage);
+        }
+      })();
+    
+  </script><style type="text/css" id="t_x_css_sheet">.t_x_nosmooth { transition: none !important; -webkit-transition: none !important; }</style></head>
+
+<body>
+	<div id="ad">
+
+
+		
+
+		<div id="F2_fond" class="full F2_fond"></div>
+		<div id="F2_txt" class="full txt F2_txt"></div>
+
+		<div id="F3_fond" class="full fade F3_fond in"></div>
+		<div id="F3_txt" class="full txt F3_txt"></div>
+
+
+		<div id="FF" class="full fade FF tween">
+			<div id="FF_cta" class="full txt FF_cta"></div>
+			<div id="FF_txt" class="full txt FF_txt"></div>
+			<div id="FF_logo" class="full fade FF_logo tween"></div>
+		</div>
+
+		<div class="full clickthrough" onclick="window.open(clickTag);"></div>
+
+	</div>
+
+
+</body></html>

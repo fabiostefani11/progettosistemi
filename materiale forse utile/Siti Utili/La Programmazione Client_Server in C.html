@@ -1,0 +1,1091 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0038)http://www.swprog.com/articoli/csc.php -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml" style="display: block;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<title>La Programmazione Client/Server in C</title>
+				<link rel="preload" href="./La Programmazione Client_Server in C_files/f(8).txt" as="script"><iframe id="facebook-jssdk-iframe" src="./La Programmazione Client_Server in C_files/saved_resource(2).html" style="width: 0px; height: 0px; border: 0px;"></iframe><script src="./La Programmazione Client_Server in C_files/f(7).txt"></script><script src="./La Programmazione Client_Server in C_files/ca-pub-8306171215857572.js"></script><script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(8).txt"></script><link rel="preload" href="./La Programmazione Client_Server in C_files/f(9).txt" as="script"><script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(9).txt"></script><link rel="preload" href="http://pagead2.googlesyndication.com/pagead/js/r20181205/r20180604/show_ads_impl.js" as="script"><script charset="utf-8" src="./La Programmazione Client_Server in C_files/button.e96bb6acc0f8bda511c0c46a84ee18e4.js"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_dialog_advanced{border-radius:8px;padding:10px}.fb_dialog_content{background:#fff;color:#373737}.fb_dialog_close_icon{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{left:5px;right:auto;top:5px}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{height:100%;left:0;margin:0;overflow:visible;position:absolute;top:-10000px;transform:none;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{background:none;height:auto;min-height:initial;min-width:initial;width:auto}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{clear:both;color:#fff;display:block;font-size:18px;padding-top:20px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .4);bottom:0;left:0;min-height:100%;position:absolute;right:0;top:0;width:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_mobile .fb_dialog_iframe{position:sticky;top:0}.fb_dialog_content .dialog_header{background:linear-gradient(from(#738aba), to(#2c4987));border-bottom:1px solid;border-color:#1d3c78;box-shadow:white 0 1px 1px -1px inset;color:#fff;font:bold 14px Helvetica, sans-serif;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:linear-gradient(from(#4267B2), to(#2a4887));background-clip:padding-box;border:1px solid #29487d;border-radius:3px;display:inline-block;line-height:18px;margin-top:3px;max-width:85px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{background:none;border:none;color:#fff;font:bold 12px Helvetica, sans-serif;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #4a4a4a;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f5f6f7;border:1px solid #4a4a4a;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-position:50% 50%;background-repeat:no-repeat;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}
+.fb_customer_chat_bounce_in_v2{animation-duration:300ms;animation-name:fb_bounce_in_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_v2{animation-duration:300ms;animation-name:fb_bounce_out_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_in_v2_mobile_chat_started{animation-duration:300ms;animation-name:fb_bounce_in_v2_mobile_chat_started;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_v2_mobile_chat_started{animation-duration:300ms;animation-name:fb_bounce_out_v2_mobile_chat_started;transition-timing-function:ease-in}.fb_customer_chat_bubble_pop_in{animation-duration:250ms;animation-name:fb_customer_chat_bubble_bounce_in_animation}.fb_customer_chat_bubble_animated_no_badge{box-shadow:0 3px 12px rgba(0, 0, 0, .15);transition:box-shadow 150ms linear}.fb_customer_chat_bubble_animated_no_badge:hover{box-shadow:0 5px 24px rgba(0, 0, 0, .3)}.fb_customer_chat_bubble_animated_with_badge{box-shadow:-5px 4px 14px rgba(0, 0, 0, .15);transition:box-shadow 150ms linear}.fb_customer_chat_bubble_animated_with_badge:hover{box-shadow:-5px 8px 24px rgba(0, 0, 0, .2)}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}.fb_mobile_overlay_active{background-color:#fff;height:100%;overflow:hidden;position:fixed;visibility:hidden;width:100%}@keyframes fb_bounce_in_v2{0%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}50%{transform:scale(1.03, 1.03);transform-origin:bottom right}100%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}}@keyframes fb_bounce_in_v2_mobile_chat_started{0%{opacity:0;top:20px}100%{opacity:1;top:0}}@keyframes fb_bounce_out_v2{0%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}100%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}}@keyframes fb_bounce_out_v2_mobile_chat_started{0%{opacity:1;top:0}100%{opacity:0;top:20px}}@keyframes fb_customer_chat_bubble_bounce_in_animation{0%{bottom:6pt;opacity:0;transform:scale(0, 0);transform-origin:center}70%{bottom:18pt;opacity:1;transform:scale(1.2, 1.2)}100%{transform:scale(1, 1)}}</style></head><body>﻿<link rel="stylesheet" href="./La Programmazione Client_Server in C_files/stylesheet.css" type="text/css">
+		<link rel="shortcut icon" href="http://www.swprog.com/immagini/favicon.ico">
+        
+		<script type="text/javascript" src="./La Programmazione Client_Server in C_files/dataora.js"></script>
+		<script type="text/javascript" src="./La Programmazione Client_Server in C_files/popup.js"></script>
+		<script type="text/javascript" src="./La Programmazione Client_Server in C_files/favorites.js"></script>
+		<script type="text/javascript" src="./La Programmazione Client_Server in C_files/showhideimg.js"></script>
+        
+                
+        <meta http-equiv="content-language" content="it">
+        
+	
+
+        <meta property="og:url" content="http://www.swprog.com/articoli/csc.php">
+        <meta property="og:type" content="article">
+        <meta property="og:site_name" content="swprog.com">
+        <meta property="og:title" content="La Programmazione Client/Server in C">
+
+		<!-- RSS -->
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: tutti gli aggiornamenti" href="http://www.swprog.com/rss/swp.php">
+
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Articoli" href="http://www.swprog.com/rss/articoli.php">
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Guide" href="http://www.swprog.com/rss/guide.php">
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: HowTo" href="http://www.swprog.com/rss/howto.php">
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Recensioni" href="http://www.swprog.com/rss/recensioni.php">
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Reference" href="http://www.swprog.com/rss/reference.php">
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Script" href="http://www.swprog.com/rss/script.php">
+		
+		<link rel="alternate" type="application/rss+xml" title="RSS swprog.com: Blog" href="http://www.swprog.com/blog/feed/">
+<!-- RSS -->	
+	    
+		<!--div id="top"><a style="text-decoration: none;" href="#top"><img src="../immagini/up.gif" width="20px" height="20px" /></a></div-->
+		
+        <script src="./La Programmazione Client_Server in C_files/cookiechoices.js"></script>
+        <script>
+          document.addEventListener('DOMContentLoaded', function(event) {
+            cookieChoices.showCookieConsentBar('Questo sito o gli strumenti terzi da questo utilizzati si avvalgono di cookie necessari al funzionamento ' +
+                                                'ed utili alle finalità illustrate nella cookie policy. Se vuoi saperne di più o negare il consenso a tutti ' +
+                                                'o ad alcuni cookie, consulta la cookie policy. Chiudendo questo banner, scorrendo questa pagina, cliccando ' +
+                                                'su un link o proseguendo la navigazione in altra maniera, acconsenti all’uso dei cookie.',
+                                                'Close',
+                                                'Cookie policy',
+                                                'http://www.swprog.com/cookie_policy.php');
+          });
+        </script>
+        
+        <div id="container">
+			<div id="header">
+				<!--img border="0" src="../immagini/header.gif" width="100%" height="100%" /-->
+			</div>
+        			<div id="menu">
+                <ul>
+    				<li><a href="http://www.swprog.com/">Home</a></li>
+    				<li><a href="http://www.swprog.com/articoli/articoli.php">Articoli</a></li>
+    				<li><a href="http://www.swprog.com/howto/howto.php">HowTo</a></li>
+    				<li><a href="http://www.swprog.com/guide/guide.php">Guide</a></li>
+    				<li><a href="http://www.swprog.com/reference/reference.php">Reference</a></li>
+    				<li><a href="http://www.swprog.com/script/script.php">Script</a></li>
+    				<li><a href="http://www.swprog.com/tools/tools.php">Tools</a></li>
+    				<li><a href="http://www.swprog.com/gallery/">Gallery</a></li>
+    				<li><a href="http://www.swprog.com/blog/">Blog</a></li>
+    				<li><a href="http://www.swprog.com/mblog/">News</a></li>
+                 </ul>
+            </div>
+                    <div id="contents">
+            <!--div id="top_advertising"-->
+                        <center>
+				<div style="padding-top: 15px;">
+        <!--div-->
+											<!--center-->
+					<script type="text/javascript">
+						<!--
+						google_ad_client = "pub-8306171215857572";
+						/* pubblicita_testa_grande */
+						google_ad_slot = "8391659739";
+						google_ad_width = 728;
+						google_ad_height = 90;
+						//-->
+					</script>
+					<script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(10).txt">
+					</script><ins id="aswift_0_expand" style="display:inline-table;border:none;height:90px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent;" data-ad-slot="8391659739"><ins id="aswift_0_anchor" style="display:block;border:none;height:90px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent;"><iframe width="728" height="90" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;border:0px;width:728px;height:90px;" src="./La Programmazione Client_Server in C_files/saved_resource(3).html"></iframe></ins></ins>
+				<!--/center-->
+						<!--/div-->
+        </div>
+				</center><!--br /-->
+
+            <!--/div-->
+                        
+			<div id="content">
+				<!--div id="data">
+					<span id="clock"></span>
+				</div-->
+				
+				
+                <!--a name="top"></a-->
+                				
+								
+				﻿	
+				<script language="javaScript">
+                    function newcode()
+                    {
+                        document.getElementById('codecaptcha').src="http://www.swprog.com/captcha.php?"+Date();
+					}
+                </script>
+                
+                <center>
+					<!--table id="article_header" border="1" -->
+                    <table id="article_header" border="0">
+						<tbody><tr>
+							<td id="article_title" colspan="8">La Programmazione Client/Server in C</td>
+						</tr>
+                        						<tr id="article_info">
+							<td id="article_data">
+								<!--img src="../immagini/calendar.png" alt="" /-->
+								21 Dicembre 2007								
+							</td>
+							
+							<td id="article_argument">
+								<!--img src="../immagini/folder.png" alt="" /-->
+																<a href="http://www.swprog.com/articoli/articoli.php?arg=Reti">
+									Reti								</a>
+							</td>
+							
+                        							<td style="width: 80px; padding-top: 5px;">
+								<center>
+									                                    <a href="http://www.swprog.com/articoli/csc.php?print=1" rel="nofollow" title="Anteprima e Stampa Articolo">
+                                		<img style="border-style: none;" src="./La Programmazione Client_Server in C_files/print.png">
+                                	</a>
+                                    &nbsp;
+                                    <a href="javascript://" onclick="var replydisplay=document.getElementById(&#39;emailto&#39;).style.display ? &#39;&#39; : &#39;none&#39;; 
+                			                 document.getElementById(&#39;emailto&#39;).style.display = replydisplay;" title="Invia Articolo">
+                                        <img style="border-style: none;" src="./La Programmazione Client_Server in C_files/email.png">
+                                    </a>
+                                    &nbsp;
+                                    <a href="javascript:favorite(&#39;http://www.swprog.com/articoli/csc.php&#39;, &#39;swprog.com - La Programmazione Client/Server in C&#39;)" title="aggiungi ai favoriti">
+                                		<img style="border-style: none;" src="./La Programmazione Client_Server in C_files/bookmark_2.gif">
+                                	</a>
+								</center>
+							</td>
+							
+							<td style="width: 20px"></td>
+							
+							<td style="width: 34px">                                 <g:plusone size="medium" count="false" href="http://www.swprog.com/articoli/csc.php">
+                                </g:plusone>
+							</td>
+							                            <td style="width: 60px">
+                                <script src="./La Programmazione Client_Server in C_files/widgets.js" type="text/javascript"></script>
+                                <div>
+                                   <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" style="position: static; visibility: visible; width: 60px; height: 20px;" title="Twitter Tweet Button" src="./La Programmazione Client_Server in C_files/tweet_button.d30011b0f5ce05b98f24b01d3331b3c1.it.html" data-url="http://www.swprog.com/articoli/csc.php"></iframe>
+                                </div>
+							</td>
+							<td style="width: 60px">
+                                <div id="fb-root" class=" fb_reset">
+                                <div style="position: absolute; top: -10000px; width: 0px; height: 0px;"><div><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./La Programmazione Client_Server in C_files/j-GHT1gpo6-.html" style="border: none;"></iframe></div><div></div></div></div>
+                                <script src="./La Programmazione Client_Server in C_files/all.js">
+                                </script>
+                                <!--fb:send href="http://www.swprog.com/articoli/csc.php" font="arial"></fb:send-->
+                                <fb:like href="http://www.swprog.com/articoli/csc.php" layout="button_count" send="true" show_faces="false" font="arial" class=" fb_iframe_widget" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;container_width=0&amp;font=arial&amp;href=http%3A%2F%2Fwww.swprog.com%2Farticoli%2Fcsc.php&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=true&amp;show_faces=false"><span style="vertical-align: bottom; width: 112px; height: 20px;"><iframe name="ff0a9ac76b2c04" width="1000px" height="1000px" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" title="fb:like Facebook Social Plugin" src="./La Programmazione Client_Server in C_files/like.html" style="border: none; visibility: visible; width: 112px; height: 20px;" class=""></iframe></span></fb:like>
+							</td>
+                            							<td style="width: 60px">
+								<a href="javascript://" onclick="var replydisplay=document.getElementById(&#39;share&#39;).style.display ? &#39;&#39; : &#39;none&#39;; 
+                			             document.getElementById(&#39;share&#39;).style.display = replydisplay;" title="Add this link to ..">
+		                          <img style="border-style: none;" src="./La Programmazione Client_Server in C_files/condividi.png">
+                                </a>
+							</td>
+                        						</tr>
+											</tbody></table>
+				</center>
+				
+                <div id="share" style="display:none">
+	                	<table width="100%">
+                        	                		<tbody><tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://delicious.com/post?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Delicious&#39;)" title="add to Delicious">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/delicious.png">
+	                				</a>
+	                				&nbsp; Delicious	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://digg.com/submit?phase=2&amp;url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Digg&#39;)" title="add to Digg">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/digg.png">
+	                				</a>
+	                				&nbsp; Digg	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.diggita.it/submit.php?url=http://www.swprog.com/articoli/csc.php&#39;, &#39;Diggita&#39;)" title="add to Diggita">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/diggita.png">
+	                				</a>
+	                				&nbsp; Diggita	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.dzone.com/links/add.html?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;DZone&#39;)" title="add to DZone">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/dzone.png">
+	                				</a>
+	                				&nbsp; DZone	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.google.com/bookmarks/mark?op=add&amp;bkmk=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Google&#39;)" title="add to Google">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/google.png">
+	                				</a>
+	                				&nbsp; Google	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.friendfeed.com/share?title=La Programmazione Client/Server in C&amp;link=http://www.swprog.com/articoli/csc.php&#39;, &#39;FriendFeed&#39;)" title="add to FriendFeed">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/friendfeed.png">
+	                				</a>
+	                				&nbsp; FriendFeed	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.linkedin.com/shareArticle?mini=true&amp;url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&amp;source=swprog.com&#39;, &#39;LinkedIn&#39;)" title="add to LinkedIn">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/linkedin.png">
+	                				</a>
+	                				&nbsp; LinkedIn	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.mister-wong.com/addurl/?bm_url=http://www.swprog.com/articoli/csc.php&amp;bm_description=La Programmazione Client/Server in C&amp;plugin=soc&#39;, &#39;MisterWong&#39;)" title="add to MisterWong">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/misterwong.png">
+	                				</a>
+	                				&nbsp; MisterWong	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.myspace.com/Modules/PostTo/Pages/?u=http://www.swprog.com/articoli/csc.php&amp;t=La Programmazione Client/Server in C&#39;, &#39;MySpace&#39;)" title="add to MySpace">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/myspace.png">
+	                				</a>
+	                				&nbsp; MySpace	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://oknotizie.alice.it/post?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;OKNotizie&#39;)" title="add to OKNotizie">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/oknotizie.png">
+	                				</a>
+	                				&nbsp; OKNotizie	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://reddit.com/submit?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Reddit&#39;)" title="add to Reddit">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/reddit.png">
+	                				</a>
+	                				&nbsp; Reddit	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://segnalo.alice.it/post.html.php?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Segnalo&#39;)" title="add to Segnalo">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/segnalo.png">
+	                				</a>
+	                				&nbsp; Segnalo	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.stumbleupon.com/submit?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;StumbleUpon&#39;)" title="add to StumbleUpon">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/stumbleupon.png">
+	                				</a>
+	                				&nbsp; StumbleUpon	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.tumblr.com/share?v=3&amp;u=http://www.swprog.com/articoli/csc.php&amp;t=La Programmazione Client/Server in C&#39;, &#39;Tumblr&#39;)" title="add to Tumblr">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/tumblr.png">
+	                				</a>
+	                				&nbsp; Tumblr	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.upnews.it/submit?url=http://www.swprog.com/articoli/csc.php&amp;title=La Programmazione Client/Server in C&#39;, &#39;Upnews&#39;)" title="add to Upnews">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/upnews.png">
+	                				</a>
+	                				&nbsp; Upnews	                			</td>
+	                		                        	                			                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://www.wikio.it/vote?url=http://www.swprog.com/articoli/csc.php&#39;, &#39;WikioIT&#39;)" title="add to WikioIT">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/wikioit.png">
+	                				</a>
+	                				&nbsp; WikioIT	                			</td>
+	                		</tr>                        	                		<tr>	                			<td width="50%">
+	                				<a href="javascript:popup(&#39;http://bookmarks.yahoo.com/toolbar/savebm?u=http://www.swprog.com/articoli/csc.php&amp;t=La Programmazione Client/Server in C&amp;opener=bm&amp;ei=UTF-8&#39;, &#39;Yahoo! Bookmarks&#39;)" title="add to Yahoo! Bookmarks">
+	                					<img vspace="-16px" style="border-style: none;" src="./La Programmazione Client_Server in C_files/yahoomyweb.png">
+	                				</a>
+	                				&nbsp; Yahoo! Bookmarks	                			</td>
+	                		                        	                	</tr></tbody></table>    
+                </div>
+                
+                
+                
+                                
+				<br>
+				
+				<center>
+                  <a name="top"></a>
+                  <div id="menu_art">
+                      <table width="100%">
+                          <tbody><tr>
+                              <td><a href="http://www.swprog.com/articoli/csc.php#socket">Socket</a></td>
+                          </tr>
+                          <tr>
+                              <td>
+                              	<a href="http://www.swprog.com/articoli/csc.php#interazione">
+                              		Interazione Client\Server tramite il protocollo TCP
+                              	</a>
+                              	<div id="submenu_art">
+                              		<table width="100%">
+                              			<tbody><tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc.php#createsocket">Creazione della Socket del Server</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc.php#bind">Assegnazione di un Indirizzo</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc.php#listen">Server in Ascolto</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc_2.php#accept">Accettazione di una Richiesta di Connessione del Client da parte del Server</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc_2.php#connect">Richiesta di Connessione del Client</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc_2.php#sendrecv">Comunicazioni Client Server</a></td></tr>
+                              			<tr><td>&nbsp;</td><td><a href="http://www.swprog.com/articoli/csc_2.php#close">Chiusura della Connessione</a></td></tr>
+                              		</tbody></table>
+                              	</div>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><a href="http://www.swprog.com/articoli/csc_3.php#codice">Il Codice</a></td>
+                          </tr>
+                      </tbody></table>
+                  </div>
+                </center>
+				<br><br>
+                ﻿		<!--center-->
+		<div id="pubblicita_annunci_testa">
+											<script type="text/javascript">
+					<!--
+						google_ad_client = "pub-8306171215857572";
+						//annunci_google_1
+						google_ad_slot = "8630281246";
+						google_ad_width = 468;
+						google_ad_height = 15;
+					//-->
+				</script>
+				<script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(10).txt">
+				</script><ins id="aswift_1_expand" style="display:inline-table;border:none;height:15px;margin:0;padding:0;position:relative;visibility:visible;width:468px;background-color:transparent;" data-ad-slot="8630281246"><ins id="aswift_1_anchor" style="display:block;border:none;height:15px;margin:0;padding:0;position:relative;visibility:visible;width:468px;background-color:transparent;"><iframe width="468" height="15" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;border:0px;width:468px;height:15px;" src="./La Programmazione Client_Server in C_files/saved_resource(4).html"></iframe></ins></ins>
+						</div>
+	<!--/center-->
+	<!--br /-->
+    
+        				
+				
+				<h3><a name="socket">Socket</a></h3>
+				
+				<span id="rientro">Una socket </span>è un canale di comunicazione
+				tra due processi che possono risiedere anche su host diversi.
+				I due processi comunicheranno fra loro leggendo e/o scrivendo i dati
+				nella socket.
+				<br>				
+				Vi sono tre tipi fondamentali di socket
+				<ul> 
+					<li>
+						<b>Datagram Socket</b>. Supporta la comunicazione bidirezionale e senza connessione (un host
+						invia dei dati ad un altro host senza stabilire una connessione).
+						Non è affidabile, non garantisce la ricezione dei pacchetti, ne' che i pacchetti saranno
+						ricevuti nello stesso ordine con cui sono stati inviati.
+						Nelle comunicazioni internet è utilizzata dal protocollo UDP. 
+					</li> 
+					<li>
+						<b>Stream Socket</b>. Supporta la comunicazione bidirezionale e con connessione (un host
+						per inviare dei dati ad un altro host stabilisce una connessione con l'altro host).
+						È affidabile, garantisce la ricezione dei pacchetti e che questi saranno ricevuti
+						nello stesso ordine con cui sono stati inviati.
+						Nelle comunicazioni internet è utilizzata dal protocollo TCP.
+					</li> 
+					<li>
+						 <b>Raw Socket</b>. Socket di basso livello tramite le quali è possibile accedere al livello
+						 network.
+					</li>
+				</ul>
+
+				﻿		
+        ﻿	<!--br><br-->
+		<center>
+		<div id="pubblicita">
+										<center>
+					<script type="text/javascript">
+						<!--
+							google_ad_client = "pub-8306171215857572";
+							/* pubblicita_articolo_fine */
+							google_ad_slot = "9044014882";
+							google_ad_width = 336;
+							google_ad_height = 280;
+						//-->
+					</script>
+					<script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(10).txt">
+					</script><ins id="aswift_2_expand" style="display:inline-table;border:none;height:280px;margin:0;padding:0;position:relative;visibility:visible;width:336px;background-color:transparent;" data-ad-slot="9044014882"><ins id="aswift_2_anchor" style="display:block;border:none;height:280px;margin:0;padding:0;position:relative;visibility:visible;width:336px;background-color:transparent;"><iframe width="336" height="280" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_2" name="aswift_2" style="left:0;position:absolute;top:0;border:0px;width:336px;height:280px;" src="./La Programmazione Client_Server in C_files/saved_resource(5).html"></iframe></ins></ins>
+				</center>
+					</div>
+	</center>
+
+				<h3><a name="interazione">Interazione Client/Server tramite il protocollo TCP</a></h3>
+				<span id="rientro">Affinché  </span>vi possa essere una comunicazione tra client e server mediante
+				il protocollo TCP è necessario innanzitutto stabilire una connessione tra il client ed il server.
+				Una volta stabilita la connessione vi potrà essere lo scambio di dati, terminato il quale si chiude
+				la connessione.
+                
+				<br>
+				
+				<h4><a name="createsocket">Creazione della Socket del Server</a></h4>
+				
+				<span id="rientro">Il primo </span>passo consiste nella creazione
+				del canale di comunicazione tra il server ed un’eventuale client,
+				tramite questo canale il client potrà comunicare con il server.
+				Questo canale di comunicazione sarà costituito da una socket.
+				<br>
+                <center>
+					<div class="figure">
+						<img src="./La Programmazione Client_Server in C_files/csc_1.png" title="" alt="">
+						<br>
+						<span id="note">Figura 1. </span>
+					</div>
+				</center>
+				<br>
+				In ambiente windows prima della creazione della socket del server è necessario
+				inizializzare la libreria winsock tramite la funzione <span id="codice">WSAStartup</span>
+				<br><br>						
+				<ol class="code">
+					<li value="19" class="tab1"><code>/* Inizializzazione della libreria Socket */</code></li>
+					<li class="tab1"><code>WORD wVersionRequested = MAKEWORD(2,2);</code></li>
+					<li class="tab1"><code>WSADATA wsaData;</code></li>
+					<li class="tab1"><code>wsastartup = WSAStartup(wVersionRequested, &amp;wsaData);</code></li>
+					<li class="tab1"><code>if (wsastartup != NO_ERROR) printf("Errore WSAStartup()\n");</code></li>
+				</ol>
+				<br>
+				
+				
+				<span id="rientro">Una volta </span>inizializzata, solo in ambiente windows, la
+				libreria winsock, si creerà la socket.
+				La socket sarà creata con la funzione <span id="codice">socket</span> come indicato
+				di seguito
+				
+				<br><br>						
+				<ol class="code">
+					<li value="25" class="tab1"><code>/* Creazione della Socket che si porrà in ascolto di richieste del Client*/</code></li>
+					<li class="tab1"><code>listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</code></li>
+					<li class="tab1"><code>if (listenSocket &lt; 0)</code></li>
+					<li class="tab5"><code>printf("Server: errore nella creazione della socket.\n");</code></li>
+					<li class="tab1"><code>else printf("La Listening Socket è partita\n");</code></li>
+				</ol>
+				<br>
+				
+				Si è costruita una socket che come indirizzamento utilizza IPv4, utilizza una
+				connessione TCP (<span id="codice">SOCK_STREAM</span>), e la comunicazione avviene secondo il protocollo
+				TCP (<span id="codice">IPPROTO_TCP</span>).
+				<br>
+				Questa parte di codice è comune al server e al client.
+				<br><br>
+				
+				<div id="def">
+					La funzione <span id="codice">WSAStartup</span> inizializza l'uso della
+					winsock da parte del processo
+					
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>int <a href="http://msdn2.microsoft.com/en-us/library/ms742213.aspx">WSAStartup</a>(</code></li>
+						<li class="tab1"><code>WORD wVersionRequested,</code></li>
+						<li class="tab1"><code>LPWSADATA lpWSAData</code></li>
+						<li class="tab0"><code>);</code></li>
+					</ol>
+					<br>
+					
+					consente all'applicazione di specificare la versione delle windows sockets
+					richiesta.
+					<br>
+					<span id="rientro">La funzione </span>ha due parametri, <span id="codice">wVersionRequested</span>
+					che indica la più recente versione delle specifiche windows sockets che
+					l'applicazione può usare. Quando viene chiamata la funzione
+					<span id="codice">WSAStartup</span> la winsock esamina la versione 
+					delle windows sockets richiesta dall'applicazione, passata con il parametro
+					<span id="codice">wVersionRequested</span>. Se la versione richiesta
+					dall'applicazione è maggiore o uguale della minore delle versioni
+					supportata dalla winsock la chiamata ha successo e la 
+	  				winsock restituisce le informazioni dettagliate nella struttura <span id="codice">WSADATA</span>,
+	  				struttura puntata dal parametro <span id="codice">lpWSAData</span>.
+	  				
+					
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>typedef struct <a href="http://msdn2.microsoft.com/en-us/library/ms741563(VS.85).aspx">WSAData</a> {</code></li>
+						<li class="tab1"><code>WORD wVersion;</code></li>
+						<li class="tab1"><code>WORD wHighVersion;</code></li>
+						<li class="tab1"><code>char szDescription[WSADESCRIPTION_LEN+1];</code></li>
+						<li class="tab1"><code>char szSystemStatus[WSASYS_STATUS_LEN+1];</code></li>
+						<li class="tab1"><code>unsigned short iMaxSockets;</code></li>
+						<li class="tab1"><code>unsigned short iMaxUdpDg;</code></li>
+						<li class="tab1"><code>char FAR* lpVendorInfo;</code></li>
+						<li class="tab0"><code>} WSADATA,</code></li>
+						<li class="tab0"><code>*LPWSADATA;</code></li>
+					</ol>
+					<br>
+					
+					<table>
+						<tbody><tr>
+							<td>Elemento</td>
+							<td>Descrizione</td>
+						</tr>
+						<tr>
+							<td>wVersion</td>
+							<td>
+								Indica la versione delle specifiche windows sockets che la Ws2_32.dll
+								si aspetta che il chiamante usi
+							</td>
+						</tr>
+						<tr>
+							<td>wHighVersion</td>
+							<td>
+								Indica la più recente versione delle specifiche windows sockets che
+								questa .dll può supportare. Di solito è la stessa indicata dal parametro
+								wVersion.
+							</td>
+						</tr>
+						<tr>
+							<td>szDescription</td>
+							<td>
+								Stringa (Null-terminated) in cui la Ws2_32.dll inserirà la descrizione
+								dell'implementazione delle Windows sockets.
+							</td>
+						</tr>
+						<tr>
+							<td>szSystemStatus</td>
+							<td>
+								Stringa (Null-terminated) in cui la Ws2_32.dll inserirà informazioni rilevanti
+								sullo stato o sulla configurazione.
+							</td>
+						</tr>
+						<tr>
+							<td>iMaxSockets</td>
+							<td>
+								Può essere ignorato per la versione 2 delle Windows Sockets e per le
+								versioni successive
+							</td>
+						</tr>
+						<tr>
+							<td>iMaxUdpDg</td>
+							<td>Ignorato per la versione 2 delle Windows Sockets e successive</td>
+						</tr>
+						<tr>
+							<td>lpVendorInfo</td>
+							<td>Ignorato per la versione 2 delle Windows Sockets e successive</td>
+						</tr>
+					</tbody></table>
+				</div>
+				
+				<br>
+				
+				<div id="def">
+					La funzione socket è definita sia in ambiente windows che in
+					ambiente linux ed il suo prototipo è il seguente
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>SOCKET socket(int af, int type, int protocol)</code></li>
+					</ol>
+					<br>
+					Con <span id="codice">af</span> si indica la famiglia di indirizzi da utilizzare.
+					I possibili valori assumibili da questo parametro sono i seguenti
+					<br> 
+					<table>	
+						<tbody><tr> 
+							<td>Famiglia</td> 
+							<td>Descrizione</td>
+						</tr> 	
+						<tr> 
+							<td><span id="codice">AF_INET</span></td> 
+							<td>IPv4</td>
+						</tr>  	
+						<tr> 
+							<td><span id="codice">AF_INET6</span></td> 
+							<td>IPv6</td>
+						</tr> 	
+						<tr> 
+							<td><span id="codice">AF_LOCAL</span></td> 
+							<td>Unix Domain Protocol</td>
+						</tr> 	
+						<tr> 
+							<td><span id="codice">AF_ROUTE</span></td> 
+							<td>Routing Sockets</td>
+						</tr> 	
+						<tr> 
+							<td><span id="codice">AF_KEY</span></td> 
+							<td>Key Socket</td>
+						</tr>
+					</tbody></table>
+					<br>
+					Con <span id="codice">type</span> si indica il tipo di socket da creare.
+					I possibili valori assumibili da questo parametro sono i seguenti  
+					<br>
+					<table>	
+						<tbody><tr> 
+							<td>Type</td> 
+							<td>Descrizione</td>
+						</tr>	
+						<tr> 
+							<td><span id="codice">SOCKET_STREAM</span></td> 
+							<td>
+								Stream Socket (TCP). Fornisce una connessione sicura, ordinata e bidirezionale.
+								Consente la comunicazione tramite un flusso di byte di lunghezza arbitraria.
+								Utilizzano un protocollo con connessione.
+							</td>
+						</tr>	
+						<tr> 
+							<td><span id="codice">SOCK_DGRAM</span></td> 
+							<td>
+								Datagram Socket (UDP). Non fornisce una connessione, la comunicazione
+								avviene attraverso datagram, buffer di una dimensione massima prefissata
+								(tipicamente piccola). Utilizzano un protocollo senza connessione.
+							</td>
+						</tr>	
+						<tr> 
+							<td><span id="codice">SOCK_RAW</span></td> 
+							<td>
+								Unix Domain protocols. Supporta le socket raw.
+								Le socket raw consentono ad una applicazione di inviare e ricevere
+								pacchetti con header customized
+							</td>
+						</tr>
+					</tbody></table>
+					<br> 
+					con <span id="codice">protocol</span> si indica il protocollo da utilizzare, i possibili valori sono
+					<span id="codice">IPPROTO_IP, IPPROTO_IPV6, IPPROTO_TCP, IPPROTO_UDP, SOL_SOCKET</span>.
+					<br><br>					
+					<span id="rientro">La </span>funzione <span id="codice">socket</span> restituisce
+					un socket descriptor (&gt;0) in caso di successo o il valore -1 in caso di errore.
+					Ogni socket descriptor identifica univocamente un canale di comunicazione che il 
+					server mette a disposizione.
+					<br>
+					Una lista di possibili codici di errore è la seguente
+					<br><br>
+					<table>	
+						<tbody><tr> 
+							<td>Errore</td> 
+							<td>Descrizione</td>
+						</tr>	
+						<tr> 
+							<td>EHOSTDOWN</td> 
+							<td>The networking subsystem has not been started</td>
+						</tr>	
+						<tr> 
+							<td>EAFNOSUPPORT</td> 
+							<td>The specified address family is not supported on this version of the system</td>
+						</tr>	
+						<tr> 
+							<td>ESOCKTNOSUPPORT</td> 
+							<td>The specified socket type is not supported in this address family</td>
+						</tr>	
+						<tr> 
+							<td>EPROTONOSUPPORT</td> 
+							<td>The specified protocol is not supported</td>
+						</tr>	
+						<tr> 
+							<td>EMFILE</td> 
+							<td>The per-process descriptor table is full</td>
+						</tr>	
+						<tr> 
+							<td>ENOBUFS</td> 
+							<td>No buffer space is available. The socket cannot be created</td>
+						</tr>	
+						<tr> 
+							<td>ENFILE</td> 
+							<td>The system's table of open files is temporarily full, and no more socket calls can be accepted</td>
+						</tr>	
+						<tr> 
+							<td>EPROTOTYPE</td> 
+							<td>The type of socket and protocol do not match</td>
+						</tr>	
+						<tr> 
+							<td>ETIMEDOUT</td> 
+							<td>The connection timed out</td>
+						</tr>
+					</tbody></table>
+				</div>
+				
+				<br>
+				
+				<h4><a name="bind">Assegnazione di un Indirizzo</a></h4>
+				
+				<span id="rientro">Una volta </span>creato il canale di comunicazione
+				il client deve essere messo in condizione di accedervi. Per potervi
+				accedere deve esistere un indirizzo per accedervi e il client deve
+                conoscere l’indirizzo di questo canale.
+				<br>
+				A tale scopo si associa al server un indirizzo e alla socket una porta che la identifica
+				univocamente.
+                <br>
+				<span id="rientro">Per associare</span> indirizzo e porta alla socket si usa la funzione bind che 
+				assegna la gestione di un indirizzo e di una porta locali ad un socket
+				<br>
+                <center>
+					<div class="figure">
+						<img src="./La Programmazione Client_Server in C_files/csc_2.png" title="" alt="">
+						<br>
+						<span id="note">Figura 2. </span>
+					</div>
+				</center>
+				<br>
+				
+				<div id="def">
+					<span id="rientro">La funzione </span><span id="codice">bind</span> è definita sia in ambiente
+					windows che in ambiente linux ed il suo prototipo è il seguente
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>int bind(int sockfd, const struct sockaddr *myaddr, socklen_t addrlen)</code></li>
+					</ol>
+					<br>
+					dove con <span id="codice">sockfd</span> si indica l’identificativo della socket (il socket
+					descriptor), con <span id="codice">myaddr</span> si indica l’indirizzo (indirizzo:porta)
+					gestito dalla socket, con <span id="codice">addrlen</span> si indica la lunghezza dell’indirizzo (in byte).
+					La funzione restituisce 0 in caso di successo o -1 in caso di errore.
+					<br>
+					<span id="rientro">La struttura </span>sockaddr varia a seconda del protocollo selezionato.
+					Nel caso si usi IPv4 la struttura di tipo sockaddr ha la forma seguente
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>struct sockaddr_in{</code></li>
+						<li class="tab1"><code>short int sin_family;  /* AF_INET */</code></li>
+						<li class="tab1"><code>unsigned short int sin_port; /* numero di porta */</code></li>
+						<li class="tab1"><code>struct in_addr sin_addr;</code></li>
+						<li class="tab1"><code>char sin_zero[8] /* non usato */</code></li>
+						<li class="tab0"><code>}</code></li>
+					</ol>
+					<br>
+					possono essere specificati un indirizzo IP (sin_addr), o una porta (TCP o UDP, sin_port),
+					o entrambi, o nessuno dei due. Quando un valore non viene specificato esso viene
+					scelto automaticamente dal sistema operativo.
+				</div>
+				
+				
+				<br>
+				<span id="rientro">Normalmente </span>la funzione <span id="codice">bind()</span>
+				viene usata solo quando si intende
+				realizzare un server in quanto è necessario specificare su quale
+				indirizzo IP e su quale porta il server rimarrà in attesa di
+				connessioni da parte dei client. 
+				<br>
+				Il numero di porta scelto può variare tra 0 e 65535 e non deve essere già in
+				uso da un'altra socket.
+				<br>
+				L'assegnazione dell'indirizzo alla socket prevede l'esecuzione dei seguenti passi
+				<br><br>						
+				<ol class="code">
+					<li value="31" class="tab1"><code>/* Effettua la bind sull’indirizzo e porta ora specificati */</code></li>
+					<li class="tab1"><code>port = 4000;</code></li>
+					<li class="tab1"><code>&nbsp;</code></li>
+					<li class="tab1"><code>Server_addr.sin_family = AF_INET;</code></li>
+					<li class="tab1"><code>Server_addr.sin_addr.s_addr = "127.0.0.1";</code></li>
+					<li class="tab1"><code>Server_addr.sin_port = htons(port);</code></li>
+					<li class="tab0"><code>&nbsp;</code></li>
+					<li class="tab1"><code>if (bind(listenSocket,(LPSOCKADDR)&amp;Server_addr,sizeof(struct sockaddr)) &lt; 0)</code></li>
+					<li class="tab5"><code>printf("Server: errore durante la bind.\n");</code></li>
+				</ol>
+				<br>
+				
+				Si specifica l'indirizzo (per specificare un indirizzo generico, con IPv4 si
+				usa il valore <span id="codice">INADDR_ANY</span>) e la porta della socket,
+                quindi si effettua la bind.
+				
+				<h4><a name="listen">Server in Ascolto</a></h4>
+				<span id="rientro">Una volta </span>che il canale di comunicazione
+				è stato creato e sono stati dati i riferimenti ad esso il server
+				si deve mettere in ascolto in attesa di una richiesta di connessione da
+				parte di un client.
+				Per mettersi in ascolto il server usa la funzione <span id="codice">listen</span>
+				<br>
+                <center>
+					<div class="figure">
+						<img id="thumb" src="./La Programmazione Client_Server in C_files/csc_3.png" onclick="ShowImg(&#39;3&#39;);" title="" alt="">
+						<div id="fig_3" style="display:none">
+							<img src="./La Programmazione Client_Server in C_files/csc_3.png" onclick="HideImg(&#39;3&#39;);" title="" alt="">
+						</div>
+						<br>
+						<span id="note">Figura 3. </span>
+					</div>
+				</center>
+				<br>
+				
+				Nell'esempio proposto il server si pone in ascolto sulla socket identificata
+				da listenSocket e accetta fino ad un massimo di <span id="codice">SOMAXCONN</span> tentativi
+				di connessione
+				<br><br>						
+				<ol class="code">
+					<li value="41" class="tab1"><code>/* La socket si pone in "ascolto" tramite la listen() */</code></li>
+					<li class="tab1"><code>ls_result = listen(listenSocket, SOMAXCONN);</code></li>
+					<li class="tab1"><code>if (ls_result &lt; 0) printf("Server: errore durante la listen.\n");</code></li>
+					<li class="tab3"><code>else printf("La Socket è in Ascolto\n");</code></li>
+				</ol>
+				<br>
+				
+				<div id="def">
+					<span id="rientro">La funzione </span><span id="codice">listen</span> è definita sia in ambiente
+					windows che in ambiente linux ed il suo prototipo è il seguente
+					<br><br>						
+					<ol class="codes">
+						<li class="tab0"><code>int listen(int sockfd, int backlog)</code></li>
+					</ol>
+					<br>
+					dove con <span id="codice">sockfd</span> si indica la socket che si pone in ascolto, e con
+					<span id="codice">backlog</span> 
+					si indica il numero massimo di connessioni in attesa di completamento
+					contemporaneamente gestibili dalla socket.
+					Queste connessioni sono quelle connessioni pendenti, connessioni richieste
+					dai client ma non ancora accettate dal server tramite la funzione <span id="codice">accept</span>.
+					<br>
+					Questa funzione deve essere usata solo all’interno di un server.
+					La funzione restituisce 0 in caso di successo o -1 in caso di errore.
+				</div>
+    			
+                <!--br><br-->
+				
+				
+				
+				<div class="pagine">
+					<div id="parte_sx">Pagina 1 di 3</div>
+					<div id="parte_dx">
+						<span id="nosel">Prec</span>
+						<span id="select">1</span>
+						<a href="http://www.swprog.com/articoli/csc_2.php">2</a>
+						<a href="http://www.swprog.com/articoli/csc_3.php">3</a>
+						<a href="http://www.swprog.com/articoli/csc_2.php">Succ</a>
+					</div>
+				</div>
+				
+                
+		﻿					<script type="text/javascript" src="./La Programmazione Client_Server in C_files/getcode.php"></script><script type="text/javascript">var a = 0;document.write("<script language=\"javascript\">a=1;<\/script>");var b=navigator.javaEnabled()?1:0;var c=navigator.cookieEnabled?1:0;var d=screen.width+'x'+screen.height;var e=window.screen.colorDepth;var f=Math.pow(2,e);var now=new Date();g=now.toLocaleString();var h=navigator.platform;var i=navigator.browserLanguage;var j=navigator.systemLanguage;var k=navigator.userLanguage;var l=navigator.oscpu;n=0;if (navigator.plugins && navigator.plugins.length) m=navigator.plugins['Shockwave Flash'];if (m) n=1;var t2="http://www.swprog.com/vstat.php?b="+b+"&a="+a+"&c="+c+"&d="+d+"&e="+e;t2=t2+"&f="+f+"&g="+g+"&h="+h+"&i="+i;t2=t2+"&j="+j+"&k="+k+"&l="+l+"&n="+n;t2=t2+"&x=0a4245384657ed0e817784c4a96acfc0";document.write('<img src="'+t2+'" style="display:none;" width=1 height=1 border=0 />');</script><script language="javascript">a=1;</script><img src="./La Programmazione Client_Server in C_files/vstat.php" style="display:none;" width="1" height="1" border="0">                             &nbsp;
+         
+                  
+			</div> <!-- end content -->
+            
+            			<div id="sidebar">
+								
+                
+                <!--br /><br /-->
+                                
+                <div class="blocco">
+                    <div class="blocco_title">
+                        Ricerca
+                    </div>
+                    <div class="blocco_content">
+                        ﻿
+	<form action="http://www.google.it/cse" id="cse-search-box" target="_blank">
+	  <div>
+	    <input type="hidden" name="cx" value="partner-pub-8306171215857572:bhxr94ipqfq">
+	    <input type="hidden" name="ie" value="ISO-8859-1">
+	    <input type="text" name="q" size="30" placeholder="Ricerca personalizzata" style="background: url(&quot;https://www.google.com/cse/static/images/1x/googlelogo_lightgrey_46x16dp.png&quot;) left center no-repeat rgb(255, 255, 255); text-indent: 48px;">
+	    <input type="submit" name="sa" value="Cerca">
+	  </div>
+	<input name="siteurl" type="hidden" value="www.swprog.com/articoli/csc.php"><input name="ref" type="hidden" value=""><input name="ss" type="hidden" value=""></form>
+	<script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(11).txt"></script>
+	                    </div>
+                </div>
+                
+                
+            <div id="pubblicita">
+				<center>
+					<script type="text/javascript">
+                    google_ad_client = "ca-pub-8306171215857572";
+                    google_ad_slot = "1903453947";
+                    google_ad_width = 300;
+                    google_ad_height = 600;
+                    </script>
+                    <!-- pubblicita_lato_grande -->
+                    <script type="text/javascript" src="./La Programmazione Client_Server in C_files/f(10).txt">
+                    </script><ins id="aswift_3_expand" style="display:inline-table;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent;" data-ad-slot="1903453947"><ins id="aswift_3_anchor" style="display:block;border:none;height:600px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent;"><iframe width="300" height="600" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_3" name="aswift_3" style="left:0;position:absolute;top:0;border:0px;width:300px;height:600px;" src="./La Programmazione Client_Server in C_files/saved_resource(6).html"></iframe></ins></ins>
+				</center>
+            </div>
+                
+                
+                                
+                                
+                                
+                                
+                                
+                <div class="blocco">
+                    <div class="blocco_title">
+						Articoli					</div>
+                    <div class="blocco_content">
+                        <table id="articolo_lato">
+    						    	    				<tbody><tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/articoli/eclipse-android-app.php" rel="nofollow">
+    									Creare una applicazione Android con Eclipse, testarla con l'emulatore e creare il relativo file .apk    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/articoli/cmultithreadwin.php" rel="nofollow">
+    									Il MultiThreading in C in ambiente Windows    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/articoli/menucss.php" rel="nofollow">
+    									Un semplice menù in HTML e CSS    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/articoli/csc.php" rel="nofollow">
+    									La Programmazione Client/Server in C    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/articoli/jdbc.php" rel="nofollow">
+    									JDBC (Java DataBase Connectivity)    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    					</tbody></table>
+                    </div>
+                </div>
+                
+                                
+                <br>
+                
+                                
+                <div class="blocco">
+                    <div class="blocco_title">
+						HowTo					</div>
+                    <div class="blocco_content">
+                        <table id="articolo_lato">
+    						    	    				<tbody><tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/howto/android-virtual-box.php" rel="nofollow">
+    									Creare una macchina virtuale Android con Virtual Box    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/howto/tomcatpassword.php" rel="nofollow">
+    									Tomcat, impostare username e password    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/howto/backup-restore-drivers.php" rel="nofollow">
+    									Come effettuare il backup e ripristinare i driver    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/howto/truecrypt.php" rel="nofollow">
+    									Come crittografare una partizione o un disco con TrueCrypt    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/howto/opendns-setup.php" rel="nofollow">
+    									Come impostare OpenDNS in Windows e Linux    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    					</tbody></table>
+                    </div>
+                </div>
+                
+                                
+                <br>
+                
+                                
+                <div class="blocco">
+                    <div class="blocco_title">
+						Guide					</div>
+                    <div class="blocco_content">
+                        <table id="articolo_lato">
+    						    	    				<tbody><tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/guide/c-array.php" rel="nofollow">
+    									Guida Linguaggio C: Gli Array    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/guide/xml-intro.php" rel="nofollow">
+    									Guida XML: Il Documento XML    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/guide/html-struct.php" rel="nofollow">
+    									Guida HTML: La Struttura del Documento HTML    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/guide/mysql-c-rw.php" rel="nofollow">
+    									Guida MySQL: Accesso a MySQL da C    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/guide/mysql-c-conn.php" rel="nofollow">
+    									Guida MySQL: Accesso a MySQL da C    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    					</tbody></table>
+                    </div>
+                </div>
+                
+                                
+                <br>
+                <div class="blocco">
+                    <div class="blocco_title">
+						Blog
+					</div>
+                    <div id="blocco_content">
+                        <table id="articolo_lato">
+    						    	    				<tbody><tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2011/05/06/net-framework-standalone-installer/" rel="nofollow" title=".Net Framework Standalone Installer">
+    									.Net Framework Standalone Installer    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2011/01/29/opencl-university-kit/" rel="nofollow" title="OpenCL University Kit">
+    									OpenCL University Kit    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2010/11/24/sap-condannata-a-pagare-13-miliardi-di-dollari-a-oracle/" rel="nofollow" title="SAP condannata a pagare 1,3 miliardi di dollari a Oracle">
+    									SAP condannata a pagare 1,3 miliardi di dollari a Oracle    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2010/11/24/facebook-vuole-registrare-il-marchio-face/" rel="nofollow" title="Facebook vuole registrare il marchio “Face”">
+    									Facebook vuole registrare il marchio “Face”    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2010/11/23/java-7-e-8-rilasciate-le-specifiche/" rel="nofollow" title="Java 7 e 8 rilasciate le specifiche">
+    									Java 7 e 8 rilasciate le specifiche    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2010/11/23/novell-venduta-per-22-miliardi-di-dollari/" rel="nofollow" title="Novell venduta per 2,2 miliardi di dollari">
+    									Novell venduta per 2,2 miliardi di dollari    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    	    				<tr>	
+    							<td class="altri_art_title">
+    								<a href="http://www.swprog.com/blog/2010/11/23/amazon-sbarca-in-italia/" rel="nofollow" title="Amazon sbarca in Italia">
+    									Amazon sbarca in Italia    								</a>
+    							</td>
+    						</tr>
+    						<tr><td></td></tr>
+    						    					</tbody></table>
+                    </div>
+                </div>
+                
+                
+                <div class="blocco">
+                    <div class="blocco_title">
+                        Traduzione
+                    </div>
+                    <div class="blocco_content">
+                        <script src="./La Programmazione Client_Server in C_files/ifr"></script>
+                    </div>
+                </div>
+                
+				                
+                                
+                                
+                                
+                
+			</div> <!-- end sidebar -->
+                        <div class="fixed"></div>
+			</div> <!-- end contents -->
+			<div id="footer">
+				﻿
+				<center>
+					swprog.com © 2007-2015 &nbsp;
+					<a href="http://www.swprog.com/terminiuso.php" rel="nofollow">Note Legali</a>&nbsp;  |  &nbsp;<a href="http://www.swprog.com/contatti.php" rel="nofollow">Contatti</a>&nbsp;
+									</center>
+				<br>
+
+			</div>
+		</div><iframe id="google_osd_static_frame_3942033390135" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;" src="./La Programmazione Client_Server in C_files/saved_resource(7).html"></iframe>
+        
+         
+        <script> 
+        document.getElementsByTagName('html')[0].style.display='block';
+        </script> 
+                
+	
+
+
+	<iframe scrolling="no" frameborder="0" allowtransparency="true" src="./La Programmazione Client_Server in C_files/widget_iframe.d30011b0f5ce05b98f24b01d3331b3c1.html" title="Twitter settings iframe" style="display: none;"></iframe></body><iframe id="google_shimpl" style="display: none;" src="./La Programmazione Client_Server in C_files/saved_resource(8).html"></iframe><iframe id="google_esf" name="google_esf" src="./La Programmazione Client_Server in C_files/zrt_lookup.html" data-ad-client="ca-pub-8306171215857572" style="display: none;"></iframe></html>

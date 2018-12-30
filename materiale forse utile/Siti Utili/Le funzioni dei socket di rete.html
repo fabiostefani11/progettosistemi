@@ -1,0 +1,1111 @@
+<!DOCTYPE html PUBLIC "ISO/IEC 15445:2000//DTD HTML//EN">
+<!-- saved from url=(0093)http://linuxdidattica.org/docs/altre_scuole/planck/socket/le_funzioni_dei_socket_di_rete.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    
+    <meta name="Generator" content="Alml">
+    <meta name="Description" content="programmazione dei socket di rete in linux">
+    <meta name="Keywords" content="socket, Linux">
+    <meta name="Author" content="Fulvio Ferroni fulvioferroni@teletu.it">
+    <meta name="Date" content="2006.09.21">
+    <title>Le funzioni dei socket di rete</title>
+    <style type="text/css">
+        <!--
+BODY {
+    background-color: rgb(255, 255, 255);
+}
+H1 {
+    text-align: right;
+    color: rgb(230, 100, 180); /* */
+}
+SAMP {
+    quotes:           "'" "'";
+    font-weight:      bold;
+}
+SAMP:before {
+    content:          open-quote;
+}
+SAMP:after {
+    content:          close-quote;
+}
+CODE.file {
+    quotes:           "'" "'";
+}
+CODE.file:before {
+    content:          open-quote;
+}
+CODE.file:after {
+    content:          close-quote;
+}
+
+P.note {
+    float:            right;
+}
+P.syntax {
+    width:            auto;
+    text-align:       left;
+}
+P.caption {
+    text-align:       left;
+    font-style:       italic;
+    width:            100%;
+    background-color: rgb(211, 211, 211); /* light gray */
+}
+P.command {
+    text-align:       left;
+    width:            auto;
+/*  width:            100%; */
+    border-style:     none;
+    background-color: rgb(255, 170, 255); /* light magenta */
+}
+EM.promptinfo {
+    text-align:       left;
+    width:            auto;
+    border-style:     none;
+    background-color: rgb(0, 255, 0); /* green */
+    font-size:        80%;
+}
+P.fullpagepicture {
+    text-align:       center;
+}
+P {
+    /* text-align: justify */
+    text-align: left
+}
+P.validator {
+    border-style:     none;
+}
+P.testtime {
+    text-align:       right;
+}
+P.testsend {
+    text-align:       right;
+}
+DIV.listing {
+    width:            auto;
+    background-color: rgb(173, 216, 230); /* light blue */
+}
+DIV.object {
+    width:            auto;
+}
+TABLE.frame {
+    width:            100%;
+    border-color:     black;
+    border-style:     solid;
+    background-color: yellow;
+    border-width:     thin;
+}
+TABLE.pre {
+/*  width:            100%; */
+    width:            auto;
+    border-color:     black;
+    border-style:     solid;
+    background-color: rgb(211, 211, 211); /* light gray */
+    border-width:     thin;
+}
+TABLE.syntax {
+/*  width:            100%; */
+    width:            auto;
+    border-color:     black;
+    border-style:     solid;
+    background-color: rgb(170, 255, 255); /* light cyan */
+    border-width:     thin;
+}
+TABLE.figurewrapper {
+    width:            100%;
+    border-style:     none;
+}
+TABLE.figure {
+    width:            100%;
+    border-color:     black;
+    border-style:     solid;
+    background-color: rgb(211, 211, 211); /* light gray */
+    border-width:     thin;
+}
+TABLE.listing {
+/*  width:            100%; */
+    width:            auto;
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+TABLE.object {
+/*  width:            100%; */
+    width:            auto;
+    border-color:     green;
+    border-style:     solid;
+    border-width:     thin;
+}
+TABLE.table {
+    width:            100%;
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+    background-color: rgb(190, 255, 190); /* light green */
+}
+THEAD.border {
+    background-color: rgb(224, 255, 255); /* light cyan */
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+THEAD.noborder {
+    background-color: rgb(224, 255, 255); /* light cyan */
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+TBODY.border {
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+TBODY.noborder {
+    border-style:     none;
+}
+
+TD.border {
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+TR.noborder {
+    border-style:     none;
+}
+TABLE.testinfo {
+    width:            100%;
+    border-color:     black;
+    border-style:     solid;
+    border-width:     thin;
+}
+TBODY.testinfo {
+    border-style:     none;
+}
+COL.testinfolabel {
+    border-style:     none;
+    width:            300px;
+}
+COL.testinfofield {
+    border-style:     none;
+    width:            400px;
+}
+TD.testinfo {
+    border-style:     none;
+}
+STRONG.syn {
+    font-size:        120%;
+}
+STRONG.newline {
+    font-size:        162%;
+}
+SPAN.big {
+    font-size:        120%;
+}
+SPAN.small {
+    font-size:        80%;
+}
+SPAN.visible_label {
+    font-size:        75%;
+    font-style:       italic;
+    font-weight:      bold;
+    color:            blue;
+    border-color:     green;
+    border-style:     solid;
+    border-width:     thin;
+}
+SPAN.command {
+    background-color: rgb(255, 170, 255); /* light magenta */
+}
+SPAN.posix {
+    text-decoration:  underline;
+}
+HR.object {
+    color:            green;
+}
+A:hover {
+    color:            #fff;
+    background:       #00c;
+}
+        -->
+    </style>
+    <link rel="Start" title="Start" href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket.html">
+    <link rel="Prev" title="Previous" href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket4.html">
+    <link rel="Next" title="Next" href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket6.html">
+</head>
+<body>
+<p>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket6.html">[successivo]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket4.html">[precedente]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket.html">[inizio]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket8.html">[fine]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket1.html">[indice generale]</a>
+</p>
+<hr>
+<h1>Capitolo 3. &nbsp; <a name="almltitle24"></a><a name="almlanchor30"></a> Le funzioni dei socket di rete </h1>
+
+<p>Prima di illustrare le funzioni di gestione dei socket definiamo il <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->socket pair<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> la cui importanza è fondamentale in tale contesto; con tale termine si intende la combinazione di quattro valori che identificano i due estremi della comunicazione: <em>IP_locale:porta_locale, IP_remoto:porta_remota</em>.</p>
+
+<table class="frame" summary="">
+<tbody><tr><td>
+
+<p>A proposito delle porte è importante anche ricordare quelle identificate da un valore minore di 1024 possono essere usate solo da programmi che siano eseguiti con i privilegi dell'utente <em>root</em>.</p>
+
+</td></tr></tbody>
+</table>
+
+<p>La sequenza di operazioni da svolgere per gestire un socket TCP è:</p>
+
+<ol>
+
+<li>
+
+<p>creazione del socket;</p>
+</li>
+
+<li>
+
+<p>assegnazione dell'indirizzo;</p>
+</li>
+
+<li>
+
+<p>connessione o attesa di connessione;</p>
+</li>
+
+<li>
+
+<p>invio o ricezione dei dati;</p>
+</li>
+
+<li>
+
+<p>chiusura del socket.</p>
+</li>
+</ol>
+
+<p>Di queste la creazione è già stata esaminata in <a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket4.html#almlanchor16">2.2</a>.</p>
+
+<h2>3.1 &nbsp; <a name="almltitle25"></a><a name="almlanchor31"></a>
+ Assegnazione dell'indirizzo a un socket </h2>
+
+<p>La funzione per l'assegnazione di un indirizzo ad un socket è <em>bind()</em> con la quale si si assegna un indirizzo locale ad un socket (quindi la prima metà di un <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->socket pair<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->).</p>
+
+<p>La usa solitamente un programma <a name="almlindex18"></a>servente per stabilire da quale «IP:porta» si metterà in ascolto.</p>
+
+<p>Un <a name="almlindex19"></a>cliente invece di solito non la usa in quanto il suo indirizzo per una connessione viene scelto automaticamente dal <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> (almeno per quanto riguarda la porta, visto che l'IP sarà quello dell'interfaccia di rete usata).</p>
+
+<p>Se accade che un <a name="almlindex20"></a>servente non specifichi il suo indirizzo locale, il <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> lo determinerà in base all'indirizzo di destinazione specificato dal segmento <em>SYN</em> del <a name="almlindex21"></a>cliente (cioè il primo segmento inviato durante il processo di attivazione della connessione).</p>
+
+<p>La funzione ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int bind(int sd, const struct sockaddr *serv_ind, socklen_t indlen)
+
+//<em>sd</em> è l'identificativo (o <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->file descriptor<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->) del socket ottenuto 
+//     dalla creazione con la funzione <em>socket()</em>;
+//<em>serv_ind</em> è l'indirizzo;
+//<em>indlen</em> è la lunghezza dell'indirizzo.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore, nel qual caso la variabile <em>errno</em> viene valorizzata nel seguente modo:</p>
+
+<ul>
+
+<li>
+
+<p>EBADF e ENOTSOCK: <em>sd</em> non è valido;</p>
+</li>
+
+<li>
+
+<p>EINVAL: il socket ha già un indirizzo assegnato;</p>
+</li>
+
+<li>
+
+<p>EACCES: si sta cercando di usare una porta non avendo sufficienti privilegi;</p>
+</li>
+
+<li>
+
+<p>EADDRNOTAVAIL: il tipo di indirizzo indicato non è disponibile;</p>
+</li>
+
+<li>
+
+<p>EADDRINUSE: l'indirizzo è già usato da un altro socket.</p>
+</li>
+</ul>
+
+<p>Se si devono indicare indirizzi IPv4 particolari (locale, broadcast) si possono usare le seguenti costanti tutte valorizzate in formato macchina (e quindi da convertire):</p>
+
+<ul>
+
+<li>
+
+<p>INADDR_ANY: indirizzo generico (0.0.0.0);</p>
+</li>
+
+<li>
+
+<p>INADDR_BROADCAST: indirizzo di broadcast;</p>
+</li>
+
+<li>
+
+<p>INADDR_LOOPBACK: indirizzo di loopback (127.0.0.1);</p>
+</li>
+
+<li>
+
+<p>INADDR_NONE: indirizzo errato.</p>
+</li>
+</ul>
+
+<p>Per avere le stessa possibilità in IPv6 sono definite in &lt;netinet/in.h&gt; le variabili esterne <em>in6addr_any</em>, e <em>in6addr_loopback</em> inizializzate dal sistema rispettivamnete con i valori IN6ADRR_ANY_INIT e IN6ADDR_LOOPBACK_INIT.</p>
+
+<h2>3.2 &nbsp; <a name="almltitle26"></a><a name="almlanchor32"></a>
+ Connessione </h2>
+
+<p>La connessione di un <a name="almlindex22"></a>cliente TCP ad un <a name="almlindex23"></a>servente TCP si effettua con la funzione <em>connect()</em>, usata dal <a name="almlindex24"></a>cliente e il cui prototipo è:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int connect(int sd, const struct sockaddr *serv_ind, socklen_t indlen)
+
+//<em>sd</em> è l'identificativo del socket;
+//<em>serv_ind</em> è l'indirizzo del <a name="almlindex25"></a>cliente;
+//<em>indlen</em>  è la lunghezza dell'indirizzo.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore, nel qual caso <em>errno</em> assume i valori (i più significativi):</p>
+
+<ul>
+
+<li>
+
+<p>ECONNREFUSED: nessun processo è in ascolto all'indirizzo remoto;</p>
+</li>
+
+<li>
+
+<p>ETIMEDOUT: scaduto il timeout durante il tentativo di connessione;</p>
+</li>
+
+<li>
+
+<p>ENETUNREACH: rete non raggiungibile;</p>
+</li>
+
+<li>
+
+<p>EAFNOSUPPORT: indirizzo specificato con famiglia di indirizzi non corretta;</p>
+</li>
+
+<li>
+
+<p>EACCES, EPERM: tentativo di connessione a indirizzo broadcast ma socket non abilitato al broadcast;</p>
+</li>
+
+<li>
+
+<p>EINPROGRESS: socket non bloccante ma la connessione non può essere conclusa immediatamente;</p>
+</li>
+
+<li>
+
+<p>EALREADY: socket non bloccante e un tentativo precedente di connessione non si è ancora concluso.</p>
+</li>
+</ul>
+
+<p>La funzione <em>connect()</em> per il TCP attiva il meccanismo di attivazione e ritorna a connessione stabilita o se c'è un errore.</p>
+
+<p>Fra le situazioni di errore, quelle dovute alla rete sono:</p>
+
+<ul>
+
+<li>
+
+<p>il <a name="almlindex26"></a>cliente non riceve risposta al SYN: (si tratta dell'errore ETIMEDOUT); in GNU/Linux ciò avviene normalmente dopo un tempo di 180 secondi in quanto il sistema invia nuovi SYN ad intervalli di 30 secondi per un massimo di 5 tentativi; questo valore di tentativi può comunque essere cambiato o usando la funzione <em>sysctl()</em> (vedere il manuale in linea) o scrivendo il valore in <code class="file">/proc/sys/net/ipv4/tcp_syn_retries</code>.</p>
+</li>
+
+<li>
+
+<p>il <a name="almlindex27"></a>cliente riceve come risposta al SYN un RST (è l'errore ECONNREFUSED) perché il SYN era per una porta che non ha nessun processo in ascolto, oppure perché il TCP ha abortito la connessione in corso, oppure perché il <a name="almlindex28"></a>servente ha ricevuti un segmento per una connessione inesistente.</p>
+</li>
+
+<li>
+
+<p>la risposta al SYN è un messaggio ICMP di destinazione non raggiungibile (è l'errore ENETUNREACH); la condizione errata può essere transitora e superata da tentativi successivi fino allo scadere del timeout come illustrato sopra.</p>
+</li>
+</ul>
+
+<p>In caso di esito positivo della funzione <em>connect()</em>, la connessione è completata e i processi possono comunicare.</p>
+
+<table class="frame" summary="">
+<tbody><tr><td>
+
+<p>È importante ribadire che il <a name="almlindex29"></a>cliente non deve preoccuparsi dell'altra metà del <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->socket pair<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->, cioè il proprio «IP:porta», in quanto viene assegnata automaticamente dal <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->.</p>
+
+</td></tr></tbody>
+</table>
+
+<h2>3.3 &nbsp; <a name="almltitle27"></a><a name="almlanchor33"></a>
+ Attesa di connessione </h2>
+
+<p>In un <a name="almlindex30"></a>servente TCP, quindi orientato alla connessione, è necessario indicare che il processo è disposto a ricevere le connessioni e poi mettersi in attesa che arrivino le relative richieste da parte dei <a name="almlindex31"></a>clienti.</p>
+
+<p>Le due operazioni devono essere svolte dopo la <em>bind()</em> e sono realizzate grazie alle funzioni <em>listen()</em> e <em>accept()</em>.</p>
+
+<p>La funzione <em>listen()</em> ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int listen(int sd, int backlog)
+
+//pone il socket <em>sd</em> in attesa di una connessione;
+//<em>backlog</em> è il numero massimo di connessioni accettate.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore con <em>errno</em> che in tal caso assume i valori:</p>
+
+<ul>
+
+<li>
+
+<p>EBADF o ENOTSOCK: socket non valido;</p>
+</li>
+
+<li>
+
+<p>EOPNOTSUPP: il socket non supporta questa funzione.</p>
+</li>
+</ul>
+
+<p>Si può applicare solo a socket di tipo SOCK_STREAM o SOCK_SEQPACKET e pone il socket in modalità passiva (in ascolto) predisponendo una coda per le connessioni in arrivo di lunghezza pari al valore indicato nel parametro <em>backlog</em>.</p>
+
+<p>Se tale valore viene superato, al <a name="almlindex32"></a>cliente che ha inviato la richiesta dovrebbe essere risposto con un errore ECONNREFUSED, ma siccome il TCP prevede la ritrasmissione, la richiesta viene semplicemente ignorata in modo che la connessione possa essere ritentata.</p>
+
+<p>Riguardo alla lunghezza della coda delle connessioni si deve osservare che essa riguarda solo le connessioni completate (cioè quelle per cui il processo di attivazione è concluso); in effetti per ogni socket in ascolto ci sono in coda anche quelle non completate (l'attivazione è ancora in corso) e nei vecchi <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> (fino al 2.2) il parametro <em>backlog</em> considerava anche queste.</p>
+
+<p>Il cambiamento ha lo scopo di evitare gli attacchi <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->syn flood<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> che consistono nell'invio da parte di un <a name="almlindex33"></a>cliente di moltissime richieste di connessione (segmenti SYN), lasciate volutamente incomplete grazie al mancato invio del segmento ACK in risposta al segmento SYN - ACK del <a name="almlindex34"></a>servente, fino a saturare la coda delle connessioni di quest'ultimo.</p>
+
+<p>La funzione <em>accept()</em> ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int accept(int sd, struct sockaddr *ind, socklen_t *indlen)
+
+//accetta una connessione sul socket <em>sd</em>;
+//<em>ind</em> e <em>indlen</em> sono l'indirizzo, e relativa lunghezza, del <a name="almlindex35"></a>cliente
+//      che ha inviato la richiesta di connessione
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna un numero di socket positivo in caso di successo oppure -1 se c'è errore; in tal caso <em>errno</em> può assumere gli stessi valori visti nel caso di <em>listen()</em> e anche:</p>
+
+<ul>
+
+<li>
+
+<p>EPERM: un firewall non consente la connessione;</p>
+</li>
+
+<li>
+
+<p>EAGAIN o EWOULDBLOCK: socket non bloccante e non ci sono connessioni da accettare;</p>
+</li>
+
+<li>
+
+<p>ENOBUFS e ENOMEM: memoria limitata dai limiti sui buffer dei socket.</p>
+</li>
+</ul>
+
+<p>La funzione può essere usata solo con socket che supportino la connessione (cioè di tipo SOCK_STREAM, SOCK_SEQPACKET o SOCK_RDM) e di solito viene invocata da un processo <a name="almlindex36"></a>servente per gestire la connessione dopo la conclusione del meccanismo di attivazione della stessa.</p>
+
+<p>L'effetto consiste nella creazione di un nuovo socket, detto «socket connesso», il cui descrittore è quello ritornato dalla funzione, che ha le stesse caratteristiche del socket <em>sd</em> e sul quale avviene la comunicazione; il socket originale resta invece nello stato di ascolto.</p>
+
+<p>Se non ci sono connessioni completate in coda, il processo che ha chiamato la funzione può:</p>
+
+<ul>
+
+<li>
+
+<p>essere messo in attesa, se, come avviene normalmente, il socket è bloccante;</p>
+</li>
+
+<li>
+
+<p>continuare, se il socket è non bloccante; in tal caso, come detto, la funzione ritorna -1 con errore EAGAIN o EWOULDBLOCK.</p>
+</li>
+</ul>
+
+<h2>3.4 &nbsp; <a name="almltitle28"></a><a name="almlanchor34"></a>
+ Invio e ricezione dati </h2>
+
+<p>Per l'invio e la ricezione dei dati si possono usare le stesse funzioni usate per la scrittura e lettura dei file a basso livello, <em>write()</em> e <em>read()</em>:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>ssize_t write(int sd, void *buf, size_t cont)
+ssize_t read(int sd, void *buf, size_t cont)
+
+//<em>sd</em> è il socket usato;
+//<em>buf</em> l'area di transito dei dati;
+//<em>cont</em> la quantità di byte da leggere o scrivere.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Le due funzioni ritornano la quantità di byte effettivamente scritti o letti oppure -1 in caso di errore, nel qual caso <em>errno</em> può valere (tra l'altro):</p>
+
+<ul>
+
+<li>
+
+<p>EINTR: la funzione è stata interrotta da un segnale;</p>
+</li>
+
+<li>
+
+<p>EAGAIN: non ci sono dati da leggere o scrivere e il socket è non bloccante.</p>
+</li>
+</ul>
+
+<p>Con i socket avviene molto più frequentemente che con i file che il numero di byte letti o scritti non coincida con quanto indicato nel parametro <em>cont</em>.</p>
+
+<p>Per questo motivo è opportuno definire delle funzioni di lettura e scrittura personalizzate che usino rispettivamente la funzione <em>read()</em> e <em>write()</em> in modo iterativo, fino al raggiungimento del numero di byte richiesti in lettura o scrittura.</p>
+
+<p>All'interno di queste funzioni personalizzate si deve avere l'accortezza di testare eventuali errori: se si tratta di EINTR il ciclo deve essere continuato (non è un vero e proprio errore sul socket), altrimenti interrotto.</p>
+
+<p>Nel caso della lettura, se il numero di byte letti è zero (situazione simile all'EOF per i file), significa che il socket è stato chiuso dal processo all'altro estremo della comunicazione e quindi non si deve continuare al leggere.</p>
+
+<p>Esistono anche altre due funzioni per scrivere o leggere i dati, la <em>send()</em> e la <em>recv()</em> che hanno i prototipi:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int recv(int sd, void *buf, int lun, int opzioni)
+
+//riceve dati dal socket <em>sd</em>;
+//<em>buf</em> area di transito dei dati;
+//<em>lun</em> dimensione dati da ricevere;
+//<em>opzioni</em> può essere impostato a 0.
+
+int send(int sd, void *buf, int lun, int opzioni)
+
+//invia dati sul socket <em>sd</em>;
+//<em>buf</em> area di transito dei dati;
+//<em>lun</em> dimensione dati da inviare;
+//<em>opzioni</em> può essere impostato a 0.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Le due funzioni ritornano -1 in caso di errore oppure il numero di byte effettivamente scritti o letti.</p>
+
+<h2>3.5 &nbsp; <a name="almltitle29"></a><a name="almlanchor35"></a>
+ Invio e ricezione dati con socket UDP </h2>
+
+<p>Il protocollo UDP non supporta le connessioni e non è affidabile; i dati vengono inviati in forma di pacchetti chiamati anche «datagrammi», senza alcuna assicurazione circa l'effettiva ricezione o l'arrivo nel giusto ordine.</p>
+
+<p>Il vantaggio rispetto al TCP risiede nella velocità e fa preferire il trasporto UDP nei casi in cui questa caratteristica è fondamnetale come nel trasferimento di dati multimediali.</p>
+
+<p>Un altro caso adatto all'uso di UDP è quello in cui la comunicazione consiste in un semplice processo di interrogazione/risposta con pochissimi dati da trasferire; l'esempio tipico è il servizio DNS che infatti si appoggia su UDP.</p>
+
+<p>I socket UDP non supportano la comunicazione di tipo <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->stream<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> tipica del TCP, in cui si ha a disposizione un flusso continuo di dati che è possibile leggere un po' alla volta, ma piuttosto una comunicazione di tipo <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->datagram<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->, in cui i dati arrivano in singoli blocchi da leggere integralmente.</p>
+
+<p>Quindi i socket UDP devono essere aperti con la funzione <em>socket</em> utilizzando per lo stile di comunicazione il valore SOCK_DGRAM; inoltre, non esistendo il concetto di connessione non è ovviamente necessario alcun meccanismo di attivazione e non servono le funzioni <em>connect()</em>, <em>listen()</em> e <em>accept()</em>.</p>
+
+<p>La funzione <em>bind()</em> invece serve ancora:</p>
+
+<ul>
+
+<li>
+
+<p>ad entrambi i processi che comunicano, se si tratta di una comunicazione paritetica;</p>
+</li>
+
+<li>
+
+<p>solo al <a name="almlindex37"></a>servente se c'è ancora la presenza di un <a name="almlindex38"></a>cliente e un <a name="almlindex39"></a>servente.</p>
+</li>
+</ul>
+
+<p>Lo scambio di dati avviene in modo molto semplice come schematizzato in <a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket5.html#almlanchor36">3.1</a> dove si ipotizza una comunicazione fra <a name="almlindex40"></a>cliente e <a name="almlindex41"></a>servente.</p>
+
+<table summary="" id="almlanchor36">
+<tbody><tr><td>
+
+<p class="caption"> Figura <a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket5.html#almlanchor36">3.1</a> </p>
+<div class="object">
+<table class="object" summary="">
+<tbody><tr><td>
+
+<p class="fullpagepicture"><img src="./Le funzioni dei socket di rete_files/4.jpg" alt="figure/progr-socket-figura-udp1" title="figure_progr_socket_figura_udp1.jpg"></p>
+</td></tr></tbody>
+</table>
+</div>
+
+</td></tr></tbody>
+</table>
+
+<p>Il <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> si limita a ricevere i pacchetti ed inviarli al processo in ascolto sulla porta cui essi sono destinati, oppure a scartarli inviando un messaggio ICMP «port unreachable» se non c'è alcun processo in ascolto.</p>
+
+<p>La ricezione dei dati avviene attraverso la funzione recvfrom(), l'invio con la funzione sendto() che sono comunque utilizzabili anche con altri tipi di socket:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>ssize_t sendto(int sd, const void *buf, size_t len, int flags,<strong class="newline">\</strong><br>&nbsp;&nbsp;<strong class="newline">\</strong>const struct sockaddr *to, socklen_t tolen)
+
+//trasmette un messaggio al socket <em>sd</em>; 
+//<em>buf</em> e len hanno lo stesso significato visto nella <em>write()</em>;
+//<em>flags</em> ha un ruolo che non viene qui approfondito e viene sempre posta a 0;
+//<em>to</em> è l'indirizzo della destinazione;
+//<em>tolenz</em> è la lunghezza dell'indirizzo di destinazione.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna il numero di byte inviati in caso di successo e -1 se c'è errore, nel qual caso <em>errno</em> può valere (tra l'altro):</p>
+
+<ul>
+
+<li>
+
+<p>EAGAIN: socket non bloccante, ma l'operazione richiede il blocco della funzione;</p>
+</li>
+
+<li>
+
+<p>ECONNRESET: l'altro nodo della comunicazione ha resettato la connessione;</p>
+</li>
+
+<li>
+
+<p>EMSGSIZE: il socket richiede l'invio dei dati in un blocco unico, ma la dimensione del messaggio è eccessiva;</p>
+</li>
+
+<li>
+
+<p>ENOTCONN: socket non connesso e non si è specificata una destinazione;</p>
+</li>
+
+<li>
+
+<p>EPIPE: estremo locale della connessione chiuso.</p>
+</li>
+</ul>
+
+<p>A differenza di quanto accade con la <em>write()</em> il numero di byte inviati deve sempre corrispondere a quanto specificato in <em>len</em> perché i dati non possono essere spezzati in invii successivi; se non c'è spazio nel buffer di uscita la funzione si blocca (se il socket è bloccante); se invece non è possibile inviare i dati dentro un unico pacchetto (perché eccede le dimensioni massime del protocollo IP sottostante) essa fallisce con l'errore di EMSGSIZE.</p>
+
+<p>Il prototipo di recvfrom() è:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>ssize_t recvfrom(int sd, const void *buf, size_t len, int flags,<strong class="newline">\</strong><br>&nbsp;&nbsp;<strong class="newline">\</strong>const struct sockaddr *from, socklen_t *fromlen)
+
+//riceve un messaggio dal socket <em>sd</em>; 
+//<em>buf</em> e <em>len</em> hanno lo stesso significato visto nella <em>read()</em>;
+//<em>flags</em> ha un ruolo che non viene qui approfondito e viene sempre posta a 0;
+//<em>from</em> è l'indirizzo di origine;
+//<em>fromlen</em> è la lunghezza dell'indirizzo di origine.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna il numero di byte ricevuti in caso di successo e -1 se c'è errore, nel qual caso <em>errno</em> può valere (tra l'altro):</p>
+
+<ul>
+
+<li>
+
+<p>EAGAIN: socket non bloccante, ma l'operazione richiede il blocco della funzione, oppure si è impostato un timeout in ricezione che è scaduto;</p>
+</li>
+
+<li>
+
+<p>ENOTCONN: il socket è connesso, ma non si è eseguita la connessione.</p>
+</li>
+</ul>
+
+<p>Se non ci sono dati disponibili la funzione si blocca (se il socket è bloccante); se <em>len</em> eccede la dimensione del pacchetto la funzione legge comunque i dati disponibili, e il suo valore di ritorno è il numero di byte letti.</p>
+
+<p>A seconda del tipo di socket, <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->datagram<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> o <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->stream<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->, gli eventuali byte in eccesso non letti possono rispettivamente andare persi o restare disponibili per una lettura successiva.</p>
+
+<p>Se il processo ricevente non è interessato a conoscere i dati relativi all'indirizzo di origine gli argomenti <em>from</em> e <em>fromlen</em> devono essere inizializzati a NULL.</p>
+
+<p>Con le funzioni <em>sendto()</em> e <em>recvfrom()</em> è possibile inviare o ricevere nessun byte; nel caso dell'invio è semplicemente un pacchetto vuoto che contiene solo le intestazioni IP e UDP (e <em>len</em> deve essere 0); nel caso della ricezione, il valore di ritorno di 0 byte, non deve essere interpretato come chiusura della connessione o fine della comunicazione.</p>
+
+<h2>3.6 &nbsp; <a name="almltitle30"></a><a name="almlanchor37"></a>
+ Socket UDP connessi </h2>
+
+<p>La comunicazione basata su socket UDP, è più semplice da gestire ma è soggetta da alcuni problemi abbastanza fastidiosi.</p>
+
+<p>Supponiamo ad esempio di eseguire un processo che invia dati con <em>sento()</em> e riceve risposte con <em>recvfrom()</em> da un <a name="almlindex42"></a>servente UDP; se qualche pacchetto di dati inviati o di risposta si perde o se il <a name="almlindex43"></a>servente non è in ascolto, il nostro processo si blocca inesorabilmente eseguendo la funzione <em>recvfrom()</em>.</p>
+
+<p>Infatti non essendo prevista alcuna connessione non è possibile neanche avere riscontri circa il buon esito dell'invio di un pacchetto.</p>
+
+<p>In verità la condizione di <a name="almlindex44"></a>servente non in ascolto viene rilevata con messaggi ICMP del tipo «destination unreachable» che però sono asincroni rispetto all'esecuzione della funzione <em>sendto()</em> che quindi non può rilevarli.</p>
+
+<p>Il problema può essere almeno in parte risolto con l'uso della funzione <em>connect()</em>, tipica del TCP, anche da parte di un <a name="almlindex45"></a>cliente UDP.</p>
+
+<p>Quando si invoca una <em>connect()</em> su un socket UDP l'indirizzo passato come parametro viene registrato come indirizzo di destinazione del socket e, a differenza che in TCP, non viene inviato alcun pacchetto.</p>
+
+<p>Dopo la <em>connect()</em> ogni invio di dati su quel socket viene diretto automaticamente a quell'indirizzo e gli argomenti <em>to</em> e <em>tolen</em> non devono più essere valorizzati.</p>
+
+<p>Anche il comportamento in ricezione cambia; vengono recapitati ad un socket connesso solo i pacchetti con un indirizzo sorgente corrispondente a quello indicato nella connessione.</p>
+
+<p>Il vantaggio è però nel fatto che, per le funzioni usate su un socket UDP connesso, gli errori dovuti a «destinazione non in ascolto» non bloccano il processo.</p>
+
+<p>Infatti tale condizione viene ora rilevata, anche se non al momento della connect(), come avviene in TCP, (visto che in UDP essa non comporta alcun trasferimento di pacchetti), bensì al momento in cui la stazione tenta di scambiare dei dati con la destinazione.</p>
+
+<p>L'altro problema evidenziato, cioè il blocco del <a name="almlindex46"></a>cliente sulla <em>recvfrom()</em> causato dalla perdita di pacchetti inviati o di pacchetti di risposta, non viene invece risolto neanche con i socket UDP connessi; il processo <a name="almlindex47"></a>cliente deve quindi gestire un <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->timeout<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> o usare un socket non bloccante.</p>
+
+<h2>3.7 &nbsp; <a name="almltitle31"></a><a name="almlanchor38"></a>
+ Chiusura di un socket </h2>
+
+<p>Un socket vine chiuso con la funzione close() che è molto semplice:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int close (int sd)
+
+// chiude il socket <em>sd</em>.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo o -1 se c'è un errore.</p>
+
+<p>Il suo scopo è quello di rendere inutilizzabile un socket presso uno dei due estremi della comunicazione; la funzione deve quindi essere eseguita da entrambi i processi che stanno comunicando.</p>
+
+<p>La chiusura avviene mediante l'invio di un segmento FIN come illustrato nel paragrafo <a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket3.html#almlanchor9">1.2.3</a>.</p>
+
+<p>I dati eventualmente in coda per essere spediti vengono comunque inviati prima che la chiusura sia effettuata; inoltre ogni socket ha un contatore di riferimenti perché potrebbe essere usato da altri processi (ad esempio dei processi figli) e quindi la chiusura viene innescata solo quando tale contatore si annulla.</p>
+
+<p>Se solo uno dei due estremi della comunicazione esegue la chiusura l'altro nodo può continuare a inviare i dati che però non possono essere letti dal primo nodo che ha il socket chiuso.</p>
+
+<p>Per gestire in modo effciente anche queste situazioni di <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->half-close<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> si può utilizzare la funzione shutdown() che ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int shutdown(int sd, int val)
+    
+//chiude un lato della connessione del socket <em>sd</em>;
+//<em>val</em> indica la modalità di chiusura. 
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna zero in caso di successo e -1 se c'è un errore.</p>
+
+<p>Il secondo argomento può valere:</p>
+
+<ul>
+
+<li>
+
+<p>SHUT_RD: chiude il lato in lettura del socket, i dati inviati dall'altro estremo vengono scartati, ma il processo può continuare a usare il socket per inviare dati;</p>
+</li>
+
+<li>
+
+<p>SHUT_WR: chiude il lato in scrittura del socket, i dati in attesa di invio sono spediti prima della chiusura; il processo può continuare a usare il socket per ricevere dati;</p>
+</li>
+
+<li>
+
+<p>SHUT_RDWR: chiude entrambi i lati del socket.</p>
+</li>
+</ul>
+
+<p>La modalità SHUT_RDWR può sembrare inutile perché pare rendere la <em>shutdown()</em> del tutto equivalente alla <em>close()</em>; invece c'è un'importante differenza: con essa infatti si chiude il socket immediatamente, anche se ci sono altri riferimenti attivi su di esso.</p>
+
+<h2>3.8 &nbsp; <a name="almltitle32"></a><a name="almlanchor39"></a>
+ Altre funzioni per i socket </h2>
+
+<p>Esistono diverse altre funzioni di varia utilità per la gestione dei socket; in questo paragrafo vengono illustrate le più importanti.</p>
+
+<h3>3.8.1 &nbsp; <a name="almltitle33"></a><a name="almlanchor40"></a>
+ Impostazione e lettura delle opzioni di un socket </h3>
+
+<p>Le opzioni di un socket possono essere impostate con la funzione <em>setsockopt()</em> che ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int setsockopt(int sd, int livello, int nomeopz, const void *valopz,<strong class="newline">\</strong><br>&nbsp;&nbsp;<strong class="newline">\</strong>socklen_t lunopz)
+    
+//imposta le opzioni del socket <em>sd</em>; 
+//<em>livello</em> è il protocollo su cui si vuole intervenire;
+//<em>nomeopz</em> è l'opzione da impostare;
+//<em>valopz</em> è il puntatore ai valori da impostare;
+//<em>lunopz</em> è la lunghezza di <em>valopz</em>.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore, nel qual caso <em>errno</em> può valere:</p>
+
+<ul>
+
+<li>
+
+<p>EBADF o ENOTSOCK: socket non valido;</p>
+</li>
+
+<li>
+
+<p>EFAULT: indirizzo <em>valopz</em> non valido;</p>
+</li>
+
+<li>
+
+<p>EINVAL: valore di <em>lunopz</em> non valido;</p>
+</li>
+
+<li>
+
+<p>ENOPROTOOPT: opzione scelta non esiste per il livello indicato.</p>
+</li>
+</ul>
+
+<p>I possibili livelli sono:</p>
+
+<ul>
+
+<li>
+
+<p>SOL_SOCKET: opzioni generiche dei socket;</p>
+</li>
+
+<li>
+
+<p>SOL_IP: opzioni per socket che usano IPv4;</p>
+</li>
+
+<li>
+
+<p>SOL_TCP: opzioni per socket che usano TCP;</p>
+</li>
+
+<li>
+
+<p>SOL_IPV6: opzioni per socket che usano IPv6;</p>
+</li>
+
+<li>
+
+<p>SOL_ICMPV6: opzioni per socket che usano ICMPv.</p>
+</li>
+</ul>
+
+<p>Il parametro <em>valopz</em> è solitamente un intero oppure NULL se non si vuole impostare una certa opzione.</p>
+
+<p>Le opzioni di un socket possono essere lette con la funzione <em>getsockopt()</em> che ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int getsockopt(int sd, int livello, int nomeopz, void *valopz, socklen_t *lunopz)
+
+//legge le opzioni del socket <em>sd</em>;
+//il significato dei parametri è lo stesso visto in <em>setsockopt()</em>.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore con i codici EBADF, ENOTSOCK, EFAULT, ENOPROTOOPT visti in precedenza.</p>
+
+<p>Ovviamente in questa funzione il parametro <em>valopz</em> serve a ricevere il valore letto per l'opzione impostata in <em>nomeopz</em>.</p>
+
+<p>Le opzioni da impostare o leggere sono molto numerose e qui l'argomento non viene approfondito; per le opzioni generiche si può consultare il manuale in linea di <em>socket</em>.</p>
+
+<p>Ecco alcune opzioni generiche interessanti:</p>
+
+<ul>
+
+<li>
+
+<p>SO_BINDTODEVICE: utilizzabile da entrambe le funzioni, il suo valore è una stringa (ad esempio <em>eth0</em>) e permette di associare il socket a una particolare interfaccia di rete; se la stringa è nulla e <em>lunopz</em> è zero si rimuove un precedente collegamento;</p>
+</li>
+
+<li>
+
+<p>SO_TYPE: utilizzabile solo in lettura, permette di leggere il tipo di socket su cui si opera; <em>valopz</em> è un numero in cui viene restituto il valore che identifica lo stile di comunicazione (ad esempio SOCK_DGRAM);</p>
+</li>
+
+<li>
+
+<p>SO_ACCEPTCONN: utilizzabile solo in lettura, serve a verificare se il socket su cui opera è in ascolto di connessioni (<em>listen()</em> eseguita); <em>valopz</em> vale 1 in caso positivo, 0 altrimenti;</p>
+</li>
+
+<li>
+
+<p>SO_DONTROUTE: utilizzabile da entrambe le funzioni; se <em>valopz</em> è 1 significa che il socket opera solo con nodi raggiungibili direttamente ignorando la tabella di <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->routing<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->; se è 0 il socket può operare usando la tabella di <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->routing<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->;</p>
+</li>
+
+<li>
+
+<p>SO_BROADCAST: utilizzabile da entrambe le funzioni; se <em>valopz</em> è 1 il socket riceve datagrammi indirizzati all'indirizzo <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->broadcast<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> e può anche inviarne a tale indirizzo; questa opzione ha effetto solo su comunicazioni di tipo SOCK_DGRAM;</p>
+</li>
+
+<li>
+
+<p>SO_REUSEADDR: utilizzabile da entrambe le funzioni; se <em>valopz</em> è 1 è possibile effettuare la <em>bind()</em> su indirizzi locali che sono già in uso; questo è molto utile in almeno due casi:</p>
+
+<ol>
+
+<li>
+
+<p>se un <a name="almlindex48"></a>servente è terminato e deve essere fatto ripartire ma ancora qualche suo processo figlio è attivo su una connessione che utilizza l'indirizzo locale, alla ripartenza del <a name="almlindex49"></a>servente, quando si effettua la <em>bind()</em> sul socket, si ottiene l'errore EADDRINUSE; l'opzione SO_REUSEADDR a 1 permette di evitare l'errore;</p>
+</li>
+
+<li>
+
+<p>se si vuole avere la possibilità di più programmi o più istanze dello stesso programma in ascolto sulla stessa porta ma con indirizzi IP diversi;</p>
+</li>
+</ol>
+
+<p>queste situazioni sono abbastanza comuni e quindi i <a name="almlindex50"></a>serventi TCP hanno spesso l'opzione SO_REUSEADDR impostata a 1.</p>
+</li>
+</ul>
+
+<p>A titolo di esempio vediamo come impostare l'uso degli indirizzi <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->broadcast<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> per un socket UDP precedentemente aperto e identificato con <em>sd</em>:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>val=1;
+ritorno=setsockopt(sd,SOL_SOCKET,SO_BROADCAST,&amp;val,sizeof (val)));
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<h3>3.8.2 &nbsp; <a name="almltitle34"></a><a name="almlanchor41"></a>
+ Recupero indirizzo locale di un socket </h3>
+
+<p>In certi casi può essere utile sapere quale è l'indirizzo locale asoociato a un socket; ad esempio in un processo <a name="almlindex51"></a>cliente per conoscere IP e porta assegnati automaticamente dal <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> dopo la <em>bind()</em> oppure in un <a name="almlindex52"></a>servente che ha eseguito la <em>bind()</em> con numero di porta locale 0 e vuole conoscere la porta assegnata dal <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE-->.</p>
+
+<p>A questo scopo si usa la funzione <em>getsockname()</em> che ha il seguente prototipo:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int getsockname(int sd, struct sockaddr *nome, socklen_t *lunnome)
+
+//legge indirizzo locale del socket <em>sd</em>;
+//<em>nome</em> serve a ricevere l'indirizzo letto;
+//<em>lunnome</em> è la lunghezza dell'indirizzo.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore, nel qual caso <em>errno</em> può valere:</p>
+
+<ul>
+
+<li>
+
+<p>EBADF o ENOTSOCK: socket non valido;</p>
+</li>
+
+<li>
+
+<p>ENOBUFS: risorse non sufficienti nel sistema per eseguire l'operazione;</p>
+</li>
+
+<li>
+
+<p>EFAULT: indirizzo <em>nome</em> non valido.</p>
+</li>
+</ul>
+
+<p>La funzione è anche utile nel caso di un <a name="almlindex53"></a>servente che ha eseguito una <em>bind()</em> su un indirizzo generico e che dopo il completamento della connessione a seguito della <em>accept()</em> vuole conoscere l'indirizzo locale asegnato dal <!--INDEXENTRYREMOVE--><em><!--INDEXENTRYREMOVE-->kernel<!--INDEXENTRYREMOVE--></em><!--INDEXENTRYREMOVE--> a quella connessione.</p>
+
+<h3>3.8.3 &nbsp; <a name="almltitle35"></a><a name="almlanchor42"></a>
+ Recupero indirizzo remoto di un socket </h3>
+
+<p>Per conoscere l'indirizzo remoto di un socket si usa la funzione <em>getpeername()</em>, il cui prototipo è:</p>
+
+<table class="pre" summary="">
+<tbody><tr><td>
+
+<pre>int getpeername(int sd, struct sockaddr * nome, socklen_t * lunnome)
+
+//legge indirizzo remoto del socket <em>sd</em>; 
+//<em>nome</em> serve a ricevere l'indirizzo letto;
+//<em>lunnome</em> è la lunghezza dell'indirizzo.
+</pre>
+
+</td></tr></tbody>
+</table>
+
+<p>Ritorna 0 in caso di successo e -1 se c'è errore con valori per <em>errno</em> uguali a quelli della funzione <em>getsockname()</em>.</p>
+
+<p>La funzione è del tutto simile a <em>getsockname()</em>, ma ma restituisce l'indirizzo remoto del socket.</p>
+
+<p>Apparentemente sembra inutile visto che:</p>
+
+<ul>
+
+<li>
+
+<p>il <a name="almlindex54"></a>cliente conosce per forza l'indirizzo remoto con cui fare la connessione;</p>
+</li>
+
+<li>
+
+<p>il <a name="almlindex55"></a>servente può usare i valori di ritorno della funzione <em>accept()</em>.</p>
+</li>
+</ul>
+
+<p>Esiste però una situazione in cui la funzione è utile e cioè quando un <a name="almlindex56"></a>servente lancia un programma per ogni connessione ricevuta attraverso una delle funzioni della famiglia <em>exec</em> (questo ad esempio è il comportamneto del demone di GNU/Linux <em>inetd</em>).</p>
+
+<p>In tal caso infatti il processo generato perde ogni riferimento ai valori dei file e dei socket utilizzati dal processo padre (a differenza di quello che accade quando si genera un processo con la funzione <em>fork()</em>) e quindi anche la struttura ritornata dalla <em>accept()</em>; il descrittore del socket però è ancora aperto e, se il padre segue una opportuna convenzione per rendere noto al programma generato qual'è il socket connesso, (ad esempio usando sempre gli stessi valori interi come descrittori) quest'ultimo può usare <em>getpeername()</em> per conoscere l'indirizzo remoto del <a name="almlindex57"></a>cliente.</p>
+<hr>
+<p>Dovrebbe essere possibile fare riferimento a questa pagina anche con il nome  <a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/le_funzioni_dei_socket_di_rete.html">le_funzioni_dei_socket_di_rete.html</a></p>
+<p>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket6.html">[successivo]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket4.html">[precedente]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket.html">[inizio]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket8.html">[fine]</a>
+<a href="http://linuxdidattica.org/docs/altre_scuole/planck/socket/progr-socket1.html">[indice generale]</a>
+</p>
+<p class="validator"><a href="http://validator.w3.org/check/referer"><img src="./Le funzioni dei socket di rete_files/v15445" alt="Valid ISO-HTML!"></a></p>
+<p class="validator"><a href="http://jigsaw.w3.org/css-validator/check/referer"><img src="./Le funzioni dei socket di rete_files/vcss" alt="CSS validator!"></a></p>
+
+
+</body></html>

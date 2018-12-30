@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     if (mySocket < 0)
     {
         printf("Fallimento nella creazione della Socket.\n");
-        closesocket(mySocket);
+        close(mySocket);
     }
 
     // inizializzazione dell'indirizzo del server
@@ -33,10 +33,10 @@ int main(int argc, char *argv[])
     sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
-    if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette alla socket, restituisce 0 se ha successo, altrimenti -1
-    {
+    if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette il client alla socket, restituisce 0 se ha successo, altrimenti -1
+    {                                                              //il secondo campo è l'indirizzo del client
         printf("Connessione Fallita.\n");
-        closesocket(mySocket);
+        close(mySocket);
         printf("Socket chiusa.\n");
     }
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
     {
         printf("Errore nella ricezione della lunghezza del messaggio");
-        closesocket(mySocket);
+        close(mySocket);
         printf("Socket chiusa.\n");
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
         if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
         {
             printf("Ricezione fallita.\n");
-            closesocket(mySocket);
+            close(mySocket);
         }
         totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
         buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     }
 
     // chiusura della socket
-    closesocket(mySocket);
+    close(mySocket);
     printf("Socket chiusa per termine del messaggio.\n");
 
     return 0;

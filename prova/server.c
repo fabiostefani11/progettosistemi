@@ -15,18 +15,18 @@
 int go = 1;
 int masterSocket; // descrittore del master socket
 
-/*void sighand(int sig)
+void sighand(int sig)
 {
     if (sig == SIGINT)
     {
-        printf("you typed CTRL-C ... closing master socket descriptor.\n");
-        close(msd);
+        printf("hai premuto CTRL-C ... chiusura del Master Socket.\n");
+        close(masterSocket);
     }
     else if (sig == SIGCHLD)
     {
-        printf("received signal SIGCHLD.\n");
+        printf("ricevuto signale di SIGCHLD.\n");
     }
-}*/
+}
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +34,11 @@ int main(int argc, char *argv[])
     int csd; // client socket descriptor
 
     int port;
+    int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
+
+    char buf[256]; //array di stringhe che serve come buffer di transito dei dati dai due socket
+
+    pid_t pid;
 
     if (argc > 1)
     {
@@ -61,19 +66,72 @@ int main(int argc, char *argv[])
     if (masterSocket < 0)
     {
         printf("Fallimento nella creazione della Socket.\n");
-        closesocket(masterSocket);
+        close(masterSocket);
     }
 
-    if (bind(masterSocket, (struct sockaddr *)&sa, sizeof(sa)) < 0)
+    if (bind(masterSocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //la bind assegan un indirizzo locale ad una socket, e controlla l'esito
     {
         printf("bind() fallita.\n");
-        closesocket(masterSocket);
+        close(masterSocket);
     }
 
     if (listen(masterSocket, QLEN) < 0) //QLEN->la massima lunghezza della code delle connessioni entranti
     {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
         printf("listen() fallita.\n");
-        closesocket(masterSocket);
+        close(masterSocket);
     }
     /////////////////////////////////DA QUI IN GIU' SERVE SCRIVERE IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     ///////////////PRENDERE SPUNTO DA CODICI MESSI DAL PROFESSORE SUL SITO//////////////////////////////////////
+    while (go)
+    {
+
+        // II argomento puntatore indirizzo del client remoto
+
+        if ((csd = accept(masterSocket, NULL, 0)) < 0) //accetta la richiesta di conenssione del socket, e la funzione accept
+        {                                              //restituisce il numero del socket se ha successo, altrimenti restituisce -1
+
+            go = 0;
+        }
+        else
+        {
+            pid = fork();
+
+            if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
+            {
+
+                close(masterSocket); // chiude il processo padre per continuare sul processo figlio
+
+                if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
+                {
+                    printf("Errore nella lunghezza del messaggio presente sul Socket client");
+                    close(csd);
+                }
+
+                printf("Il client ha detto: %s\n", buf); //stampa a schermo quello che ha letto dal client
+
+                ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
+            }
+            else //se l'id del processo è maggiore di 0, significa che il processo è padre
+            {
+
+                if (wait(&status) < 0) //la funzione wait mette in attesa il processo padre finchè un processo figlio termina o riceve un comando di terminazione
+                {
+                    printf("Errore nella wait()."); //la wait restituisce -1 se fallisce, altrimenti restituisce l'id del processo terminato
+                    close(csd);
+                    printf("Chiuso il Socket del processo figlio per errore nella wait.");
+                }
+                if (write(csd, &status, sizeof(status)) != sizeof(status)) //scrive sul socket figlio il valore di status
+                                                                           //controlla se scrive il messaggio in tutta la sua lunghezza
+                {
+                    printf("Errore nella ricezione della lunghezza del messaggio scritto dal Socket padre sul Socket figlio");
+                    close(csd);
+                    printf("Socket chiusa.\n");
+
+                    close(masterSocket); //chiude il socket padre e quindi la comunicazione, ricominciando il ciclo
+                }
+            }
+        }
+
+        return 0;
+    }
+}

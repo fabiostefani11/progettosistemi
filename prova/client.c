@@ -47,17 +47,23 @@ int main(int argc, char *argv[])
     else
     {
         printf("Connessione riuscita.\n");
+        while(1)
+        {
         printf("Scrivi il messaggio: ");
         scanf("%s", msg);
 
         if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
         {
-            printf("Errore nella ricezione della lunghezza del messaggio");
+            printf("Errore nella ricezione della lunghezza del messaggio\n");
             close(mySocket);
             printf("Socket chiusa.\n");
         }
         else
             printf("Invio riuscito.\n");
+            if (strncmp("exit", msg, 4) == 0) { 
+                    printf("Client esce...\n"); 
+            break; 
+        } 
 
         ///////////////DA QUI IN GIU' NON HO CAPITO BENE BENE BENE COSA FA QUESTO PEZZO DI CODICE, CHE INFATTI E' QUELLO CHE MI CREA ERRORI//////////////////////
 
@@ -79,7 +85,9 @@ int main(int argc, char *argv[])
             printf("%s", buf);                 //stampa la stringa ricevuta
             printf("\n");
         }
-
+         
+        }
+  
         // chiusura della socket
         close(mySocket);
         printf("Socket chiusa per termine del messaggio.\n");

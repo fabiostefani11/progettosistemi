@@ -112,7 +112,8 @@ int main(int argc, char *argv[])
             {
 
                 close(masterSocket); // chiude il processo padre per continuare sul processo figlio
-
+                while(1)
+                {
                 if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
                 {
                     printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
@@ -130,6 +131,11 @@ int main(int argc, char *argv[])
                 }
                 else
                     printf("Invio riuscito.\n");
+                    if (strncmp("exit", msg, 4) == 0) { 
+                    printf("Server esce...\n"); 
+            break; 
+        } 
+                }
 
                 ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
             }
@@ -145,7 +151,7 @@ int main(int argc, char *argv[])
                 if (write(csd, &status, sizeof(status)) != sizeof(status)) //scrive sul socket figlio il valore di status
                                                                            //controlla se scrive il messaggio in tutta la sua lunghezza
                 {
-                    printf("Errore nella ricezione della lunghezza del messaggio scritto dal Socket padre sul Socket figlio");
+                    printf("Errore nella ricezione della lunghezza del messaggio scritto dal Socket padre sul Socket figlio\n");
                     close(csd);
                     printf("Socket chiusa.\n");
 

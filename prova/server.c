@@ -69,18 +69,26 @@ int main(int argc, char *argv[])
         printf("Fallimento nella creazione della Socket.\n");
         close(masterSocket);
     }
+    else
+        printf("Socket creata con successo.\n");
 
     if (bind(masterSocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //la bind assegan un indirizzo locale ad una socket, e controlla l'esito
     {
         printf("bind() fallita.\n");
         close(masterSocket);
     }
+    else
+        printf("La Bind ha avuto successo!!!!\n");
 
     if (listen(masterSocket, QLEN) < 0) //QLEN->la massima lunghezza della code delle connessioni entranti
     {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
         printf("listen() fallita.\n");
         close(masterSocket);
     }
+
+    else
+        printf("In attesa di una connessione da un client....");
+
     /////////////////////////////////DA QUI IN GIU' SERVE SCRIVERE IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     ///////////////PRENDERE SPUNTO DA CODICI MESSI DAL PROFESSORE SUL SITO//////////////////////////////////////
     while (go)
@@ -90,11 +98,12 @@ int main(int argc, char *argv[])
 
         if ((csd = accept(masterSocket, NULL, 0)) < 0) //accetta la richiesta di conenssione del socket, e la funzione accept
         {                                              //restituisce il numero del socket se ha successo, altrimenti restituisce -1
-
             go = 0;
+            printf("Accept fallita.\n");
         }
         else
         {
+            printf("Connessione riuscita!!!!!\n");
             pid = fork();
 
             if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio

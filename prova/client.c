@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
         printf("Fallimento nella creazione della Socket.\n");
         close(mySocket);
     }
+    else
+        printf("Socket creata.\n");
 
     // inizializzazione dell'indirizzo del server
     sa.sin_family = AF_INET;                     //famiglia indirizzi
@@ -42,39 +44,45 @@ int main(int argc, char *argv[])
 
     // scrive un messaggio sulla stringa e lo invia al server
 
-    printf("Scrivi il messaggio: ");
-    scanf("%s", msg);
-
-    if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+    else
     {
-        printf("Errore nella ricezione della lunghezza del messaggio");
-        close(mySocket);
-        printf("Socket chiusa.\n");
-    }
+        printf("Connessione riuscita.\n");
+        printf("Scrivi il messaggio: ");
+        scanf("%s", msg);
 
-    ///////////////DA QUI IN GIU' NON HO CAPITO BENE BENE BENE COSA FA QUESTO PEZZO DI CODICE, CHE INFATTI E' QUELLO CHE MI CREA ERRORI//////////////////////
-
-    // ricezione dati dal server
-    int bytesRicevuti;
-    int totBytesRicevuti = 0;
-    char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
-    printf("Il server risponde: ");
-
-    while (totBytesRicevuti < sizeof(msg))
-    {
-        if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+        if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
         {
-            printf("Ricezione fallita.\n");
+            printf("Errore nella ricezione della lunghezza del messaggio");
             close(mySocket);
+            printf("Socket chiusa.\n");
         }
-        totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
-        buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
-        printf("%s", buf);                 //stampa la stringa ricevuta
+        else
+            printf("Invio riuscito.\n");
+
+        ///////////////DA QUI IN GIU' NON HO CAPITO BENE BENE BENE COSA FA QUESTO PEZZO DI CODICE, CHE INFATTI E' QUELLO CHE MI CREA ERRORI//////////////////////
+
+        // ricezione dati dal server
+        int bytesRicevuti;
+        int totBytesRicevuti = 0;
+        char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
+        printf("Il server risponde: ");
+
+        while (totBytesRicevuti < sizeof(msg))
+        {
+            if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+            {
+                printf("Ricezione fallita.\n");
+                close(mySocket);
+            }
+            totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
+            buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
+            printf("%s", buf);                 //stampa la stringa ricevuta
+        }
+
+        // chiusura della socket
+        close(mySocket);
+        printf("Socket chiusa per termine del messaggio.\n");
+
+        return 0;
     }
-
-    // chiusura della socket
-    close(mySocket);
-    printf("Socket chiusa per termine del messaggio.\n");
-
-    return 0;
 }

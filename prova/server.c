@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 {
 
     int csd; // client socket descriptor
-
+    char msg[256] = {0};
     int port;
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 
@@ -78,7 +78,9 @@ int main(int argc, char *argv[])
         close(masterSocket);
     }
     else
+    {
         printf("La Bind ha avuto successo!!!!\n");
+    }
 
     if (listen(masterSocket, QLEN) < 0) //QLEN->la massima lunghezza della code delle connessioni entranti
     {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
     }
 
     else
-        printf("In attesa di una connessione da un client....");
+        printf("In attesa di una connessione da un client....\n");
 
     /////////////////////////////////DA QUI IN GIU' SERVE SCRIVERE IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     ///////////////PRENDERE SPUNTO DA CODICI MESSI DAL PROFESSORE SUL SITO//////////////////////////////////////
@@ -113,11 +115,21 @@ int main(int argc, char *argv[])
 
                 if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
                 {
-                    printf("Errore nella lunghezza del messaggio presente sul Socket client");
+                    printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
                     close(csd);
                 }
 
                 printf("Il client ha detto: %s\n", buf); //stampa a schermo quello che ha letto dal client
+                printf("Scrivi la risposta: ");
+                scanf("%s", msg);
+                if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                {
+                    printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                    close(csd);
+                    printf("Socket chiusa.\n");
+                }
+                else
+                    printf("Invio riuscito.\n");
 
                 ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
             }
@@ -126,9 +138,9 @@ int main(int argc, char *argv[])
 
                 if (wait(&status) < 0) //la funzione wait mette in attesa il processo padre finchè un processo figlio termina o riceve un comando di terminazione
                 {
-                    printf("Errore nella wait()."); //la wait restituisce -1 se fallisce, altrimenti restituisce l'id del processo terminato
+                    printf("Errore nella wait().\n"); //la wait restituisce -1 se fallisce, altrimenti restituisce l'id del processo terminato
                     close(csd);
-                    printf("Chiuso il Socket del processo figlio per errore nella wait.");
+                    printf("Chiuso il Socket del processo figlio per errore nella wait.\n");
                 }
                 if (write(csd, &status, sizeof(status)) != sizeof(status)) //scrive sul socket figlio il valore di status
                                                                            //controlla se scrive il messaggio in tutta la sua lunghezza

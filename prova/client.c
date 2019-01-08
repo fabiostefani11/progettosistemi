@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
             totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
             buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
             printf("%s", buf);                 //stampa la stringa ricevuta
+            printf("\n");
         }
 
         // chiusura della socket

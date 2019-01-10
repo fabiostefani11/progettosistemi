@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/server",
+            "program": "${workspaceFolder}/stampaStruct",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

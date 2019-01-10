@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa)); //inizializza tutti i dati della struttura
 
     sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
+    sa.sin_addr.s_addr = inet_addr("10.0.2.15"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
     sa.sin_port = htons(port);                   //porta del server  htons->converte dall'ordine di 16-bit dell'host all'ordine del network
 
     signal(SIGINT, sighand);

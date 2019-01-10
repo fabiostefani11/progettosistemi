@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     // inizializzazione dell'indirizzo del server
     sa.sin_family = AF_INET;                     //famiglia indirizzi
     sa.sin_port = htons(5193);                   //porta del server  htons->converte da formato del pc locale a quello della rete
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
+    sa.sin_addr.s_addr = inet_addr("10.0.2.15"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
     if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette il client alla socket, restituisce 0 se ha successo, altrimenti -1

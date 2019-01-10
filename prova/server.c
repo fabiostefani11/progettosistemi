@@ -126,8 +126,7 @@ int main(int argc, char *argv[])
                     
                     if(strncmp("book",buf,4)==0)
                     {
-                        char msg[256]={"available"};
-                        printf("dentro %s\n",msg);
+                        strncpy(msg,"available\n",sizeof(msg));
                     }
                     else
                     {
@@ -148,7 +147,6 @@ int main(int argc, char *argv[])
                         printf("Socket chiusa.\n");
                     }
                     else
-                        printf("fuori %s\n",msg);
                         printf("Invio riuscito.\n");
 
                     if (strncmp("exit", msg, 4) == 0)

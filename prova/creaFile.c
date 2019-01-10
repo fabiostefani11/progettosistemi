@@ -6,12 +6,8 @@ typedef struct
     int numero;
     int fila;
     int disponibile;
-    int giorno_inizio;
-    int mese_inizio;
-    int anno_inizio;
-    int giorno_fine;
-    int mese_fine;
-    int anno_fine;
+    int prenotato;
+    
 } Ombrellone;
 
 int main()
@@ -36,12 +32,7 @@ int main()
         ombrellone[i].numero = n;
         ombrellone[i].fila = j;
         ombrellone[i].disponibile = 0;
-        ombrellone[i].giorno_inizio = 0;
-        ombrellone[i].mese_inizio = 0;
-        ombrellone[i].anno_inizio = 0;
-        ombrellone[i].giorno_fine = 0;
-        ombrellone[i].mese_fine = 0;
-        ombrellone[i].anno_fine = 0;
+        ombrellone[i].prenotato = 0;
 
         if (n == 10)
         {
@@ -53,16 +44,11 @@ int main()
 
     for (i = 0; i < 100; i++)
     {
-        (fprintf(f, "%d %d %d %d/%d/%d %d/%d/%d \n",
+        (fprintf(f, "%d %d %d %d \n",
                  ombrellone[i].numero,
                  ombrellone[i].fila,
                  ombrellone[i].disponibile,
-                 ombrellone[i].giorno_inizio,
-                 ombrellone[i].mese_inizio,
-                 ombrellone[i].anno_inizio,
-                 ombrellone[i].giorno_fine,
-                 ombrellone[i].mese_fine,
-                 ombrellone[i].anno_fine));
+                 ombrellone[i].prenotato));
         if (n == 10)
         {
             j++;

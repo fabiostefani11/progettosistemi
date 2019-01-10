@@ -121,8 +121,26 @@ int main(int argc, char *argv[])
                     }
 
                     printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
+                    
+                    
+                    
+                    if(strncmp("book",buf,4)==0)
+                    {
+                        char msg[256]={"available"};
+                        printf("dentro %s\n",msg);
+                    }
+                    else
+                    {
+                        
+                    
+                        
+
+
+
+
                     printf("Scrivi la risposta: ");
                     fgets(msg, sizeof(msg), stdin);
+                    }
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {
                         printf("Errore nella ricezione della lunghezza del messaggio.\n");
@@ -130,13 +148,17 @@ int main(int argc, char *argv[])
                         printf("Socket chiusa.\n");
                     }
                     else
+                        printf("fuori %s\n",msg);
                         printf("Invio riuscito.\n");
+
                     if (strncmp("exit", msg, 4) == 0)
                     {
                         printf("Server esce...\n");
                         break;
                     }
+                    
                 }
+                
 
                 ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
             }

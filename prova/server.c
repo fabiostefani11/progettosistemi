@@ -112,29 +112,30 @@ int main(int argc, char *argv[])
             {
 
                 close(masterSocket); // chiude il processo padre per continuare sul processo figlio
-                while(1)
+                while (1)
                 {
-                if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
-                {
-                    printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
-                    close(csd);
-                }
+                    if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
+                    {
+                        printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
+                        close(csd);
+                    }
 
-                printf("Il client ha detto: %s\n", buf); //stampa a schermo quello che ha letto dal client
-                printf("Scrivi la risposta: ");
-                scanf("%s", msg);
-                if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
-                {
-                    printf("Errore nella ricezione della lunghezza del messaggio.\n");
-                    close(csd);
-                    printf("Socket chiusa.\n");
-                }
-                else
-                    printf("Invio riuscito.\n");
-                    if (strncmp("exit", msg, 4) == 0) { 
-                    printf("Server esce...\n"); 
-            break; 
-        } 
+                    printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
+                    printf("Scrivi la risposta: ");
+                    fgets(msg, sizeof(msg), stdin);
+                    if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                    {
+                        printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                        close(csd);
+                        printf("Socket chiusa.\n");
+                    }
+                    else
+                        printf("Invio riuscito.\n");
+                    if (strncmp("exit", msg, 4) == 0)
+                    {
+                        printf("Server esce...\n");
+                        break;
+                    }
                 }
 
                 ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta

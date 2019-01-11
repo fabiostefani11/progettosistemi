@@ -1,3 +1,4 @@
+#include "server.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -6,16 +7,13 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <sys/wait.h> /* wait */
+#include <sys/wait.h> /* wait */  
 #include <signal.h>
-
-#define PROTOPORT 5193 //numero della porta di default
-#define QLEN 6         //grandezza della coda
-#define BUFFERSIZE 256
 
 int go = 1;
 int masterSocket; // descrittore del master socket
 
+//questa funzione non la metto nel .h e nel .c perchè dà errore sulla variabile mastersocket
 void sighand(int sig)
 {
     if (sig == SIGINT)
@@ -91,8 +89,7 @@ int main(int argc, char *argv[])
     else
         printf("In attesa di una connessione da un client....\n");
 
-    /////////////////////////////////DA QUI IN GIU' SERVE SCRIVERE IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
-    ///////////////PRENDERE SPUNTO DA CODICI MESSI DAL PROFESSORE SUL SITO//////////////////////////////////////
+    /////////////////////////////////DA QUI IN GIU' IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     while (go)
     {
 

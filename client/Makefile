@@ -1,8 +1,8 @@
-provaClient: provaClient.o funzioniClient.o
-	gcc -g -o funzioniClient provaClient.o funzioniClient.o
+client: client.o funzioniClient.o
+	gcc -g -o client client.o funzioniClient.o
 
-provaClient.o: provaClient.c librerieClient.h
-	gcc -g -c provaClient.c
+client.o: client.h client.c
+	gcc -g -c client.c
 
-funzioniClient.o: funzioniClient.c librerieClient.h
+funzioniClient.o: funzioniClient.c
 	gcc -g -c funzioniClient.c

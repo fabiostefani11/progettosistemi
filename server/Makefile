@@ -1,8 +1,8 @@
-provaServer: provaServer.o funzioniServer.o
-	gcc -g -o funzioniServer provaServer.o funzioniServer.o
+server: server.o funzioniServer.o
+	gcc -g -o server server.o funzioniServer.o
 
-provaServer.o: provaServer.c librerieServer.h
-	gcc -g -c provaServer.c
+server.o: server.h server.c
+	gcc -g -c server.c
 
-funzioniServer.o: funzioniServer.c librerieServer.h
+funzioniServer.o: funzioniServer.c
 	gcc -g -c funzioniServer.c

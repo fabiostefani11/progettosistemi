@@ -1,3 +1,4 @@
+#include "client.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -6,9 +7,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-
-#define BUFFERSIZE 512
-#define PROTOPORT 5193
 
 int main(int argc, char *argv[])
 {
@@ -92,5 +90,6 @@ int main(int argc, char *argv[])
         printf("Socket chiusa per termine del messaggio.\n");
 
         return 0;
+
     }
 }

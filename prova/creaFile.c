@@ -6,7 +6,7 @@ typedef struct
     int numero;
     int fila;
     int disponibile;
-    int prenotato;
+    
     
 } Ombrellone;
 
@@ -31,9 +31,8 @@ int main()
 
         ombrellone[i].numero = n;
         ombrellone[i].fila = j;
-        ombrellone[i].disponibile = 0;
-        ombrellone[i].prenotato = 0;
-
+        ombrellone[i].disponibile = 1;
+       
         if (n == 10)
         {
             j++;
@@ -44,11 +43,11 @@ int main()
 
     for (i = 0; i < 100; i++)
     {
-        (fprintf(f, "%d %d %d %d \n",
+        (fprintf(f, "%d %d %d \n",
                  ombrellone[i].numero,
                  ombrellone[i].fila,
-                 ombrellone[i].disponibile,
-                 ombrellone[i].prenotato));
+                 ombrellone[i].disponibile));
+                
         if (n == 10)
         {
             j++;

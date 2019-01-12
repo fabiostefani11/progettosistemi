@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <sys/wait.h> /* wait */  
+#include <sys/wait.h> /* wait */
 #include <signal.h>
 
 int go = 1;
@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     char msg[256] = {0};
     int port;
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
+    messaggio Messaggio;
 
     char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
 
@@ -119,15 +120,23 @@ int main(int argc, char *argv[])
 
                     printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
-                    if (strncmp("book", buf, 4) == 0)
-                    {
-                        strncpy(msg, "available\n", sizeof(msg));
-                    }
-                    else
-                    {
-                        printf("Scrivi la risposta: ");
-                        fgets(msg, sizeof(msg), stdin);
-                    }
+                    //divide la frase in una parola e 4 interi//
+
+                    strcpy(Messaggio.parola, strtok(buf, "  \n"));
+                    strcpy(Messaggio.ombrellone_str, strtok(NULL, "  \n"));
+                    strcpy(Messaggio.fila_str, strtok(NULL, "  \n"));
+                    strcpy(Messaggio.data_inizio_str, strtok(NULL, "  \n"));
+                    strcpy(Messaggio.data_fine_str, strtok(NULL, "\n"));
+
+                    Messaggio.ombrellone = atoi(Messaggio.ombrellone_str);
+                    Messaggio.fila = atoi(Messaggio.fila_str);
+                    Messaggio.data_inizio = uniscidata(Messaggio.data_inizio_str);
+                    Messaggio.data_fine = uniscidata(Messaggio.data_fine_str);
+
+                    //////////////////FUNZIONA SOLO SE SI INSERISCONO TUTTI I DATI, SE SCRIVI SOLO UNA PAROLA, CRASH//////////////
+                    //////NON FUNZIONA MA L'IDEA C'E'//////////////////////////
+                    strncpy(msg, confrontaParola(Messaggio.parola), sizeof(msg));
+
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {
                         printf("Errore nella ricezione della lunghezza del messaggio.\n");

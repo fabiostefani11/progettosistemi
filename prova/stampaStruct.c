@@ -44,6 +44,7 @@ int main()
     fgets(msg, sizeof(msg), stdin);
 
     strcpy(Messaggio.parola, strtok(msg, " \n"));
+     printf("la parola scritta è: %s\n", Messaggio.parola);
     strcpy(Messaggio.ombrellone_str, strtok(NULL, " \n"));
     strcpy(Messaggio.fila_str, strtok(NULL, " \n"));
     strcpy(Messaggio.data_inizio_str, strtok(NULL, " \n"));

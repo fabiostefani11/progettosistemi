@@ -1,18 +1,13 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/dividiFrase",
+            "program": "${workspaceRoot}/a.out",
             "args": [
-                "hello",
-                "world",
-                "!"
+                "hello", "world", "!"
             ],
             "stopAtEntry": true,
             "cwd": "${workspaceRoot}",

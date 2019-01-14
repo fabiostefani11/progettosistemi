@@ -8,10 +8,6 @@
 typedef struct
 {
     char parola[DIM];
-    char ombrellone_str[DIM];
-    char fila_str[DIM];
-    char data_inizio_str[DIM];
-    char data_fine_str[DIM];
     int ombrellone;
     int fila;
     int data_inizio;
@@ -39,14 +35,21 @@ int main()
 {
     messaggio Messaggio;
     char msg[DIM] = {0};
-    char ciao[dim][DIM];
+    char ciao[dim][DIM] = {0};
     int i = 0;
-    int j = 0;
     int k = 0;
-    while (msg[k] != "\0")
+    int j = 0;
+
+    memset(&Messaggio, 0, sizeof(Messaggio));
+
+    printf("Inserisci la frase da dividere: ");
+    fgets(msg, sizeof(msg), stdin);
+
+    while (msg[k] != '\n')
     {
-        if (msg[k] == " ")
+        if (msg[k] == ' ')
         {
+            ciao[j][i] = '\0';
             k++;
             j++;
             i = 0;
@@ -58,9 +61,34 @@ int main()
             k++;
         }
     }
+    Messaggio.nparole = j + 1;
+    strcpy(Messaggio.parola, ciao[0]);
+    if (strlen(ciao[1]) <= 2)
+    {
+        Messaggio.ombrellone = atoi(ciao[1]);
+    }
+    else if (strlen(ciao[1]) > 2)
+    {
+        Messaggio.data_inizio = uniscidata(ciao[1]);
+    }
+    if (strlen(ciao[2]) <= 2)
+    {
+        Messaggio.fila = atoi(ciao[2]);
+    }
+    else if (strlen(ciao[2]) > 2)
+    {
+        Messaggio.data_fine = uniscidata(ciao[2]);
+    }
+    if (Messaggio.nparole > 3)
+    {
+        Messaggio.data_inizio = uniscidata(ciao[3]);
+        Messaggio.data_fine = uniscidata(ciao[4]);
+    }
 
-    memset(&Messaggio, 0, sizeof(Messaggio));
-
-    printf("Inserisci frase parola/ombrellone/fila/data/data_fine: ");
-    fgets(msg, sizeof(msg), stdin);
+    printf("Il numero di argomenti scritti è: %d\n", Messaggio.nparole);
+    printf("la parola scritta è: %s\n", Messaggio.parola);
+    printf("Il numero dell'ombrellone è: %d\n", Messaggio.ombrellone);
+    printf("La fila dell'ombrellone è: %d\n", Messaggio.fila);
+    printf("La data di inizio è: %d\n", Messaggio.data_inizio);
+    printf("la data di fine è: %d\n", Messaggio.data_fine);
 }

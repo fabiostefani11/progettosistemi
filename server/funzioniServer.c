@@ -26,6 +26,58 @@ int uniscidata(char data[])
     return atoi(anno);
 }
 
+messaggio dividiFrase(char msg[])
+{
+    messaggio Messaggio;
+    char ciao[dim][DIM] = {0};
+    int i = 0;
+    int k = 0;
+    int j = 0;
+
+    memset(&Messaggio, 0, sizeof(Messaggio));
+
+    while (msg[k] != '\n')
+    {
+        if (msg[k] == ' ')
+        {
+            ciao[j][i] = '\0';
+            k++;
+            j++;
+            i = 0;
+        }
+        else
+        {
+            ciao[j][i] = msg[k];
+            i++;
+            k++;
+        }
+    }
+    Messaggio.nparole = j + 1;
+    strcpy(Messaggio.parola, ciao[0]);
+    if (strlen(ciao[1]) <= 2)
+    {
+        Messaggio.ombrellone = atoi(ciao[1]);
+    }
+    else if (strlen(ciao[1]) > 2)
+    {
+        Messaggio.data_inizio = uniscidata(ciao[1]);
+    }
+    if (strlen(ciao[2]) <= 2)
+    {
+        Messaggio.fila = atoi(ciao[2]);
+    }
+    else if (strlen(ciao[2]) > 2)
+    {
+        Messaggio.data_fine = uniscidata(ciao[2]);
+    }
+    if (Messaggio.nparole > 3)
+    {
+        Messaggio.data_inizio = uniscidata(ciao[3]);
+        Messaggio.data_fine = uniscidata(ciao[4]);
+    }
+    return Messaggio;
+}
+
 char confrontaParola(char parola[])
 {
     char msg[DIM] = {0};

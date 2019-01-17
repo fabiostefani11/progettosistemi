@@ -121,20 +121,9 @@ int main(int argc, char *argv[])
                     printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
                     //divide la frase in una parola e 4 interi//
-
-                    strcpy(Messaggio.parola, strtok(buf, "  \n"));
-                    strcpy(Messaggio.ombrellone_str, strtok(NULL, "  \n"));
-                    strcpy(Messaggio.fila_str, strtok(NULL, "  \n"));
-                    strcpy(Messaggio.data_inizio_str, strtok(NULL, "  \n"));
-                    strcpy(Messaggio.data_fine_str, strtok(NULL, "\n"));
-
-                    Messaggio.ombrellone = atoi(Messaggio.ombrellone_str);
-                    Messaggio.fila = atoi(Messaggio.fila_str);
-                    Messaggio.data_inizio = uniscidata(Messaggio.data_inizio_str);
-                    Messaggio.data_fine = uniscidata(Messaggio.data_fine_str);
-
-                    //////////////////FUNZIONA SOLO SE SI INSERISCONO TUTTI I DATI, SE SCRIVI SOLO UNA PAROLA, CRASH//////////////
-                    //////NON FUNZIONA MA L'IDEA C'E'//////////////////////////
+                    Messaggio = dividiFrase(buf);
+                    
+                    //confronta la parola con le varie possibilità e scrive la risposta nella socket
                     strncpy(msg, confrontaParola(Messaggio.parola), sizeof(msg));
 
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza

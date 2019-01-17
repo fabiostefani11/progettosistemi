@@ -35,7 +35,34 @@ int main(int argc, char *argv[])
     int port;
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
     messaggio Messaggio;
+    ombrellone Ombrellone[100] = {0};
+    FILE *f_ombrelloni, *f_prenotazioni;
+    int i = 0;
 
+    if ((f_ombrelloni = fopen("ombrelloni.txt", "rw")) == NULL)
+    {
+        printf("Errore nell'apertura del file.\n");
+        exit(-1);
+    }
+    else
+        printf("File ombrelloni aperto correttamente.\n");
+
+    if ((f_prenotazioni = fopen("prenotazioni.txt", "rw")) == NULL)
+    {
+        printf("Errore nell'apertura del file.\n");
+        exit(-1);
+    }
+    printf("File prenotazioni aperto correttamente.\n");
+
+    while (!feof(f_ombrelloni))
+    {
+        if (fscanf(f_ombrelloni, "%d%d%d", &nombrellone, &fila, &disponibile) == 3)
+        {
+            Ombrellone.numero[i] = nombrellone;
+            Ombrellone.fila[i] = fila;
+            Ombrellone.disponibile[i] = disponibile;
+        }
+    }
     char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
 
     pid_t pid;
@@ -122,7 +149,7 @@ int main(int argc, char *argv[])
 
                     //divide la frase in una parola e 4 interi//
                     Messaggio = dividiFrase(buf);
-                    
+
                     //confronta la parola con le varie possibilità e scrive la risposta nella socket
                     strncpy(msg, confrontaParola(Messaggio.parola), sizeof(msg));
 

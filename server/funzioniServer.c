@@ -78,27 +78,28 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
-char confrontaParola(char parola[])
+char *confrontaParola(char parola[])
 {
-    char msg[DIM] = {0};
+    char *msg = malloc(sizeof(char) * DIM);
 
     if (strncmp("BOOK", parola, 4) == 0)
     {
-        strncpy(msg, "OK\n", sizeof(msg));
+        strncpy(msg, "OK\n", sizeof(char) * DIM);
     }
     else if (strncmp("AVAILABLE", parola, 9) == 0)
     {
-        strncpy(msg, "available\n", sizeof(msg));
+        strncpy(msg, "available\n", sizeof(char) * DIM);
     }
     else if (strncmp("CANCEL", parola, 6) == 0)
     {
-        strncpy(msg, "CANCEL OK\n", sizeof(msg));
+        strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
     }
     else
     {
-        printf("Scrivi la risposta: ");
-        fgets(msg, sizeof(msg), stdin);
+        strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
+        //printf("Scrivi la risposta: ");
+        //fgets(msg, (sizeof(char) * DIM), stdin);
     }
 
-    return msg[DIM];
+    return msg;
 }

@@ -82,9 +82,9 @@ messaggio dividiFrase(char msg[])
     }
     return Messaggio;
 }
-char confrontaParola(char parola[])
+char *confrontaParola(char parola[])
 {
-    char msg[DIM] = {0};
+    char *msg = malloc(sizeof(char) * DIM);
 
     if (strncmp("BOOK", parola, 4) == 0)
     {
@@ -104,7 +104,8 @@ char confrontaParola(char parola[])
         fgets(msg, sizeof(msg), stdin);
     }
 
-    return msg[DIM];
+    printf("La risposta nella funzione è: %s", msg);
+    return msg;
 }
 
 int main()
@@ -122,7 +123,7 @@ int main()
     //confronta la parola con le varie possibilità e scrive la risposta nella socket
     strncpy(msg, confrontaParola(Struttura.parola), sizeof(msg));
 
-    printf("la parola scritta è: %s\n", msg);
+    printf("la risposta è: %s\n", msg);
     /*
     printf("Il numero di argomenti scritti è: %d\n", Struttura.nparole);
     printf("la parola scritta è: %s\n", Struttura.parola);

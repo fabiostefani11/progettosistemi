@@ -16,6 +16,14 @@ typedef struct
 
 } messaggio;
 
+typedef struct
+{
+    int numero;
+    int fila;
+    int disponibile;
+
+} ombrellone;
+
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
-char confrontaParola(char parola[]);
+char *confrontaParola(char parola[]);

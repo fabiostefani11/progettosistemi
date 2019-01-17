@@ -8,7 +8,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/dividiFrase",
+            "program": "${workspaceRoot}/stampaStruct",
             "args": [
                 "hello",
                 "world",

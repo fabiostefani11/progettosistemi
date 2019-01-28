@@ -29,7 +29,7 @@ int uniscidata(char data[])
 messaggio dividiFrase(char msg[])
 {
     messaggio Messaggio;
-    char ciao[dim][DIM] = {0};
+    char frase[dim][DIM] = {0};
     int i = 0;
     int k = 0;
     int j = 0;
@@ -40,40 +40,40 @@ messaggio dividiFrase(char msg[])
     {
         if (msg[k] == ' ')
         {
-            ciao[j][i] = '\0';
+            frase[j][i] = '\0';
             k++;
             j++;
             i = 0;
         }
         else
         {
-            ciao[j][i] = msg[k];
+            frase[j][i] = msg[k];
             i++;
             k++;
         }
     }
     Messaggio.nparole = j + 1;
-    strcpy(Messaggio.parola, ciao[0]);
-    if (strlen(ciao[1]) <= 2)
+    strcpy(Messaggio.parola, frase[0]);
+    if (strlen(frase[1]) <= 2)
     {
-        Messaggio.ombrellone = atoi(ciao[1]);
+        Messaggio.ombrellone = atoi(frase[1]);
     }
-    else if (strlen(ciao[1]) > 2)
+    else if (strlen(frase[1]) > 2)
     {
-        Messaggio.data_inizio = uniscidata(ciao[1]);
+        Messaggio.data_inizio = uniscidata(frase[1]);
     }
-    if (strlen(ciao[2]) <= 2)
+    if (strlen(frase[2]) <= 2)
     {
-        Messaggio.fila = atoi(ciao[2]);
+        Messaggio.fila = atoi(frase[2]);
     }
-    else if (strlen(ciao[2]) > 2)
+    else if (strlen(frase[2]) > 2)
     {
-        Messaggio.data_fine = uniscidata(ciao[2]);
+        Messaggio.data_fine = uniscidata(frase[2]);
     }
     if (Messaggio.nparole > 3)
     {
-        Messaggio.data_inizio = uniscidata(ciao[3]);
-        Messaggio.data_fine = uniscidata(ciao[4]);
+        Messaggio.data_inizio = uniscidata(frase[3]);
+        Messaggio.data_fine = uniscidata(frase[4]);
     }
     return Messaggio;
 }

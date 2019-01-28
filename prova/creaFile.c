@@ -3,11 +3,11 @@
 
 typedef struct
 {
+    int ID;
     int numero;
     int fila;
     int disponibile;
-    
-    
+
 } Ombrellone;
 
 int main()
@@ -28,11 +28,11 @@ int main()
 
     for (i = 0; i < 100; i++)
     {
-
+        ombrellone[i].ID = i + 1;
         ombrellone[i].numero = n;
         ombrellone[i].fila = j;
         ombrellone[i].disponibile = 1;
-       
+
         if (n == 10)
         {
             j++;
@@ -43,11 +43,12 @@ int main()
 
     for (i = 0; i < 100; i++)
     {
-        (fprintf(f, "%d %d %d \n",
+        (fprintf(f, "%d %d %d %d \n",
+                 ombrellone[i].ID,
                  ombrellone[i].numero,
                  ombrellone[i].fila,
                  ombrellone[i].disponibile));
-                
+
         if (n == 10)
         {
             j++;

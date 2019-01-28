@@ -8,6 +8,7 @@
 typedef struct
 {
     char parola[DIM];
+    int ID;
     int ombrellone;
     int fila;
     int data_inizio;

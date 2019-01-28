@@ -52,15 +52,14 @@ int main(int argc, char *argv[])
         printf("Errore nell'apertura del file.\n");
         exit(-1);
     }
-    printf("File prenotazioni aperto correttamente.\n");
+    else
+        printf("File prenotazioni aperto correttamente.\n");
 
     while (!feof(f_ombrelloni))
     {
-        if (fscanf(f_ombrelloni, "%d%d%d", &nombrellone, &fila, &disponibile) == 3)
+        if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].numero, &Ombrellone[i].fila, &Ombrellone[i].disponibile) == 4)
         {
-            Ombrellone.numero[i] = nombrellone;
-            Ombrellone.fila[i] = fila;
-            Ombrellone.disponibile[i] = disponibile;
+            i++;
         }
     }
     char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket

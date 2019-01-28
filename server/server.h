@@ -19,6 +19,7 @@ typedef struct
 
 typedef struct
 {
+    int ID;
     int numero;
     int fila;
     int disponibile;

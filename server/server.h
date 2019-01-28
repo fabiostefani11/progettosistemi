@@ -28,4 +28,4 @@ typedef struct
 
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
-char *confrontaParola(messaggio Messaggio);
+char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);

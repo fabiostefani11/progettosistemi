@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
     messaggio Messaggio;
     ombrellone Ombrellone[100] = {0};
     FILE *f_ombrelloni, *f_prenotazioni;
-    int i = 0;
+    int i = 1;
+    int ombrelloni_liberi = 0;
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "rw")) == NULL)
     {
@@ -59,6 +60,10 @@ int main(int argc, char *argv[])
     {
         if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].numero, &Ombrellone[i].fila, &Ombrellone[i].disponibile) == 4)
         {
+            if (Ombrellone[i].disponibile == 0)
+            {
+                ombrelloni_liberi++;
+            }
             i++;
         }
     }
@@ -150,7 +155,7 @@ int main(int argc, char *argv[])
                     Messaggio = dividiFrase(buf);
 
                     //confronta la parola con le varie possibilità e scrive la risposta nella socket
-                    strncpy(msg, confrontaParola(Messaggio), sizeof(msg));
+                    strncpy(msg, confrontaParola(ombrelloni_liberi, Messaggio, Ombrellone), sizeof(msg));
 
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {

@@ -26,6 +26,12 @@ typedef struct
 
 } ombrellone;
 
+typedef struct
+{
+    ombrellone Ombrellone[DIM];
+    char *msg;
+} risposta;
+
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
 char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);

@@ -81,6 +81,7 @@ messaggio dividiFrase(char msg[])
 
 char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
 {
+    risposta Risposta;
     char *msg = malloc(sizeof(char) * DIM);
     int k;
 
@@ -106,10 +107,11 @@ char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 4)) //conferma la prenotazione, manca pezzo di codice
     {
         Ombrellone[Messaggio.ID].disponibile = 1;
+        strncpy(msg, "Manca Codice di conferma prenotazione\n", sizeof(char) * DIM);
     }
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
-        strncpy(msg, "OK\n", sizeof(char) * DIM);
+        strncpy(msg, "Manca Codice di prenotazione futura\n", sizeof(char) * DIM);
     }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 1)) //scrive available per sapere il numero di ombrelloni liberi
     {
@@ -159,5 +161,7 @@ char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
 
+    //strncpy(Risposta.msg, msg, sizeof(char) * DIM);
+    //return Risposta.msg;
     return msg;
 }

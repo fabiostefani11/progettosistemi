@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
     messaggio Messaggio;
     ombrellone Ombrellone[100] = {0};
+    risposta Risposta;
     FILE *f_ombrelloni, *f_prenotazioni;
     int i = 1;
     int ombrelloni_liberi = 0;
@@ -168,6 +169,14 @@ int main(int argc, char *argv[])
 
                     if (strncmp("exit", msg, 4) == 0)
                     {
+                        for (i = 0; i < 100; i++)
+                        {
+                            (fprintf(f_ombrelloni, "%d %d %d %d \n",
+                                     Ombrellone[i].ID,
+                                     Ombrellone[i].numero,
+                                     Ombrellone[i].fila,
+                                     Ombrellone[i].disponibile));
+                        }
                         printf("Server esce...\n");
                         break;
                     }

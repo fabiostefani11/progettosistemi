@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define RED     "\x1b[31m"
+#define GREEN   "\x1b[32m"
+#define CRESET  "\x1b[0m"
 
 
 int main()
@@ -12,11 +15,11 @@ int main()
 
     if((f=fopen("ombrelloni.txt","r"))==NULL)
     {
-        printf("errore apertura file\n");
+        printf( RED "errore apertura file\n" CRESET);
         exit(-1);
     }
     else 
-    printf("file aperto\n");
+    printf( GREEN "file aperto\n" CRESET);
 
     printf("quale fila vuole ?\n");
     scanf("%d",&nfila);
@@ -31,9 +34,9 @@ int main()
             if(nombrellone==ombrellone)
             {
             if(disponibile)
-            printf("available\n");
+            printf(GREEN "available\n" CRESET);
             else 
-            printf("notavailable\n");
+            printf(RED "notavailable\n" CRESET);
             }
 
         }

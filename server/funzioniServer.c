@@ -65,6 +65,7 @@ messaggio dividiFrase(char msg[])
     if (strlen(frase[2]) <= 2)
     {
         Messaggio.fila = atoi(frase[2]);
+        Messaggio.ID = (((Messaggio.fila * 10) + Messaggio.ombrellone) - 10);
     }
     else if (strlen(frase[2]) > 2)
     {
@@ -78,19 +79,27 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
-char *confrontaParola(char parola[])
+char *confrontaParola(messaggio Messaggio)
 {
     char *msg = malloc(sizeof(char) * DIM);
 
-    if (strncmp("BOOK", parola, 4) == 0)
+    if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 1))
     {
         strncpy(msg, "OK\n", sizeof(char) * DIM);
     }
-    else if (strncmp("AVAILABLE", parola, 9) == 0)
+    else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 3))
+    {
+        strncpy(msg, "OK\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5))
+    {
+        strncpy(msg, "OK\n", sizeof(char) * DIM);
+    }
+    else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0)
     {
         strncpy(msg, "available\n", sizeof(char) * DIM);
     }
-    else if (strncmp("CANCEL", parola, 6) == 0)
+    else if (strncmp("CANCEL", Messaggio.parola, 6) == 0)
     {
         strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
     }

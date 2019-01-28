@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
                     Messaggio = dividiFrase(buf);
 
                     //confronta la parola con le varie possibilità e scrive la risposta nella socket
-                    strncpy(msg, confrontaParola(Messaggio.parola), sizeof(msg));
+                    strncpy(msg, confrontaParola(Messaggio), sizeof(msg));
 
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {

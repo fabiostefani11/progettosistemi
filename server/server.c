@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     int i = 1;
     int ombrelloni_liberi = 0;
 
-    if ((f_ombrelloni = fopen("ombrelloni.txt", "rw")) == NULL)
+    if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
         printf("Errore nell'apertura del file.\n");
         exit(-1);
@@ -68,11 +68,14 @@ int main(int argc, char *argv[])
             i++;
         }
     }
+    fclose(f_ombrelloni);
+    fclose(f_prenotazioni);
+
     char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
 
     pid_t pid;
 
-    if (argc > 1) //da togliere 
+    if (argc > 1) //da togliere
     {
         port = atoi(argv[1]); //se come argomento si dà l'indizirizzo di una porta, atoi la converte in binario
     }
@@ -168,8 +171,13 @@ int main(int argc, char *argv[])
                         else
                             printf("Invio riuscito.\n");
 
-                        if (strncmp("exit", msg, 4) == 0)
+                        if (strncmp("exit", Risposta.msg, 4) == 0)
                         {
+                            if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
+                            {
+                                printf("Errore nell'apertura del file.\n");
+                                exit(-1);
+                            }
                             for (i = 0; i < 100; i++)
                             {
                                 (fprintf(f_ombrelloni, "%d %d %d %d \n",
@@ -178,11 +186,6 @@ int main(int argc, char *argv[])
                                          Risposta.Ombrellone[i].fila,
                                          Risposta.Ombrellone[i].disponibile));
                             }
-                            printf("%d %d %d %d \n",
-                                   Risposta.Ombrellone[12].ID,
-                                   Risposta.Ombrellone[12].numero,
-                                   Risposta.Ombrellone[12].fila,
-                                   Risposta.Ombrellone[12].disponibile);
                             fclose(f_ombrelloni);
                             printf("Server esce...\n");
                             break;

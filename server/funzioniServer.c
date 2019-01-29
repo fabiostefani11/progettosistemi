@@ -56,7 +56,7 @@ messaggio dividiFrase(char msg[])
     strcpy(Messaggio.parola, frase[0]);
     if (strlen(frase[1]) <= 2)
     {
-        Messaggio.ombrellone = atoi(frase[1]);
+        Messaggio.fila = atoi(frase[1]);
     }
     else if (strlen(frase[1]) > 2)
     {
@@ -64,7 +64,7 @@ messaggio dividiFrase(char msg[])
     }
     if (strlen(frase[2]) <= 2)
     {
-        Messaggio.fila = atoi(frase[2]);
+        Messaggio.ombrellone = atoi(frase[2]);
         Messaggio.ID = (((Messaggio.fila * 10) + Messaggio.ombrellone) - 10);
     }
     else if (strlen(frase[2]) > 2)
@@ -79,7 +79,7 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
-char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
+char *elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
 {
     risposta Risposta;
     char *msg = malloc(sizeof(char) * DIM);
@@ -89,7 +89,7 @@ char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
     {
         if (liberi == 0)
         {
-            strncpy(msg, "NOK\n", sizeof(char) * DIM); //risponde nok se non ci sono ombrelloni liberi
+            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //risponde nok se non ci sono ombrelloni liberi
         }
         else
             strncpy(msg, "OK\n", sizeof(char) * DIM); //risponde ok se va tutto bene
@@ -124,44 +124,60 @@ char *confrontaParola(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
     }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 2)) //chiede il numero di ombrelloni liberi in una fila
     {
-        int liberi_fila[10] = {0};
-        int z = 0;
-        int k;
-        char *voce = malloc(sizeof(char) * DIM);
-        for (k = (Messaggio.ombrellone * 10) - 9; k <= Messaggio.ombrellone * 10; k++)
+        if (Messaggio.ombrellone > 10)
         {
-            if (Ombrellone[k].disponibile == 0) //conta gli ombrelloni liberi in una fila e li mette in un array
-            {
-                liberi_fila[z] = Ombrellone[k].numero;
-                z++;
-            }
-        }
-        if (z == 0) //nessuno libero
-        {
-            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
+            strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
         }
         else
         {
-            k = 0;
-            while (liberi_fila[k] != 0)
+            int liberi_fila[10] = {0};
+            int z = 0;
+            int k;
+            char *voce = malloc(sizeof(char) * DIM);
+            for (k = (Messaggio.fila * 10) - 9; k <= Messaggio.fila * 10; k++)
             {
-                sprintf(voce, "%d ", liberi_fila[k]); //scrive gli ombrelloni liberi scritti nell'array, in una stringa
-                strcat(msg, voce);
-                k++;
+                if (Ombrellone[k].disponibile == 0) //conta gli ombrelloni liberi in una fila e li mette in un array
+                {
+                    liberi_fila[z] = Ombrellone[k].numero;
+                    z++;
+                }
             }
-            strcat(msg, "\n");
+            if (z == 0) //nessuno libero
+            {
+                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
+            }
+            else
+            {
+                k = 0;
+                while (liberi_fila[k] != 0)
+                {
+                    sprintf(voce, "%d ", liberi_fila[k]); //scrive gli ombrelloni liberi scritti nell'array, in una stringa
+                    strcat(msg, voce);
+                    k++;
+                }
+                strcat(msg, "\n");
+            }
         }
     }
     else if (strncmp("CANCEL", Messaggio.parola, 6) == 0)
     {
         strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
     }
+    /*else if (Messaggio.ombrellone > 10)           //controllo se sono corretti i dati immessi
+    {
+        strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
+    }
+    else if (Messaggio.fila > 10)
+    {
+        strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
+    }*/
     else
     {
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
-
+    //printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     //strncpy(Risposta.msg, msg, sizeof(char) * DIM);
+    //printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     //return Risposta.msg;
     return msg;
 }

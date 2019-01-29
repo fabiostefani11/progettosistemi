@@ -154,10 +154,13 @@ int main(int argc, char *argv[])
 
                     //divide la frase in una parola e 4 interi//
                     Messaggio = dividiFrase(buf);
-
+                    Risposta = elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone);
                     //confronta la parola con le varie possibilità e scrive la risposta nella socket
-                    strncpy(msg, elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone), sizeof(msg));
-
+                    strncpy(msg, Risposta.msg, sizeof(msg));
+                    for (i = 1; i <= 100; i++)
+                    {
+                        Ombrellone[i] = Risposta.Ombrellone[i];
+                    }
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {
                         printf("Errore nella ricezione della lunghezza del messaggio.\n");

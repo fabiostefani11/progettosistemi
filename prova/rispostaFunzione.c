@@ -1,4 +1,3 @@
-#include "server.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -9,6 +8,44 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+
+#define PROTOPORT 5193 //numero della porta di default
+#define QLEN 6         //grandezza della coda
+#define BUFFERSIZE 256
+
+#define DIM 256
+#define dim 10
+
+typedef struct
+{
+    char parola[DIM];
+    int ID;
+    int ombrellone;
+    int fila;
+    int data_inizio;
+    int data_fine;
+    int nparole;
+
+} messaggio;
+
+typedef struct
+{
+    int ID;
+    int numero;
+    int fila;
+    int disponibile; //0=disponibile 1=occupato adesso 2=occupato in futuro 3=occupato sia adesso che in futuro 4=temporaneamente occupato
+
+} ombrellone;
+
+typedef struct
+{
+    ombrellone Ombrellone[DIM];
+    char msg[DIM];
+} risposta;
+
+int uniscidata(char data[]);
+messaggio dividiFrase(char msg[]);
+risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);
 
 int uniscidata(char data[])
 {
@@ -84,7 +121,6 @@ risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[
     risposta Risposta;
     char *msg = malloc(sizeof(char) * DIM);
     int k;
-    int i;
 
     if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 1)) //scrive solo BOOK
     {
@@ -176,17 +212,48 @@ risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[
     {
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
-    //printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
-<<<<<<< HEAD
-    sprintf(Risposta.msg,"%s", msg);
-=======
+    printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     strncpy(Risposta.msg, msg, sizeof(char) * DIM);
-    for (i = 1; i <= 100; i++)
-    {
-        Risposta.Ombrellone[i] = Ombrellone[i];
-    }
->>>>>>> f54071d950539c98b29f72689cfb879fccc398b8
-    //printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
+    printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     //return Risposta.msg;
     return Risposta;
+}
+
+int main()
+{
+    messaggio Messaggio;
+    ombrellone Ombrellone[100];
+    risposta Risposta;
+    char frase[DIM] = {0};
+    char msg[DIM] = {0};
+    FILE *f_ombrelloni;
+    int i = 1;
+    int ombrelloni_liberi = 0;
+
+    if ((f_ombrelloni = fopen("ombrelloni.txt", "rw")) == NULL)
+    {
+        printf("Errore nell'apertura del file.\n");
+        exit(-1);
+    }
+    else
+        printf("File ombrelloni aperto correttamente.\n");
+
+    while (!feof(f_ombrelloni))
+    {
+        if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].fila, &Ombrellone[i].numero, &Ombrellone[i].disponibile) == 4)
+        {
+            if (Ombrellone[i].disponibile == 0)
+            {
+                ombrelloni_liberi++;
+            }
+            i++;
+        }
+    }
+
+    printf("Inserisci la frase: ");
+    fgets(frase, sizeof(frase), stdin);
+    Messaggio = dividiFrase(frase);
+    Risposta = elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone);
+    strncpy(msg, Risposta.msg, sizeof(msg));
+    printf("La frase è: %s", msg);
 }

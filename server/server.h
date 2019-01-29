@@ -29,9 +29,9 @@ typedef struct
 typedef struct
 {
     ombrellone Ombrellone[DIM];
-    char *msg;
+    char msg[DIM];
 } risposta;
 
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
-char *elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);
+risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);

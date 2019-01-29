@@ -148,43 +148,47 @@ int main(int argc, char *argv[])
                     {
                         printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
                         close(csd);
-                    }
-
-                    printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
-
-                    //divide la frase in una parola e 4 interi//
-                    Messaggio = dividiFrase(buf);
-                    Risposta = elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone);
-                    //confronta la parola con le varie possibilità e scrive la risposta nella socket
-                    strncpy(msg, Risposta.msg, sizeof(msg));
-                    for (i = 1; i <= 100; i++)
-                    {
-                        Ombrellone[i] = Risposta.Ombrellone[i];
-                    }
-                    if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
-                    {
-                        printf("Errore nella ricezione della lunghezza del messaggio.\n");
-                        close(csd);
-                        printf("Socket chiusa.\n");
-                    }
-                    else
-                        printf("Invio riuscito.\n");
-
-                    if (strncmp("exit", msg, 4) == 0)
-                    {
-                        for (i = 0; i < 100; i++)
-                        {
-                            (fprintf(f_ombrelloni, "%d %d %d %d \n",
-                                     Ombrellone[i].ID,
-                                     Ombrellone[i].numero,
-                                     Ombrellone[i].fila,
-                                     Ombrellone[i].disponibile));
-                        }
-                        printf("Server esce...\n");
                         break;
                     }
-                }
+                    else
+                    {
+                        printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
+                        //divide la frase in una parola e 4 interi//
+                        Messaggio = dividiFrase(buf);
+                        Risposta = elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone);
+                        //confronta la parola con le varie possibilità e scrive la risposta nella socket
+
+                        if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                        {
+                            printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                            close(csd);
+                            printf("Socket chiusa.\n");
+                        }
+                        else
+                            printf("Invio riuscito.\n");
+
+                        if (strncmp("exit", msg, 4) == 0)
+                        {
+                            for (i = 0; i < 100; i++)
+                            {
+                                (fprintf(f_ombrelloni, "%d %d %d %d \n",
+                                         Risposta.Ombrellone[i].ID,
+                                         Risposta.Ombrellone[i].numero,
+                                         Risposta.Ombrellone[i].fila,
+                                         Risposta.Ombrellone[i].disponibile));
+                            }
+                            printf("%d %d %d %d \n",
+                                   Risposta.Ombrellone[12].ID,
+                                   Risposta.Ombrellone[12].numero,
+                                   Risposta.Ombrellone[12].fila,
+                                   Risposta.Ombrellone[12].disponibile);
+                            fclose(f_ombrelloni);
+                            printf("Server esce...\n");
+                            break;
+                        }
+                    }
+                }
                 ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
             }
             else //se l'id del processo è maggiore di 0, significa che il processo è padre

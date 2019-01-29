@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     pid_t pid;
 
-    if (argc > 1)
+    if (argc > 1) //da togliere 
     {
         port = atoi(argv[1]); //se come argomento si dà l'indizirizzo di una porta, atoi la converte in binario
     }

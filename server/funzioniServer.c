@@ -176,7 +176,7 @@ char *elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[])
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
     //printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
-    //strncpy(Risposta.msg, msg, sizeof(char) * DIM);
+    sprintf(Risposta.msg,"%s", msg);
     //printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     //return Risposta.msg;
     return msg;

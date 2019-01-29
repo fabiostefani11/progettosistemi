@@ -172,6 +172,10 @@ risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[
     {
         strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
     }*/
+    else if (strncmp("exit", Messaggio.parola, 4) == 0)
+    {
+        strncpy(msg, "exit", sizeof(char) * DIM);
+    }
     else
     {
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);

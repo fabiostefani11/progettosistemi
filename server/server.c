@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     while (!feof(f_ombrelloni))
     {
-        if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].numero, &Ombrellone[i].fila, &Ombrellone[i].disponibile) == 4)
+        if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].fila, &Ombrellone[i].numero, &Ombrellone[i].disponibile) == 4)
         {
             if (Ombrellone[i].disponibile == 0)
             {
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
                     Messaggio = dividiFrase(buf);
 
                     //confronta la parola con le varie possibilità e scrive la risposta nella socket
-                    strncpy(msg, confrontaParola(ombrelloni_liberi, Messaggio, Ombrellone), sizeof(msg));
+                    strncpy(msg, elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone), sizeof(msg));
 
                     if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                     {

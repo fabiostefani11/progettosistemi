@@ -177,15 +177,11 @@ risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
     //printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
-<<<<<<< HEAD
-    sprintf(Risposta.msg,"%s", msg);
-=======
     strncpy(Risposta.msg, msg, sizeof(char) * DIM);
     for (i = 1; i <= 100; i++)
     {
         Risposta.Ombrellone[i] = Ombrellone[i];
     }
->>>>>>> f54071d950539c98b29f72689cfb879fccc398b8
     //printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
     //return Risposta.msg;
     return Risposta;

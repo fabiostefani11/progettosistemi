@@ -58,6 +58,7 @@ lista *ricerca(lista *l, int id, int datainizio, int datafine)
                 break;
             }
         }
+        l = &(*l)->next;
     }
     if (trovato == 0)
     {

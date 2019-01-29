@@ -4,8 +4,8 @@
 typedef struct
 {
     int ID;
-    int numero;
     int fila;
+    int numero;
     int data_inizio;
     int data_fine;
 
@@ -30,8 +30,8 @@ int main()
     for (i = 0; i < 100; i++)
     {
         ombrellone[i].ID = i + 1;
-        ombrellone[i].numero = n;
         ombrellone[i].fila = j;
+        ombrellone[i].numero = n;
         ombrellone[i].data_inizio = 0;
         ombrellone[i].data_fine = 0;
 
@@ -47,8 +47,8 @@ int main()
     {
         (fprintf(f, "%d %d %d %d %d \n",
                  ombrellone[i].ID,
-                 ombrellone[i].numero,
                  ombrellone[i].fila,
+                 ombrellone[i].numero,
                  ombrellone[i].data_inizio,
                  ombrellone[i].data_fine));
         if (n == 10)

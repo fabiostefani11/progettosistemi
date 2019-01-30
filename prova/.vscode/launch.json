@@ -5,7 +5,7 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/rispostaFunzione",
+            "program": "${workspaceRoot}/dividiFrase",
             "args": [
                 "hello",
                 "world",

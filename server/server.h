@@ -30,8 +30,9 @@ typedef struct
 {
     ombrellone Ombrellone[DIM];
     char msg[DIM];
+    int ombrelloni_liberi;
 } risposta;
 
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
-risposta elaboraRisposta(int liberi, messaggio Messaggio, ombrellone Ombrellone[]);
+risposta elaboraRisposta(risposta Risposta, messaggio Messaggio);

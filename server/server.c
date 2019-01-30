@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
     int port;
     int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
     messaggio Messaggio;
-    ombrellone Ombrellone[100] = {0};
     risposta Risposta;
     FILE *f_ombrelloni, *f_prenotazioni;
     int i = 1;
-    int ombrelloni_liberi = 0;
+
+    memset(&Risposta, 0, sizeof(Risposta));
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
@@ -59,11 +59,11 @@ int main(int argc, char *argv[])
 
     while (!feof(f_ombrelloni))
     {
-        if (fscanf(f_ombrelloni, "%d %d %d %d", &Ombrellone[i].ID, &Ombrellone[i].fila, &Ombrellone[i].numero, &Ombrellone[i].disponibile) == 4)
+        if (fscanf(f_ombrelloni, "%d %d %d %d", &Risposta.Ombrellone[i].ID, &Risposta.Ombrellone[i].fila, &Risposta.Ombrellone[i].numero, &Risposta.Ombrellone[i].disponibile) == 4)
         {
-            if (Ombrellone[i].disponibile == 0)
+            if (Risposta.Ombrellone[i].disponibile == 0)
             {
-                ombrelloni_liberi++;
+                Risposta.ombrelloni_liberi++;
             }
             i++;
         }
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 
                         //divide la frase in una parola e 4 interi//
                         Messaggio = dividiFrase(buf);
-                        Risposta = elaboraRisposta(ombrelloni_liberi, Messaggio, Ombrellone);
+                        Risposta = elaboraRisposta(Risposta, Messaggio);
                         //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
                         if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza

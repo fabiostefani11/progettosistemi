@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
                 close(masterSocket); // chiude il processo padre per continuare sul processo figlio
                 while (1)
                 {
+                    
                     if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
                     {
                         printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
@@ -154,6 +155,7 @@ int main(int argc, char *argv[])
                         break;
                     }
                     else
+                    
                     {
                         printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
@@ -168,10 +170,10 @@ int main(int argc, char *argv[])
                             close(csd);
                             printf("Socket chiusa.\n");
                         }
-                        else
-                            printf("Invio riuscito.\n");
+                       /* else
+                            printf("Invio riuscito.\n"); */
 
-                        if (strncmp("exit", Risposta.msg, 4) == 0)
+                        if (strncmp("EXIT", Risposta.msg, 4) == 0)
                         {
                             if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
                             {
@@ -182,13 +184,12 @@ int main(int argc, char *argv[])
                             {
                                 (fprintf(f_ombrelloni, "%d %d %d %d \n",
                                          Risposta.Ombrellone[i].ID,
-                                         Risposta.Ombrellone[i].numero,
                                          Risposta.Ombrellone[i].fila,
+                                         Risposta.Ombrellone[i].numero,
                                          Risposta.Ombrellone[i].disponibile));
                             }
                             fclose(f_ombrelloni);
-                            printf("Server esce...\n");
-                            break;
+                            
                         }
                     }
                 }

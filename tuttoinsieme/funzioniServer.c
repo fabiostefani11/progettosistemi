@@ -132,7 +132,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         {
             Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
             Risposta.ombrelloni_liberi--;
-            strncpy(msg, "AVAILABLE\n", sizeof(char) * DIM);
+            strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE BOOK FILA NUMERO DATA\n", sizeof(char) * DIM);
         }
         else
             strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
@@ -141,7 +141,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     {
         Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
         Risposta.ombrelloni_liberi--;
-        strncpy(msg, "Manca Codice di conferma prenotazione\n", sizeof(char) * DIM);
+        strncpy(msg, "PRENOTAZIONE CONFERMATA\n", sizeof(char) * DIM);
     }
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {

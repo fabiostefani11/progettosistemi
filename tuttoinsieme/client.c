@@ -56,13 +56,13 @@ int main(int argc, char *argv[])
                 close(mySocket);
                 printf("Socket chiusa.\n");
             }
-            else
-                printf("Invio riuscito.\n");
-            /*if (strncmp("exit", msg, 4) == 0)
+            /*else
+                printf("Invio riuscito.\n");*/
+            if (strncmp("EXIT", msg, 4) == 0)
             {
                 printf("Client esce...\n");
                 break;
-            }*/
+            }
 
             ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
 

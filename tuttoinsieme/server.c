@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
                                 printf("Errore nell'apertura del file.\n");
                                 exit(-1);
                             }
-                            for (i = 0; i < 100; i++)
+                            for (i = 1; i <= 100; i++)
                             {
                                 (fprintf(f_ombrelloni, "%d %d %d %d \n",
                                          Risposta.Ombrellone[i].ID,

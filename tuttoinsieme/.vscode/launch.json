@@ -43,7 +43,7 @@
     "compounds": [
         {
             "name": "Server/Client",
-            "configurations": ["Server", "Client", "funzioniServer"]
+            "configurations": ["Server", "Client",]
         }
     ]
 }

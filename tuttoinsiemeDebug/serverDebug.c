@@ -6,7 +6,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <sys/wait.h> /* wait */
+#include <sys/wait.h> /* wait g*/
 #include <signal.h>
 
 #define PROTOPORT 5193 //numero della porta di default
@@ -435,8 +435,8 @@ int main(int argc, char *argv[])
                             {
                                 (fprintf(f_ombrelloni, "%d %d %d %d \n",
                                          Risposta.Ombrellone[i].ID,
-                                         Risposta.Ombrellone[i].numero,
                                          Risposta.Ombrellone[i].fila,
+                                         Risposta.Ombrellone[i].numero,
                                          Risposta.Ombrellone[i].disponibile));
                             }
                             fclose(f_ombrelloni);

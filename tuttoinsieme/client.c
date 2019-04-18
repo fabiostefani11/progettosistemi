@@ -45,6 +45,23 @@ int main(int argc, char *argv[])
     else
     {
         printf("Connessione riuscita.\n");
+        int bytesRicevuti;
+        int totBytesRicevuti = 0;
+        char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
+        printf("Il server risponde: ");
+
+        while (totBytesRicevuti < sizeof(msg))
+        {
+            if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+            {
+                printf("Ricezione fallita.\n");
+                close(mySocket);
+            }
+            totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
+            buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
+            printf("%s\n", buf);                 //stampa la stringa ricevuta
+        }
+
         while (1)
         {
             printf("Scrivi il messaggio: ");

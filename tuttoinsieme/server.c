@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+
 //P
 int go = 1;
 int masterSocket; // descrittore del master socket
@@ -139,6 +140,19 @@ int main(int argc, char *argv[])
         else
         {
             printf("Connessione riuscita!!!!!\n");
+            int id = rand() % 1000;
+            Risposta.IDclient = id;
+            char mid[DIM] = "Il tuo id è ";
+            char conv[DIM];
+            sprintf(conv, "%d", id);
+            strcat(mid, conv);
+            if (write(csd, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            {
+                printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                close(csd);
+                printf("Socket chiusa.\n");
+            }
+
             pid = fork();
 
             if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
@@ -147,7 +161,7 @@ int main(int argc, char *argv[])
                 close(masterSocket); // chiude il processo padre per continuare sul processo figlio
                 while (1)
                 {
-                    
+
                     if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
                     {
                         printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
@@ -155,7 +169,7 @@ int main(int argc, char *argv[])
                         break;
                     }
                     else
-                    
+
                     {
                         printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
@@ -170,7 +184,7 @@ int main(int argc, char *argv[])
                             close(csd);
                             printf("Socket chiusa.\n");
                         }
-                       /* else
+                        /* else
                             printf("Invio riuscito.\n"); */
 
                         if (strncmp("EXIT", Risposta.msg, 4) == 0)
@@ -189,7 +203,6 @@ int main(int argc, char *argv[])
                                          Risposta.Ombrellone[i].disponibile));
                             }
                             fclose(f_ombrelloni);
-                            
                         }
                     }
                 }

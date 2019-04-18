@@ -1,0 +1,16 @@
+18 aprile 
+
+-Inserito un messaggio di errore nel caso uno scriva fila o numero inesistente
+infatti se prima uno scriveva esempio book 35 12, il server rispondeva available....
+(riga 138)
+
+-Ho pensato di associare un id quando il client si connette e usare questo come codice di conferma 
+per le prenotazioni, ho aggiunto un campo alle due strutture messaggio e risposta in modo tale 
+da fare un controllo se l'id che scrive sia effettivamente quello.
+Per risolvere il problema di quando uno vuole confermare la prenotazione e il numero delle parole
+sono 5 come per le prenotazioni future, si potrebbe dividere la frase in base alla prima parola
+(ho messo CONFERMO)
+(riga 143 server.c)
+(riga 48 client.c)
+(da riga 138 a riga 188 funzioniserver.c)
+(riga 57 funzioniserver.c)

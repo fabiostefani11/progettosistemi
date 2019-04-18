@@ -14,6 +14,7 @@ typedef struct
     int data_inizio;
     int data_fine;
     int nparole;
+    int IDclient;
 
 } messaggio;
 
@@ -31,6 +32,7 @@ typedef struct
     ombrellone Ombrellone[DIM];
     char msg[DIM];
     int ombrelloni_liberi;
+    int IDclient;
 } risposta;
 
 int uniscidata(char data[]);

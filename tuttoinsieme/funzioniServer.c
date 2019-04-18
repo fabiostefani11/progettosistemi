@@ -54,6 +54,13 @@ messaggio dividiFrase(char msg[])
 
     Messaggio.nparole = j + 1;
     strcpy(Messaggio.parola, frase[0]);
+    /*
+    if (strcmp("CONFERMO", Messaggio.parola))
+    {
+        // fare una divisione diversa se conferma è la prima parola, altrimenti come prima
+    }
+    else
+    */
     if (strlen(frase[1]) <= 2)
     {
         Messaggio.fila = atoi(frase[1]);
@@ -128,24 +135,56 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     }
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 3)) //scrive BOOK e fila e numero ombrellone
     {
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
+        if (Messaggio.fila > 10 || Messaggio.ombrellone > 10)
         {
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
-            Risposta.ombrelloni_liberi--;
-            strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE BOOK FILA NUMERO DATA\n", sizeof(char) * DIM);
+            strncpy(msg, "Fila oppure numero ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
         }
         else
-            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+        {
+            if (Risposta.Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
+            {
+                Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
+                Risposta.ombrelloni_liberi--;
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID\n", sizeof(char) * DIM);
+            }
+            else
+                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+        }
     }
+    /*se uno scrive direttamente per prenotare, comunque chiediamo conferma*/
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 4)) //conferma la prenotazione, manca pezzo di codice
     {
-        Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
-
-        strncpy(msg, "PRENOTAZIONE CONFERMATA\n", sizeof(char) * DIM);
+        if (Messaggio.fila > 10 || Messaggio.ombrellone > 10)
+        {
+            strncpy(msg, "Fila oppure numero ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
+        }
+        else
+        {
+            if (Risposta.Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
+            {
+                Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
+                Risposta.ombrelloni_liberi--;
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID\n", sizeof(char) * DIM);
+            }
+            else
+                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+        }
     }
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
+
         strncpy(msg, "Manca Codice di prenotazione futura\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
+    {
+        if (Risposta.IDclient == Messaggio.IDclient)
+        {
+
+            Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
+            strncpy(msg, "PRENOTAZIONE CONFERMATA\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "PRENOTAZIONE NON CONFERMATA, ID ERRATO\n", sizeof(char) * DIM);
     }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 1)) //scrive available per sapere il numero di ombrelloni liberi
     {

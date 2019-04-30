@@ -142,6 +142,7 @@ int main(int argc, char *argv[])
             printf("Connessione riuscita!!!!!\n");
             int id = rand() % 1000;
             Risposta.IDclient = id;
+            int ombrellone_attuale = 0;
             char mid[DIM] = "Il tuo id è ";
             char conv[DIM];
             sprintf(conv, "%d", id);
@@ -175,6 +176,10 @@ int main(int argc, char *argv[])
 
                         //divide la frase in una parola e 4 interi//
                         Messaggio = dividiFrase(buf);
+                        if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+                        {
+                            ombrellone_attuale = Messaggio.ID;
+                        }
                         Risposta = elaboraRisposta(Risposta, Messaggio);
                         //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
@@ -194,6 +199,10 @@ int main(int argc, char *argv[])
                                 printf("Errore nell'apertura del file.\n");
                                 exit(-1);
                             }
+                            if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
+                            {
+                                Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
+                            };
                             for (i = 1; i <= 100; i++)
                             {
                                 (fprintf(f_ombrelloni, "%d %d %d %d \n",

@@ -54,58 +54,75 @@ messaggio dividiFrase(char msg[])
 
     Messaggio.nparole = j + 1;
     strcpy(Messaggio.parola, frase[0]);
-    /*
-    if (strcmp("CONFERMO", Messaggio.parola))
-    {
-        // fare una divisione diversa se conferma è la prima parola, altrimenti come prima
-    }
-    else
-    */
-    if (strlen(frase[1]) <= 2)
+
+    if (strncmp("CONFERMO", Messaggio.parola, 8) == 0)
     {
         Messaggio.fila = atoi(frase[1]);
-    }
-    else if (strlen(frase[1]) > 2)
-    {
-        if (frase[1][2] != '/' || frase[1][5] != '/') //controllo se la data è nel formato corretto
-        {
-            strcpy(Messaggio.parola, "ERRORE_DATA");
-            return Messaggio;
-        }
-        Messaggio.data_inizio = uniscidata(frase[1]);
-    }
-    if (strlen(frase[2]) <= 2)
-    {
         Messaggio.ombrellone = atoi(frase[2]);
         Messaggio.ID = (((Messaggio.fila * 10) + Messaggio.ombrellone) - 10);
-    }
-    else if (strlen(frase[2]) > 2)
-    {
-        if (frase[2][2] != '/' || frase[2][5] != '/') //controllo se la data è nel formato corretto
-        {
-            strcpy(Messaggio.parola, "ERRORE_DATA");
-            return Messaggio;
-        }
-        Messaggio.data_fine = uniscidata(frase[2]);
-    }
-    if (Messaggio.nparole == 5)
-    {
-        if (frase[3][2] != '/' || frase[3][5] != '/' || frase[4][2] != '/' || frase[4][5] != '/') //controllo se la data è nel formato corretto
-        {
-            strcpy(Messaggio.parola, "ERRORE_DATA");
-            return Messaggio;
-        }
-        Messaggio.data_inizio = uniscidata(frase[3]);
-        Messaggio.data_fine = uniscidata(frase[4]);
-    }
-    if (Messaggio.nparole == 4)
-    {
         if (frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
         {
             strcpy(Messaggio.parola, "ERRORE_DATA");
             return Messaggio;
         }
         Messaggio.data_fine = uniscidata(frase[3]);
+    }
+
+    else if (strncmp("NCONFERMO", Messaggio.parola, 9) == 0)
+    {
+        Messaggio.fila = atoi(frase[1]);
+        Messaggio.ombrellone = atoi(frase[2]);
+        Messaggio.ID = (((Messaggio.fila * 10) + Messaggio.ombrellone) - 10);
+    }
+
+    else
+    {
+        if (strlen(frase[1]) <= 2)
+        {
+            Messaggio.fila = atoi(frase[1]);
+        }
+        else if (strlen(frase[1]) > 2)
+        {
+            if (frase[1][2] != '/' || frase[1][5] != '/') //controllo se la data è nel formato corretto
+            {
+                strcpy(Messaggio.parola, "ERRORE_DATA");
+                return Messaggio;
+            }
+            Messaggio.data_inizio = uniscidata(frase[1]);
+        }
+        if (strlen(frase[2]) <= 2)
+        {
+            Messaggio.ombrellone = atoi(frase[2]);
+            Messaggio.ID = (((Messaggio.fila * 10) + Messaggio.ombrellone) - 10);
+        }
+        else if (strlen(frase[2]) > 2)
+        {
+            if (frase[2][2] != '/' || frase[2][5] != '/') //controllo se la data è nel formato corretto
+            {
+                strcpy(Messaggio.parola, "ERRORE_DATA");
+                return Messaggio;
+            }
+            Messaggio.data_fine = uniscidata(frase[2]);
+        }
+        if (Messaggio.nparole == 5)
+        {
+            if (frase[3][2] != '/' || frase[3][5] != '/' || frase[4][2] != '/' || frase[4][5] != '/') //controllo se la data è nel formato corretto
+            {
+                strcpy(Messaggio.parola, "ERRORE_DATA");
+                return Messaggio;
+            }
+            Messaggio.data_inizio = uniscidata(frase[3]);
+            Messaggio.data_fine = uniscidata(frase[4]);
+        }
+        if (Messaggio.nparole == 4)
+        {
+            if (frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
+            {
+                strcpy(Messaggio.parola, "ERRORE_DATA");
+                return Messaggio;
+            }
+            Messaggio.data_fine = uniscidata(frase[3]);
+        }
     }
     return Messaggio;
 }
@@ -145,7 +162,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             {
                 Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
                 Risposta.ombrelloni_liberi--;
-                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID\n", sizeof(char) * DIM);
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
             }
             else
                 strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
@@ -164,7 +181,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             {
                 Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
                 Risposta.ombrelloni_liberi--;
-                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID\n", sizeof(char) * DIM);
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA ID, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO\n", sizeof(char) * DIM);
             }
             else
                 strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
@@ -175,13 +192,24 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 
         strncpy(msg, "Manca Codice di prenotazione futura\n", sizeof(char) * DIM);
     }
-    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 4))
     {
         if (Risposta.IDclient == Messaggio.IDclient)
         {
 
             Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
             strncpy(msg, "PRENOTAZIONE CONFERMATA\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "PRENOTAZIONE NON CONFERMATA, ID ERRATO\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("NCONFERMO", Messaggio.parola, 9) == 0) && (Messaggio.nparole == 3))
+    {
+        if (Risposta.IDclient == Messaggio.IDclient)
+        {
+
+            Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
+            strncpy(msg, "PRENOTAZIONE TEMPORANEA ANNULLATA\n", sizeof(char) * DIM);
         }
         else
             strncpy(msg, "PRENOTAZIONE NON CONFERMATA, ID ERRATO\n", sizeof(char) * DIM);

@@ -231,15 +231,16 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         }
         else
         {
-            int liberi_fila[10] = {0};
             int z = 0;
-            int k;
+            int liberi_fila[10] = {0};
+            int k = 0;
             char *voce = malloc(sizeof(char) * DIM);
-            for (k = (Messaggio.fila * 10) - 9; k <= Messaggio.fila * 10; k++)
+            for (int i = 1; i <= 100; i++)
             {
-                if (Risposta.Ombrellone[k].disponibile == 0) //conta gli ombrelloni liberi in una fila e li mette in un array
+                if (Risposta.Ombrellone[i].disponibile == 0 && Risposta.Ombrellone[i].fila == Messaggio.fila) //conta gli ombrelloni liberi in una fila e li mette in un array
                 {
-                    liberi_fila[z] = Risposta.Ombrellone[k].numero;
+                    sprintf(voce, "%d ", Risposta.Ombrellone[i].numero);
+                    strcat(msg, voce);
                     z++;
                 }
             }
@@ -249,13 +250,6 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             }
             else
             {
-                k = 0;
-                while (liberi_fila[k] != 0)
-                {
-                    sprintf(voce, "%d ", liberi_fila[k]); //scrive gli ombrelloni liberi scritti nell'array, in una stringa
-                    strcat(msg, voce);
-                    k++;
-                }
                 strcat(msg, "\n");
             }
         }

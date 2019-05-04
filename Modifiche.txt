@@ -21,3 +21,7 @@ Ho risolto il problema, ora si riesce a fare tutto quello che si riusciva a fare
 Ho aggiunto anche un pezzo di codice con NCONFERMO FILA NUMERO, col quale annulliamo la prenotazione temporanea, e riporta lo stato dell'ombrellone a 0.(Poi al posto di NCONFERMO metteremo il timer di risposta).
 Ho aggiunto una variabile in server.c(riga 145 / 202-205) che si salva l'id dell'ombrellone del comando precedente a quello attuale.
 Ho usato questa variabile per evitare che degli ombrellone nel file restino con stato=4, infatti se uno scrive exit prima di confermare la prenotazione, il server.c controlla se lo stato dell'ombrellone del comando precedente è a 4, e nel caso lo mette a 0.
+
+3 maggio
+
+Ho riscritto la funzione AVAILABLE FILA, ma il problema delle stampe a caso rimane.

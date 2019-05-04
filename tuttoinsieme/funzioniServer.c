@@ -234,6 +234,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             int z = 0;
             int liberi_fila[10] = {0};
             int k = 0;
+            strncpy(msg, "", sizeof(char) * DIM);   //Inizializzo msg così non stampa più tutta la lista
             char *voce = malloc(sizeof(char) * DIM);
             for (int i = 1; i <= 100; i++)
             {

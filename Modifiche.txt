@@ -25,3 +25,7 @@ Ho usato questa variabile per evitare che degli ombrellone nel file restino con 
 3 maggio
 
 Ho riscritto la funzione AVAILABLE FILA, ma il problema delle stampe a caso rimane.
+
+4 maggio
+
+FINALMENTE NON STAMPA PIÙ COSE A CASO. Ho risolto inizializzando msg nella funzione AVAILABLE FILA.

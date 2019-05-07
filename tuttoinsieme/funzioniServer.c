@@ -10,6 +10,12 @@
 #include <sys/wait.h> /* wait */
 #include <signal.h>
 
+
+
+
+
+
+
 int uniscidata(char data[])
 {
     char giorno[DIM] = {0};

@@ -9,8 +9,11 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+#include <time.h>
+#include <errno.h>
 
 //P
+int goo=1;
 int go = 1;
 int masterSocket; // descrittore del master socket
 
@@ -135,12 +138,13 @@ int main(int argc, char *argv[])
         if ((csd = accept(masterSocket, NULL, 0)) < 0) //accetta la richiesta di conenssione del socket, e la funzione accept
         {                                              //restituisce il numero del socket se ha successo, altrimenti restituisce -1
             go = 0;
-            printf("Accept fallita.\n");
+            printf("[error] (accept), [errno %d]\n",errno);
         }
         else
         {
             printf("Connessione riuscita!!!!!\n");
-            int id = rand() % 1000;
+            srand(time(0));
+            int id = 1 + rand() % 1000;
             Risposta.IDclient = id;
             int ombrellone_attuale = 0;
             char mid[DIM] = "Il tuo id è ";
@@ -160,7 +164,7 @@ int main(int argc, char *argv[])
             {
 
                 close(masterSocket); // chiude il processo padre per continuare sul processo figlio
-                while (1)
+                while (goo)
                 {
 
                     if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
@@ -212,6 +216,7 @@ int main(int argc, char *argv[])
                                          Risposta.Ombrellone[i].disponibile));
                             }
                             fclose(f_ombrelloni);
+                            goo=0;
                         }
                     }
                 }

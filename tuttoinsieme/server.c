@@ -145,7 +145,6 @@ int main(int argc, char *argv[])
             printf("Connessione riuscita!!!!!\n");
             srand(time(0));
             int id = 1 + rand() % 1000;
-            Risposta.IDclient = id;
             int ombrellone_attuale = 0;
             char mid[DIM] = "Il tuo id è ";
             char conv[DIM];

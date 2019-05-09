@@ -32,6 +32,7 @@ typedef struct
     ombrellone Ombrellone[DIM];
     char msg[DIM];
     int ombrelloni_liberi;
+    int IDclient;
 } risposta;
 
 int uniscidata(char data[]);

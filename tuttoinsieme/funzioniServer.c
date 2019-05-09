@@ -153,9 +153,9 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             if (Risposta.Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
             {
                 Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
-                Risposta.Ombrellone[Messaggio.ID].IDclient = Messaggio.IDclient;
+                Risposta.Ombrellone[Messaggio.ID].IDclient = Risposta.IDclient;
                 Risposta.ombrelloni_liberi--;
-                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO ID DATA INIZIO DATA FINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO ID \n", sizeof(char) * DIM);
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATA INIZIO DATA FINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
             }
             else
                 strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
@@ -167,9 +167,11 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 
         strncpy(msg, "Manca Codice di prenotazione futura\n", sizeof(char) * DIM);
     }
-    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 6))
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
     {
-        if (Risposta.Ombrellone[Messaggio.ID].IDclient == Messaggio.IDclient)
+        strncpy(msg, "", sizeof(char) * DIM);
+
+        if (Risposta.Ombrellone[Messaggio.ID].IDclient == Risposta.IDclient)
         {
 
             Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
@@ -178,9 +180,9 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         else
             strncpy(msg, "PRENOTAZIONE NON CONFERMATA, ID ERRATO\n", sizeof(char) * DIM);
     }
-    else if ((strncmp("NCONFERMO", Messaggio.parola, 9) == 0) && (Messaggio.nparole == 4))
+    else if ((strncmp("NCONFERMO", Messaggio.parola, 9)) && (Messaggio.nparole == 3))
     {
-        if (Risposta.Ombrellone[Messaggio.ID].IDclient == Messaggio.IDclient)
+        if (Risposta.Ombrellone[Messaggio.ID].IDclient == Risposta.IDclient)
         {
 
             Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
@@ -254,6 +256,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     }
     ///////assegno tutti i valori alla varialbile di ritorno della funzione
     strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+    strncpy(msg, "", sizeof(char) * DIM);
     Risposta_output.ombrelloni_liberi = Risposta.ombrelloni_liberi;
     for (i = 1; i <= 100; i++)
     {

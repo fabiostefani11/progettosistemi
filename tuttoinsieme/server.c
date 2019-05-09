@@ -13,7 +13,7 @@
 #include <errno.h>
 
 //P
-int goo=1;
+int goo = 1;
 int go = 1;
 int masterSocket; // descrittore del master socket
 
@@ -138,13 +138,14 @@ int main(int argc, char *argv[])
         if ((csd = accept(masterSocket, NULL, 0)) < 0) //accetta la richiesta di conenssione del socket, e la funzione accept
         {                                              //restituisce il numero del socket se ha successo, altrimenti restituisce -1
             go = 0;
-            printf("[error] (accept), [errno %d]\n",errno);
+            printf("[error] (accept), [errno %d]\n", errno);
         }
         else
         {
             printf("Connessione riuscita!!!!!\n");
             srand(time(0));
             int id = 1 + rand() % 1000;
+            Risposta.IDclient = id;
             int ombrellone_attuale = 0;
             char mid[DIM] = "Il tuo id è ";
             char conv[DIM];
@@ -215,7 +216,7 @@ int main(int argc, char *argv[])
                                          Risposta.Ombrellone[i].disponibile));
                             }
                             fclose(f_ombrelloni);
-                            goo=0;
+                            goo = 0;
                         }
                     }
                 }

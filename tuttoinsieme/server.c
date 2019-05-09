@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
     while (!feof(f_ombrelloni))
     {
-        if (fscanf(f_ombrelloni, "%d %d %d %d", &Risposta.Ombrellone[i].ID, &Risposta.Ombrellone[i].fila, &Risposta.Ombrellone[i].numero, &Risposta.Ombrellone[i].disponibile) == 4)
+        if (fscanf(f_ombrelloni, "%d %d %d %d %d", &Risposta.Ombrellone[i].ID, &Risposta.Ombrellone[i].fila, &Risposta.Ombrellone[i].numero, &Risposta.Ombrellone[i].disponibile, &Risposta.Ombrellone[i].IDclient) == 5)
         {
             if (Risposta.Ombrellone[i].disponibile == 0)
             {
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
                     {
                         printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
-
+                       
                         //divide la frase in una parola e 4 interi//
                         Messaggio = dividiFrase(buf);
                         if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
@@ -185,6 +185,8 @@ int main(int argc, char *argv[])
                             ombrellone_attuale = Messaggio.ID;
                         }
                         Risposta = elaboraRisposta(Risposta, Messaggio);
+                        
+                        
                         //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
                         if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
@@ -209,11 +211,12 @@ int main(int argc, char *argv[])
                             };
                             for (i = 1; i <= 100; i++)
                             {
-                                (fprintf(f_ombrelloni, "%d %d %d %d \n",
+                                (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
                                          Risposta.Ombrellone[i].ID,
                                          Risposta.Ombrellone[i].fila,
                                          Risposta.Ombrellone[i].numero,
-                                         Risposta.Ombrellone[i].disponibile));
+                                         Risposta.Ombrellone[i].disponibile,
+                                         Risposta.Ombrellone[i].IDclient));
                             }
                             fclose(f_ombrelloni);
                             goo = 0;

@@ -1,6 +1,6 @@
 COSE DA FARE:
-1-Risolvere problema confermo e salvare ID dopo la conferma associandolo alla prenotazione dell'ombrellone
-2-funzione cancel con controllo ID
+1-Risolvere problema confermo e salvare ID dopo la conferma associandolo alla prenotazione dell'ombrellone	FATTO
+2-funzione cancel con controllo ID		FATTO
 3-preparare file per le prenotazioni future che venga letto e riempia una lista
 4-modifica di funzione BOOK e 5 parole che vada direttamente alle prenotazioni future, sistemando la funzione di ricerca con le date
 5-fare struttura unica con 2 strutture, una per le attuali e una per le future, che andranno rispettivamente in ombrelloni.txt e in prenotazioni.txt
@@ -41,3 +41,16 @@ Ho riscritto la funzione AVAILABLE FILA, ma il problema delle stampe a caso rima
 4 maggio
 
 FINALMENTE NON STAMPA PIÙ COSE A CASO. Ho risolto inizializzando msg nella funzione AVAILABLE FILA.
+
+9 Maggio
+
+Risolto problema di BOOK 5 PAROLE, ora divide bene la frase e stampa "manca codice prenotazione futura".
+Ho sistemato la funzione CONFERMO e NCONFERMO, aggiungendo il controllo che lo stato dell'ombrellone sia a 4, per evitare che uno vada a occupare o liberare un altro ombrellone se si sbaglia a scrivere.
+
+Ho anche tolto il controllo dell'ID in quelle due funzioni, presumendo sia praticamente impossibile che un utente vada a confermare una prenotazione di un altro utente, visto che se fa BOOK non glielo fa fare perchè il primo utente ha già impostato lo stato a 4, quindi il secondo utente dovrebbe scrivere direttamente CONFERMO FILA NUMERO indovinando un ombrellone che è già temporaneamente occupato.
+
+Ho riscritto il file aggiungendo un intero inizializzato a 0, in cui dovrà andare l'IDclient delle prenotazioni attuali, che attribuiamo all'ombrellone quando uno conferma la prenotazione.
+
+Nella funzione CONFERMO ho messo che vada ad aggiornare anche l'IDclient associato all'ombrellone, che serve per le prenotazioni attuali.
+
+Ho finito la funzione CANCEL che prima controlla se l'ombrellone è effettivamente occupato, e poi controlla l'ID.

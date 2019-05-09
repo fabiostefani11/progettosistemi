@@ -7,6 +7,7 @@ typedef struct
     int fila;
     int numero;
     int disponibile;
+    int IDclient;
 
 } Ombrellone;
 
@@ -32,6 +33,7 @@ int main()
         ombrellone[i].fila = j;
         ombrellone[i].numero = n;
         ombrellone[i].disponibile = 1;
+        ombrellone[i].IDclient = 0;
 
         if (n == 10)
         {
@@ -43,11 +45,12 @@ int main()
 
     for (i = 0; i < 100; i++)
     {
-        (fprintf(f, "%d %d %d %d \n",
+        (fprintf(f, "%d %d %d %d %d \n",
                  ombrellone[i].ID,
                  ombrellone[i].fila,
                  ombrellone[i].numero,
-                 ombrellone[i].disponibile));
+                 ombrellone[i].disponibile,
+                 ombrellone[i].IDclient));
 
         if (n == 10)
         {

@@ -1,7 +1,7 @@
 all: server client 
 
 server: server.o funzioniServer.o
-	gcc -g -o server server.o funzioniServer.o
+	gcc -g -o server server.o funzioniServer.o -lpthread
 
 server.o: server.h server.c
 	gcc -g -c server.c

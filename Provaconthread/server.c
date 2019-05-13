@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <time.h>
 #include <errno.h>
+#include <pthread.h>
 
 void *connection_handler(void *);
 //P
@@ -19,6 +20,15 @@ int go = 1;
 int masterSocket; // descrittore del master socket
 int c12;
 int client_sock;
+risposta Risposta;
+int csd; // client socket descriptor
+messaggio Messaggio;
+char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
+char msg[256] = {0};
+int port;
+int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
+pid_t pid;
+FILE *f_ombrelloni, *f_prenotazioni;
 
 //questa funzione non la metto nel .h e nel .c perchè dà errore sulla variabile mastersocket
 void sighand(int sig)
@@ -36,17 +46,8 @@ void sighand(int sig)
 
 int main(int argc, char *argv[])
 {
-
-    int csd; // client socket descriptor
-    char msg[256] = {0};
-    int port;
-    int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
-    messaggio Messaggio;
-    risposta Risposta;
-    FILE *f_ombrelloni, *f_prenotazioni;
-    int i = 1;
-
     memset(&Risposta, 0, sizeof(Risposta));
+    int i = 1;
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
@@ -77,10 +78,6 @@ int main(int argc, char *argv[])
     }
     fclose(f_ombrelloni);
     fclose(f_prenotazioni);
-
-    char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
-
-    pid_t pid;
 
     if (argc > 1) //da togliere
     {
@@ -277,37 +274,90 @@ return 0;
  * */
 void *connection_handler(void *socket_desc)
 {
+    
     //Get the socket descriptor
     int sock = *(int *)socket_desc;
-    int read_size;
     char *message, client_message[2000];
 
-    //Send some messages to the client
-    message = "Ciao ciao\n";
-    write(sock, message, strlen(message));
-
-    //Receive a message from client
-    while ((read_size = recv(sock, client_message, 2000, 0)) > 0)
+    
+    srand(time(0));
+    int id = 1 + rand() % 1000;
+    Risposta.IDclient = id;
+    int ombrellone_attuale = 0;
+    char mid[DIM] = "Il tuo id è ";
+    char conv[DIM];
+    sprintf(conv, "%d", id);
+    strcat(mid, conv);
+    if (write(sock, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
     {
-        //end of string marker
-        client_message[read_size] = '\0';
-
-        //Send the message back to client
-        write(sock, client_message, strlen(client_message));
-
-        //clear the message buffer
-        memset(client_message, 0, 2000);
+        printf("Errore nella ricezione della lunghezza del messaggio.\n");
+        close(sock);
+        printf("Socket chiusa.\n");
     }
 
-    if (read_size == 0)
-    {
-        puts("Client disconesso");
-        fflush(stdout);
-    }
-    else if (read_size == -1)
-    {
-        perror("recv failed");
-    }
+    pid = fork();
 
+    //if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
+    //{
+
+       // close(sock); // chiude il processo padre per continuare sul processo figlio
+        while (goo)
+        {
+
+            if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
+            {
+                printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
+                close(sock);
+                break;
+            }
+            else
+
+            {
+                printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
+
+                //divide la frase in una parola e 4 interi//
+                Messaggio = dividiFrase(buf);
+                if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+                {
+                    ombrellone_attuale = Messaggio.ID;
+                }
+                Risposta = elaboraRisposta(Risposta, Messaggio);
+
+                //confronta la parola con le varie possibilità e scrive la risposta nella socket
+
+                if (write(sock, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                {
+                    printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                    close(sock);
+                    printf("Socket chiusa.\n");
+                }
+            }
+        }
+    //}
+
+    if (strncmp("EXIT", Risposta.msg, 4) == 0)
+    {
+        int i;
+        if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
+        {
+            printf("Errore nell'apertura del file.\n");
+            exit(-1);
+        }
+        if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
+        {
+            Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
+        };
+        for (i = 1; i <= 100; i++)
+        {
+            (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                     Risposta.Ombrellone[i].ID,
+                     Risposta.Ombrellone[i].fila,
+                     Risposta.Ombrellone[i].numero,
+                     Risposta.Ombrellone[i].disponibile,
+                     Risposta.Ombrellone[i].IDclient));
+        }
+        fclose(f_ombrelloni);
+        goo = 0;
+    }
     return 0;
 }

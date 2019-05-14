@@ -50,21 +50,21 @@ void inserimento(lista *l, int ID, int fila, int numero, int IDclient, int data_
     *l = aux;
 }
 
-void stampa(lista l)
+void stampa(lista *l)
 {
-    while (l)
+    while (*l)
     {
-        printf("%d %d %d %d %d %d \n", l->dato.ID, l->dato.fila, l->dato.numero, l->dato.IDclient, l->dato.data_inizio, l->dato.data_fine);
-        l = l->next;
+        printf("%d %d %d %d %d %d \n", (*l)->dato.ID, (*l)->dato.fila, (*l)->dato.numero, (*l)->dato.IDclient, (*l)->dato.data_inizio, (*l)->dato.data_fine);
+        l = &(*l)->next;
     }
 }
 
-void stampaFile(lista l, FILE *f)
+void stampaListaSuFile(lista *l, FILE *f)
 {
-    while (l)
+    while (*l)
     {
-        fprintf(f, "%d %d %d %d %d %d \n", l->dato.ID, l->dato.fila, l->dato.numero, l->dato.IDclient, l->dato.data_inizio, l->dato.data_fine);
-        l = l->next;
+        fprintf(f, "%d %d %d %d %d %d \n", (*l)->dato.ID, (*l)->dato.fila, (*l)->dato.numero, (*l)->dato.IDclient, (*l)->dato.data_inizio, (*l)->dato.data_fine);
+        l = &(*l)->next;
     }
 }
 
@@ -99,6 +99,13 @@ int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichie
     return trovato;
 }
 
+void elimTesta(lista *l)
+{
+    Nodo *aux = *l;
+    *l = (*l)->next;
+    free(aux);
+}
+
 lista *ricerca(lista *l, int ID, int datainizio, int datafine)
 {
     int trovato = 0;
@@ -121,13 +128,6 @@ lista *ricerca(lista *l, int ID, int datainizio, int datafine)
     }
     else
         printf("L'ombrellone è occupato in questo periodo\n");
-}
-
-void elimTesta(lista *l)
-{
-    Nodo *aux = *l;
-    *l = (*l)->next;
-    free(aux);
 }
 
 lista *eliminaPrenotazione(lista *l, int IDclient, int fila, int numero)
@@ -157,7 +157,7 @@ int main()
 {
     FILE *f_ombrelloni;
 
-    if ((f_ombrelloni = fopen("ombrelloniLista.txt", "rw")) == NULL)
+    if ((f_ombrelloni = fopen("ombrelloniLista.txt", "r+")) == NULL)
     {
         printf("Errore nell'apertura del file.\n");
         exit(-1);
@@ -221,7 +221,7 @@ int main()
         eliminaPrenotazione(&l, IDCanc, filaCanc, numeroCanc);
     }
 
-    if ((f_ombrelloni = fopen("ombrelloniLista.txt", "rw")) == NULL)
+    if ((f_ombrelloni = fopen("ombrelloniLista.txt", "w")) == NULL)
     {
         printf("Errore nell'apertura del file.\n");
         exit(-1);
@@ -229,8 +229,8 @@ int main()
     else
         printf("File ombrelloni aperto correttamente.\n");
 
-    //stampaFile(l, f_ombrelloni);
-    stampa(l);
+    stampaListaSuFile(&l, f_ombrelloni);
+    stampa(&l);
 
     fclose(f_ombrelloni);
 }

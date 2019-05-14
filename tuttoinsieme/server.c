@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <time.h>
 #include <errno.h>
+#include <malloc.h>
 
 //P
 int goo = 1;
@@ -31,6 +32,15 @@ void sighand(int sig)
     }
 }
 
+void stampaListaSuFile(lista *l, FILE *f)
+{
+    while (*l)
+    {
+        fprintf(f, "%d %d %d %d %d %d \n", (*l)->dato.ID, (*l)->dato.fila, (*l)->dato.numero, (*l)->dato.IDclient, (*l)->dato.data_inizio, (*l)->dato.data_fine);
+        l = &(*l)->next;
+    }
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -42,20 +52,23 @@ int main(int argc, char *argv[])
     risposta Risposta;
     FILE *f_ombrelloni, *f_prenotazioni;
     int i = 1;
+    int ID, fila, numero, IDclient, data_inizio, data_fine;
+
+    crealista(&Risposta.lista);
 
     memset(&Risposta, 0, sizeof(Risposta));
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
-        printf("Errore nell'apertura del file.\n");
+        printf("Errore nell'apertura del file ombrelloni.\n");
         exit(-1);
     }
     else
         printf("File ombrelloni aperto correttamente.\n");
 
-    if ((f_prenotazioni = fopen("prenotazioni.txt", "rw")) == NULL)
+    if ((f_prenotazioni = fopen("prenotazioni.txt", "r")) == NULL)
     {
-        printf("Errore nell'apertura del file.\n");
+        printf("Errore nell'apertura del file prenotazioni.\n");
         exit(-1);
     }
     else
@@ -70,6 +83,14 @@ int main(int argc, char *argv[])
                 Risposta.ombrelloni_liberi++;
             }
             i++;
+        }
+    }
+
+    while (!feof(f_prenotazioni))
+    {
+        if (fscanf(f_prenotazioni, "%d %d %d %d %d %d", &ID, &fila, &numero, &IDclient, &data_inizio, &data_fine) == 6)
+        {
+            inserimento(&Risposta.lista, ID, fila, numero, IDclient, data_inizio, data_fine);
         }
     }
     fclose(f_ombrelloni);
@@ -177,7 +198,7 @@ int main(int argc, char *argv[])
 
                     {
                         printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
-                       
+
                         //divide la frase in una parola e 4 interi//
                         Messaggio = dividiFrase(buf);
                         if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
@@ -185,8 +206,7 @@ int main(int argc, char *argv[])
                             ombrellone_attuale = Messaggio.ID;
                         }
                         Risposta = elaboraRisposta(Risposta, Messaggio);
-                        
-                        
+
                         //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
                         if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
@@ -202,9 +222,12 @@ int main(int argc, char *argv[])
                         {
                             if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
                             {
-                                printf("Errore nell'apertura del file.\n");
+                                printf("Errore nell'apertura del file ombrelloni.\n");
                                 exit(-1);
                             }
+                            else
+                                printf("File ombrelloni aperto correttamente.\n");
+
                             if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
                             {
                                 Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
@@ -218,7 +241,18 @@ int main(int argc, char *argv[])
                                          Risposta.Ombrellone[i].disponibile,
                                          Risposta.Ombrellone[i].IDclient));
                             }
+                            if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
+                            {
+                                printf("Errore nell'apertura del file prenotazioni.\n");
+                                exit(-1);
+                            }
+                            else
+                                printf("File prenotazioni aperto correttamente.\n");
+
+                            stampaListaSuFile(&Risposta.lista, f_prenotazioni);
+
                             fclose(f_ombrelloni);
+                            fclose(f_prenotazioni);
                             goo = 0;
                         }
                     }

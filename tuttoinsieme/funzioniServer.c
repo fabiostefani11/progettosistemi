@@ -9,6 +9,8 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+#include <errno.h>
+#include <malloc.h>
 
 int uniscidata(char data[])
 {
@@ -118,6 +120,86 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
+void crealista(lista *l)
+{
+    *l = NULL;
+}
+
+void inserimento(lista *l, int ID, int fila, int numero, int IDclient, int data_inizio, int data_fine)
+{
+    Nodo *aux = (Nodo *)malloc(sizeof(Nodo));
+    aux->dato.ID = ID;
+    aux->dato.fila = fila;
+    aux->dato.numero = numero;
+    aux->dato.IDclient = IDclient;
+    aux->dato.data_inizio = data_inizio;
+    aux->dato.data_fine = data_fine;
+    aux->next = *l;
+    *l = aux;
+}
+
+int ricerca(lista *l, int ID, int datainizio, int datafine)
+{
+    int trovato = 0;
+    while (*l)
+    {
+        if ((*l)->dato.ID == ID)
+        {
+            if (confrontoDate((*l)->dato.data_inizio, (*l)->dato.data_fine, datainizio, datafine) == 1)
+            {
+                trovato = 1;
+                break;
+            }
+        }
+        l = &(*l)->next;
+    }
+    if (trovato == 0)
+    {
+
+        return 0;
+    }
+    else
+        return 1;
+}
+
+int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichiesta, int fineRichiesta)
+{
+    int trovato = 0;
+
+    //CASO 2
+    if ((inizioRichiesta >= inizioPrenotazione) && (fineRichiesta <= finePrenotazione))
+    {
+        trovato = 1;
+    }
+
+    //CASO 1
+    if ((inizioRichiesta <= inizioPrenotazione) && (fineRichiesta >= inizioPrenotazione) && (fineRichiesta <= finePrenotazione))
+    {
+        trovato = 1;
+    }
+
+    //CASO 3
+    if ((inizioRichiesta <= finePrenotazione) && (inizioRichiesta >= inizioPrenotazione) && (fineRichiesta >= finePrenotazione))
+    {
+        trovato = 1;
+    }
+
+    //CASO 4
+    if ((inizioRichiesta <= inizioPrenotazione) && (fineRichiesta >= finePrenotazione))
+    {
+        trovato = 1;
+    }
+
+    return trovato;
+}
+
+void elimTesta(lista *l)
+{
+    Nodo *aux = *l;
+    *l = (*l)->next;
+    free(aux);
+}
+
 risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 {
     risposta Risposta_output;
@@ -163,7 +245,12 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
 
-        strncpy(msg, "Manca Codice di prenotazione futura\n", sizeof(char) * DIM);
+        if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+        {
+            strncpy(msg, "AVAILABLE\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
@@ -172,7 +259,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         {
             Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
             Risposta.Ombrellone[Messaggio.ID].IDclient = Risposta.IDclient;
-            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n",Risposta.IDclient);
+            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);

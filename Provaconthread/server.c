@@ -316,6 +316,7 @@ void connection_handler(void *socket_desc)
             printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
 
             //divide la frase in una parola e 4 interi//
+            Risposta.IDclient = id;
             Messaggio = dividiFrase(buf);
             if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
             {

@@ -65,3 +65,7 @@ ho provato a vedere se funziona la prenotaziona temporanea, e alcune volte segna
 13 MAGGIO
 
 Creato file provaLista.c, fa tutto bene con la lista (ricerca inserimento e cancellazione), solo non scrive sul file.
+
+15 MAGGIO
+
+Le azioni con le liste sembrano funzionare tutte bene, dobbiamo discutere sui valori di DISPONIBILE, forse possiamo eliminare 2 e 3.

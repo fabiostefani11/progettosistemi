@@ -12,8 +12,9 @@
 #include <time.h>
 #include <errno.h>
 #include <pthread.h>
+#include "thpool.h"
 
-void *connection_handler(void *);
+void connection_handler(void *);
 //P
 int goo = 1;
 int go = 1;
@@ -131,17 +132,17 @@ int main(int argc, char *argv[])
 
     c12 = sizeof(struct sockaddr_in);
     pthread_t thread_id;
+    threadpool thpool = thpool_init(QLEN);
 
     /////////////////////////////////DA QUI IN GIU' IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     while ((client_sock = accept(masterSocket, (struct sockaddr *)&client, (socklen_t *)&c12)))
     {
         puts("Connessione accettata");
-
-        if (pthread_create(&thread_id, NULL, connection_handler, (void *)&client_sock) < 0)
+        while (thpool_num_threads_working(thpool) >= QLEN)
         {
-            perror("Errore creazione thread");
-            return 1;
         }
+
+        thpool_add_work(thpool, connection_handler, (void *)&client_sock);
 
         //Now join the thread , so that we dont terminate before the thread
         //pthread_join( thread_id , NULL);
@@ -272,14 +273,13 @@ return 0;
 /*
  * This will handle connection for each client
  * */
-void *connection_handler(void *socket_desc)
+void connection_handler(void *socket_desc)
 {
-    
+
     //Get the socket descriptor
     int sock = *(int *)socket_desc;
     char *message, client_message[2000];
 
-    
     srand(time(0));
     int id = 1 + rand() % 1000;
     Risposta.IDclient = id;
@@ -300,39 +300,39 @@ void *connection_handler(void *socket_desc)
     //if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
     //{
 
-       // close(sock); // chiude il processo padre per continuare sul processo figlio
-        while (goo)
+    // close(sock); // chiude il processo padre per continuare sul processo figlio
+    while (goo)
+    {
+
+        if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
         {
+            printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
+            close(sock);
+            break;
+        }
+        else
 
-            if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
+        {
+            printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
+
+            //divide la frase in una parola e 4 interi//
+            Messaggio = dividiFrase(buf);
+            if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
             {
-                printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
-                close(sock);
-                break;
+                ombrellone_attuale = Messaggio.ID;
             }
-            else
+            Risposta = elaboraRisposta(Risposta, Messaggio);
 
+            //confronta la parola con le varie possibilità e scrive la risposta nella socket
+
+            if (write(sock, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
-                printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
-
-                //divide la frase in una parola e 4 interi//
-                Messaggio = dividiFrase(buf);
-                if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
-                {
-                    ombrellone_attuale = Messaggio.ID;
-                }
-                Risposta = elaboraRisposta(Risposta, Messaggio);
-
-                //confronta la parola con le varie possibilità e scrive la risposta nella socket
-
-                if (write(sock, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
-                {
-                    printf("Errore nella ricezione della lunghezza del messaggio.\n");
-                    close(sock);
-                    printf("Socket chiusa.\n");
-                }
+                printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                close(sock);
+                printf("Socket chiusa.\n");
             }
         }
+    }
     //}
 
     if (strncmp("EXIT", Risposta.msg, 4) == 0)
@@ -359,5 +359,4 @@ void *connection_handler(void *socket_desc)
         fclose(f_ombrelloni);
         goo = 0;
     }
-    return 0;
 }

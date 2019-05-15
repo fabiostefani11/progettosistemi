@@ -1,9 +1,9 @@
 all: server client 
 
-server: server.o funzioniServer.o
-	gcc -g -o server server.o funzioniServer.o -lpthread
+server: server.o funzioniServer.o thpool.o
+	gcc -g -o server server.o funzioniServer.o thpool.o -lpthread -lrt
 
-server.o: server.h server.c
+server.o: server.h server.c thpool.h
 	gcc -g -c server.c
 
 funzioniServer.o: funzioniServer.c
@@ -17,3 +17,6 @@ client.o: client.h client.c
 
 funzioniClient.o: funzioniClient.c
 	gcc -g -c funzioniClient.c
+
+thpool.o: thpool.h thpool.c
+	gcc -g -c thpool.c 

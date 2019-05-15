@@ -1,5 +1,5 @@
-#define PROTOPORT 5193 //numero della porta di default
-#define QLEN 6         //grandezza della coda
+#define PROTOPORT 8888 //numero della porta di default
+#define QLEN 3         //grandezza della coda
 #define BUFFERSIZE 256
 
 #define DIM 256

@@ -43,7 +43,7 @@ typedef struct
     char msg[DIM];
     int ombrelloni_liberi;
     int IDclient;
-    lista *lista;
+    lista lista;
 } risposta;
 
 int uniscidata(char data[]);
@@ -51,8 +51,7 @@ messaggio dividiFrase(char msg[]);
 risposta elaboraRisposta(risposta Risposta, messaggio Messaggio);
 void crealista(lista *l);
 void inserimento(lista *l, int ID, int fila, int numero, int IDclient, int data_inizio, int data_fine);
-//void stampaListaSuFile(lista *l, FILE *f);
 int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichiesta, int fineRichiesta);
 int ricerca(lista *l, int ID, int datainizio, int datafine);
 void elimTesta(lista *l);
-lista *eliminaPrenotazione(lista *l, int IDclient, int fila, int numero);
+int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero);

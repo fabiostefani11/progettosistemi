@@ -200,6 +200,29 @@ void elimTesta(lista *l)
     free(aux);
 }
 
+int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero)
+{
+    int trovato = 0;
+    while (*l)
+    {
+        if (((*l)->dato.IDclient == IDclient) && ((*l)->dato.ID == ((fila * 10) + numero) - 10))
+        {
+            elimTesta(l);
+            trovato = 1;
+            break;
+        }
+
+        l = &(*l)->next;
+    }
+    if (trovato == 1)
+    {
+
+        return trovato;
+    }
+    else
+        return trovato;
+}
+
 risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 {
     risposta Risposta_output;
@@ -211,7 +234,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
         strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-        return Risposta;
+        return Risposta_output;
     }
 
     if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 1)) //scrive solo BOOK
@@ -247,10 +270,11 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 
         if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
         {
-            strncpy(msg, "AVAILABLE\n", sizeof(char) * DIM);
+            Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
+            strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
         }
         else
-            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
+            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
@@ -259,6 +283,18 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         {
             Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
             Risposta.Ombrellone[Messaggio.ID].IDclient = Risposta.IDclient;
+            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
+        }
+        else
+            strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
+    {
+
+        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 4)
+        {
+            inserimento(&Risposta.lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta.IDclient, Messaggio.data_inizio, Messaggio.data_fine);
+            Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
             sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
         }
         else
@@ -332,6 +368,18 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
     }
+
+    else if ((strncmp("CANCEL", Messaggio.parola, 6) == 0) && (Messaggio.nparole == 5))
+    {
+        if (eliminaPrenotazione(&Risposta.lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone) == 1)
+        {
+
+            strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "PRENOTAZIONE INESISTENTE, O ID ERRATO\n", sizeof(char) * DIM);
+    }
+
     /*else if (Messaggio.ombrellone > 10)           //controllo se sono corretti i dati immessi
     {
         strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
@@ -352,6 +400,7 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
     Risposta_output.ombrelloni_liberi = Risposta.ombrelloni_liberi;
     Risposta_output.IDclient = Risposta.IDclient;
+    Risposta_output.lista = Risposta.lista;
     for (i = 1; i <= 100; i++)
     {
         Risposta_output.Ombrellone[i] = Risposta.Ombrellone[i];

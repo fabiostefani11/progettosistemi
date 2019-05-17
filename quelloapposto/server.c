@@ -35,6 +35,8 @@ FILE *f_ombrelloni, *f_prenotazioni;
 //questa funzione non la metto nel .h e nel .c perchè dà errore sulla variabile mastersocket
 void sighand(int sig)
 {
+    printf("\n");
+    goo = 0;
     if (sig == SIGINT)
     {
         printf("hai premuto CTRL-C ... chiusura del Master Socket.\n");
@@ -44,6 +46,19 @@ void sighand(int sig)
     {
         printf("ricevuto signale di SIGCHLD.\n");
     }
+    if (sig == SIGTERM)
+    {
+        printf("SIGTERM received ... GAME OVER ! \n");
+    }
+    if (sig == SIGQUIT)
+    {
+        printf("SIGQUIT received ... GAME OVER ! \n");
+    }
+    if (sig == SIGHUP)
+    {
+        printf("SIGHUP received ... GAME OVER ! \n");
+    }
+    exit(0);
 }
 
 void stampaListaSuFile(lista *l, FILE *f)
@@ -56,11 +71,12 @@ void stampaListaSuFile(lista *l, FILE *f)
 }
 int main(int argc, char *argv[])
 {
-     int ID, fila, numero, IDclient, data_inizio, data_fine;
+    int ID, fila, numero, IDclient, data_inizio, data_fine;
 
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
     int i = 1;
+    printf("\nson SERVER PID: %d\n Father PID: %d\n", (int)getpid(), (int)getppid());
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
@@ -263,15 +279,15 @@ void connection_handler(void *socket_desc)
                      Risposta.Ombrellone[i].IDclient));
         }
         if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
-                            {
-                                printf("Errore nell'apertura del file prenotazioni.\n");
-                                exit(-1);
-                            }
-                            else
-                                printf("File prenotazioni aperto correttamente.\n");
+        {
+            printf("Errore nell'apertura del file prenotazioni.\n");
+            exit(-1);
+        }
+        else
+            printf("File prenotazioni aperto correttamente.\n");
 
-                            stampaListaSuFile(&Risposta.lista, f_prenotazioni);
-        
+        stampaListaSuFile(&Risposta.lista, f_prenotazioni);
+
         fclose(f_prenotazioni);
         fclose(f_ombrelloni);
         goo = 0;

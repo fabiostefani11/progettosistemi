@@ -1,0 +1,106 @@
+/*
+printf("Connessione riuscita!!!!!\n");
+srand(time(0));
+int id = 1 + rand() % 1000;
+Risposta.IDclient = id;
+int ombrellone_attuale = 0;
+char mid[DIM] = "Il tuo id è ";
+char conv[DIM];
+sprintf(conv, "%d", id);
+strcat(mid, conv);
+if (write(csd, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
+{
+    printf("Errore nella ricezione della lunghezza del messaggio.\n");
+    close(csd);
+    printf("Socket chiusa.\n");
+}
+
+pid = fork();
+
+if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
+{
+
+    close(masterSocket); // chiude il processo padre per continuare sul processo figlio
+    while (goo)
+    {
+
+        if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
+        {
+            printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
+            close(csd);
+            break;
+        }
+        else
+
+        {
+            printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
+
+            //divide la frase in una parola e 4 interi//
+            Messaggio = dividiFrase(buf);
+            if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+            {
+                ombrellone_attuale = Messaggio.ID;
+            }
+            Risposta = elaboraRisposta(Risposta, Messaggio);
+
+            //confronta la parola con le varie possibilità e scrive la risposta nella socket
+
+            if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            {
+                printf("Errore nella ricezione della lunghezza del messaggio.\n");
+                close(csd);
+                printf("Socket chiusa.\n");
+            }
+            /* else
+                            printf("Invio riuscito.\n"); 
+
+            if (strncmp("EXIT", Risposta.msg, 4) == 0)
+            {
+                if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
+                {
+                    printf("Errore nell'apertura del file.\n");
+                    exit(-1);
+                }
+                if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
+                {
+                    Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
+                };
+                for (i = 1; i <= 100; i++)
+                {
+                    (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                             Risposta.Ombrellone[i].ID,
+                             Risposta.Ombrellone[i].fila,
+                             Risposta.Ombrellone[i].numero,
+                             Risposta.Ombrellone[i].disponibile,
+                             Risposta.Ombrellone[i].IDclient));
+                }
+                fclose(f_ombrelloni);
+                goo = 0;
+            }
+        }
+    }
+    ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
+}
+else //se l'id del processo è maggiore di 0, significa che il processo è padre
+{
+
+    if (wait(&status) < 0) //la funzione wait mette in attesa il processo padre finchè un processo figlio termina o riceve un comando di terminazione
+    {
+        printf("Errore nella wait().\n"); //la wait restituisce -1 se fallisce, altrimenti restituisce l'id del processo terminato
+        close(csd);
+        printf("Chiuso il Socket del processo figlio per errore nella wait.\n");
+    }
+    if (write(csd, &status, sizeof(status)) != sizeof(status)) //scrive sul socket figlio il valore di status
+                                                               //controlla se scrive il messaggio in tutta la sua lunghezza
+    {
+        printf("Errore nella ricezione della lunghezza del messaggio scritto dal Socket padre sul Socket figlio\n");
+        close(csd);
+        printf("Socket chiusa.\n");
+
+        close(masterSocket); //chiude il socket padre e quindi la comunicazione, ricominciando il ciclo
+    }
+}
+}
+return 0;
+}
+*/

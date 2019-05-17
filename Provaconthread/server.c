@@ -25,7 +25,7 @@ risposta Risposta;
 int csd; // client socket descriptor
 messaggio Messaggio;
 char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
-char msg[256] = {0};
+char msg[512] = {0};
 int port;
 int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 pid_t pid;
@@ -49,18 +49,21 @@ int main(int argc, char *argv[])
 {
     memset(&Risposta, 0, sizeof(Risposta));
     int i = 1;
+    int ID, fila, numero, IDclient, data_inizio, data_fine;
+
+    crealista(&Risposta.lista);
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
-        printf("Errore nell'apertura del file.\n");
+        printf("Errore nell'apertura del file ombrelloni.\n");
         exit(-1);
     }
     else
         printf("File ombrelloni aperto correttamente.\n");
 
-    if ((f_prenotazioni = fopen("prenotazioni.txt", "rw")) == NULL)
+    if ((f_prenotazioni = fopen("prenotazioni.txt", "r")) == NULL)
     {
-        printf("Errore nell'apertura del file.\n");
+        printf("Errore nell'apertura del file prenotazioni.\n");
         exit(-1);
     }
     else
@@ -75,6 +78,14 @@ int main(int argc, char *argv[])
                 Risposta.ombrelloni_liberi++;
             }
             i++;
+        }
+    }
+
+    while (!feof(f_prenotazioni))
+    {
+        if (fscanf(f_prenotazioni, "%d %d %d %d %d %d", &ID, &fila, &numero, &IDclient, &data_inizio, &data_fine) == 6)
+        {
+            inserimento(&Risposta.lista, ID, fila, numero, IDclient, data_inizio, data_fine);
         }
     }
     fclose(f_ombrelloni);
@@ -322,28 +333,31 @@ void connection_handler(void *socket_desc)
             {
                 ombrellone_attuale = Messaggio.ID;
             }
-            Risposta = elaboraRisposta(Risposta, Messaggio);
+            strncpy(msg, elaboraRisposta(&Risposta, Messaggio), sizeof(msg));
 
             //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
-            if (write(sock, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            if (write(sock, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
                 printf("Errore nella ricezione della lunghezza del messaggio.\n");
                 close(sock);
                 printf("Socket chiusa.\n");
             }
         }
-    }
+            }
     //}
 
-    if (strncmp("EXIT", Risposta.msg, 4) == 0)
+    if (strncmp("EXIT", msg, 4) == 0)
     {
         int i;
         if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
         {
-            printf("Errore nell'apertura del file.\n");
+            printf("Errore nell'apertura del file ombrelloni.\n");
             exit(-1);
         }
+        else
+            printf("File ombrelloni aperto correttamente.\n");
+
         if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
         {
             Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
@@ -357,7 +371,18 @@ void connection_handler(void *socket_desc)
                      Risposta.Ombrellone[i].disponibile,
                      Risposta.Ombrellone[i].IDclient));
         }
+        if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
+        {
+            printf("Errore nell'apertura del file prenotazioni.\n");
+            exit(-1);
+        }
+        else
+            printf("File prenotazioni aperto correttamente.\n");
+
+        stampaListaSuFile(&Risposta.lista, f_prenotazioni);
+
         fclose(f_ombrelloni);
+        fclose(f_prenotazioni);
         goo = 0;
     }
 }

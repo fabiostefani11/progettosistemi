@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
     int mySocket;               //valore della funzione socket
     int ret;
-    char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
+    char messaggio[512] = {0}; //stringa in cui si scrive il messaggio da inviare
 
     // creazione del socket
     mySocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
         char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
         printf("Il server risponde: ");
 
-        while (totBytesRicevuti < sizeof(msg))
+        while (totBytesRicevuti < sizeof(messaggio))
         {
             if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
             {
@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
         while (1)
         {
             printf("Scrivi il messaggio: ");
-            fgets(msg, sizeof(msg), stdin);
+            fgets(messaggio, sizeof(messaggio), stdin);
 
-            if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            if (write(mySocket, messaggio, sizeof(messaggio)) != sizeof(messaggio)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
                 printf("Errore nella ricezione della lunghezza del messaggio\n");
                 close(mySocket);
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
             }
             /*else
                 printf("Invio riuscito.\n");*/
-            if (strncmp("EXIT", msg, 4) == 0)
+            if (strncmp("EXIT", messaggio, 4) == 0)
             {
                 printf("Client esce...\n");
                 break;
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
             char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
             printf("Il server risponde: ");
 
-            while (totBytesRicevuti < sizeof(msg))
+            while (totBytesRicevuti < sizeof(messaggio))
             {
                 if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
                 {

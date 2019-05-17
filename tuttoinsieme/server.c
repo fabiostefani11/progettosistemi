@@ -32,15 +32,6 @@ void sighand(int sig)
     }
 }
 
-void stampaListaSuFile(lista *l, FILE *f)
-{
-    while (*l)
-    {
-        fprintf(f, "%d %d %d %d %d %d \n", (*l)->dato.ID, (*l)->dato.fila, (*l)->dato.numero, (*l)->dato.IDclient, (*l)->dato.data_inizio, (*l)->dato.data_fine);
-        l = &(*l)->next;
-    }
-}
-
 int main(int argc, char *argv[])
 {
 
@@ -205,11 +196,11 @@ int main(int argc, char *argv[])
                         {
                             ombrellone_attuale = Messaggio.ID;
                         }
-                        Risposta = elaboraRisposta(Risposta, Messaggio);
+                        strncpy(msg, elaboraRisposta(&Risposta, Messaggio), sizeof(msg));
 
                         //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
-                        if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                        if (write(csd, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                         {
                             printf("Errore nella ricezione della lunghezza del messaggio.\n");
                             close(csd);
@@ -218,7 +209,7 @@ int main(int argc, char *argv[])
                         /* else
                             printf("Invio riuscito.\n"); */
 
-                        if (strncmp("EXIT", Risposta.msg, 4) == 0)
+                        if (strncmp("EXIT", msg, 4) == 0)
                         {
                             if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
                             {

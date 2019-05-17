@@ -57,9 +57,13 @@ typedef struct
     lista lista;
 } risposta;
 
+risposta Risposta;
+messaggio Messaggio;
+ombrellone Ombrellone[100];
+
 int uniscidata(char data[]);
 messaggio dividiFrase(char msg[]);
-risposta elaboraRisposta(risposta Risposta, messaggio Messaggio);
+char *elaboraRisposta(risposta *Risposta, messaggio Messaggio);
 void crealista(lista *l);
 void inserimento(lista *l, int ID, int fila, int numero, int IDclient, int data_inizio, int data_fine);
 int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichiesta, int fineRichiesta);
@@ -288,9 +292,9 @@ int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero)
         return trovato;
 }
 
-risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
+char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
 {
-    risposta Risposta_output;
+    //risposta Risposta_output;
     char *msg = malloc(sizeof(char) * DIM);
     int k;
     int i;
@@ -298,13 +302,14 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     if (strncmp("ERRORE_DATA", Messaggio.parola, 11) == 0) //se la data non è nel formato corretto ritorna un errore
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
-        strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-        return Risposta_output;
+        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+        //return Risposta_output;
+        return msg;
     }
 
     if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 1)) //scrive solo BOOK
     {
-        if (Risposta.ombrelloni_liberi == 0)
+        if (Risposta->ombrelloni_liberi == 0)
         {
             strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //risponde nok se non ci sono ombrelloni liberi
         }
@@ -319,10 +324,10 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         }
         else
         {
-            if (Risposta.Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
+            if (Risposta->Ombrellone[Messaggio.ID].disponibile == 0) //se l'ombrellone richiesto è libero, scrivo temp. occupato e risponde available
             {
-                Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
-                Risposta.ombrelloni_liberi--;
+                Risposta->Ombrellone[Messaggio.ID].disponibile = 4;
+                Risposta->ombrelloni_liberi--;
                 strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
             }
             else
@@ -333,9 +338,9 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
 
-        if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+        if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
         {
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
+            Risposta->Ombrellone[Messaggio.ID].disponibile = 4;
             strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
         }
         else
@@ -344,11 +349,11 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
 
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 4)
+        if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 1;
-            Risposta.Ombrellone[Messaggio.ID].IDclient = Risposta.IDclient;
-            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
+            Risposta->Ombrellone[Messaggio.ID].disponibile = 1;
+            Risposta->Ombrellone[Messaggio.ID].IDclient = Risposta->IDclient;
+            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
@@ -356,19 +361,20 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
     {
 
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 4)
+        if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
-            inserimento(&Risposta.lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta.IDclient, Messaggio.data_inizio, Messaggio.data_fine);
-            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
+            inserimento(&Risposta->lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta->IDclient, Messaggio.data_inizio, Messaggio.data_fine);
+            Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
+            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
     }
     else if ((strncmp("NCONFERMO", Messaggio.parola, 9) == 0) && (Messaggio.nparole == 3))
     {
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 4)
+        if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
+            Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
             strncpy(msg, "PRENOTAZIONE TEMPORANEA ANNULLATA\n", sizeof(char) * DIM);
         }
         else
@@ -376,12 +382,12 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 1)) //scrive available per sapere il numero di ombrelloni liberi
     {
-        if (Risposta.ombrelloni_liberi == 0) //tutti occupati
+        if (Risposta->ombrelloni_liberi == 0) //tutti occupati
         {
             strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
         }
         else
-            sprintf(msg, "AVAILABLE %d\n", Risposta.ombrelloni_liberi); //stampa available e il numero di ombrelloni liberi
+            sprintf(msg, "AVAILABLE %d\n", Risposta->ombrelloni_liberi); //stampa available e il numero di ombrelloni liberi
     }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 2)) //chiede il numero di ombrelloni liberi in una fila
     {
@@ -398,9 +404,9 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
             char *voce = malloc(sizeof(char) * DIM);
             for (int i = 1; i <= 100; i++)
             {
-                if (Risposta.Ombrellone[i].disponibile == 0 && Risposta.Ombrellone[i].fila == Messaggio.fila) //conta gli ombrelloni liberi in una fila e li mette in un array
+                if (Risposta->Ombrellone[i].disponibile == 0 && Risposta->Ombrellone[i].fila == Messaggio.fila) //conta gli ombrelloni liberi in una fila e li mette in un array
                 {
-                    sprintf(voce, "%d ", Risposta.Ombrellone[i].numero);
+                    sprintf(voce, "%d ", Risposta->Ombrellone[i].numero);
                     strcat(msg, voce);
                     z++;
                 }
@@ -417,13 +423,13 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     }
     else if ((strncmp("CANCEL", Messaggio.parola, 6) == 0) && (Messaggio.nparole == 4))
     {
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 1)
+        if (Risposta->Ombrellone[Messaggio.ID].disponibile == 1)
         {
-            if (Risposta.Ombrellone[Messaggio.ID].IDclient == Messaggio.IDclient)
+            if (Risposta->Ombrellone[Messaggio.ID].IDclient == Messaggio.IDclient)
             {
-                Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
-                Risposta.ombrelloni_liberi++;
-                Risposta.Ombrellone[Messaggio.ID].IDclient = 0;
+                Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
+                Risposta->ombrelloni_liberi++;
+                Risposta->Ombrellone[Messaggio.ID].IDclient = 0;
                 strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
             }
             else
@@ -435,13 +441,13 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 
     else if ((strncmp("CANCEL", Messaggio.parola, 6) == 0) && (Messaggio.nparole == 5))
     {
-        if (eliminaPrenotazione(&Risposta.lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone) == 1)
+        if (eliminaPrenotazione(&Risposta->lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone) == 1)
         {
 
             strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
         }
         else
-            strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
+            strncpy(msg, "PRENOTAZIONE INESISTENTE, O ID ERRATO\n", sizeof(char) * DIM);
     }
 
     /*else if (Messaggio.ombrellone > 10)           //controllo se sono corretti i dati immessi
@@ -460,25 +466,27 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
     {
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
-    //printf("Prima di strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
-    strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-    Risposta_output.ombrelloni_liberi = Risposta.ombrelloni_liberi;
-    Risposta_output.IDclient = Risposta.IDclient;
-    Risposta_output.lista = Risposta.lista;
+    ///////assegno tutti i valori alla varialbile di ritorno della funzione
+    /*strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+    Risposta_output.ombrelloni_liberi = Risposta->ombrelloni_liberi;
+    Risposta_output.IDclient = Risposta->IDclient;
+    Risposta_output.lista = Risposta->lista;
     for (i = 1; i <= 100; i++)
     {
-        Risposta_output.Ombrellone[i] = Risposta.Ombrellone[i];
+        Risposta_output.Ombrellone[i] = Risposta->Ombrellone[i];
     }
-    return Risposta_output;
-    //printf("Dopo strncpy msg: %s Risposta.msg: %s\n", msg, Risposta.msg);
-    //return Risposta.msg;
+    return Risposta->output;*/
+    return msg;
+
+    //printf("Dopo strncpy msg: %s Risposta->msg: %s\n", msg, Risposta->msg);
+    //return Risposta->msg;
 }
 
 int main()
 {
-    messaggio Messaggio;
-    ombrellone Ombrellone[100];
-    risposta Risposta;
+    //messaggio Messaggio;
+    //ombrellone Ombrellone[100];
+    //risposta Risposta;
     char frase[DIM] = {0};
     char msg[DIM] = {0};
     int ombrelloni_liberi = 0;
@@ -534,9 +542,11 @@ int main()
     printf("Inserisci la frase: ");
     fgets(frase, sizeof(frase), stdin);
     Messaggio = dividiFrase(frase);
-    Risposta = elaboraRisposta(Risposta, Messaggio);
-    strncpy(msg, Risposta.msg, sizeof(msg));
-    printf("La frase è: %s \n", Risposta.msg);
+    //Risposta = elaboraRisposta(Risposta, Messaggio);
+    strncpy(msg, elaboraRisposta(&Risposta, Messaggio), sizeof(msg));
+    //strncpy(msg, Risposta->msg, sizeof(msg));
+    //printf("La frase è: %s \n", Risposta->msg);
+    printf("La frase è: %s \n", msg);
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
     {

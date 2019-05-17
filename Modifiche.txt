@@ -1,14 +1,14 @@
 COSE DA FARE:
 1-Risolvere problema confermo e salvare ID dopo la conferma associandolo alla prenotazione dell'ombrellone	FATTO
 2-funzione cancel con controllo ID		FATTO
-3-preparare file per le prenotazioni future che venga letto e riempia una lista
+3-preparare file per le prenotazioni future che venga letto e riempia una lista FATTO
 4-modifica di funzione BOOK e 5 parole che vada direttamente alle prenotazioni future, sistemando la funzione di ricerca con le date
 5-fare struttura unica con 2 strutture, una per le attuali e una per le future, che andranno rispettivamente in ombrelloni.txt e in prenotazioni.txt
 6-se uno vuole prenotare per oggi, lo si manda a BOOK 3 PAROLE e andrà a modificare la struttura attuale, se uno vuole prenotare per il futuro o per un periodo che va da oggi al futuro, deve usare BOOK 5 PAROLE, e va a modificare sia la struttura attuale, che quella futura.
 7-sistemare problema chiusura server(multiThread). 			FATTO
 8-controllare se col multiThread funziona anche il multiclient. 	FATTO 	
 9++-journaling(penseremo a come scriverlo).
-10-problema chiusura server ( con ctrl c non funziona perchè entra in un loop infinito )
+10-problema chiusura server ( con ctrl c non funziona perchè entra in un loop infinito ) SI CHIUDE MA A VOLTE NON SI RIAPRE 
 
 
 18 aprile 

@@ -16,7 +16,6 @@
 #include <malloc.h>
 
 void connection_handler(void *);
-//P
 int goo = 1;
 int go = 1;
 int masterSocket; // descrittore del master socket
@@ -76,7 +75,7 @@ int main(int argc, char *argv[])
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
     int i = 1;
-    printf("\nson SERVER PID: %d\n Father PID: %d\n", (int)getpid(), (int)getppid());
+    printf("\nPid figlio server: %d\nPid del padre: %d\n", (int)getpid(), (int)getppid());
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
@@ -143,6 +142,7 @@ int main(int argc, char *argv[])
     {
         printf("Fallimento nella creazione della Socket.\n");
         close(masterSocket);
+        exit(0);
     }
     else
         printf("Socket creata con successo.\n");
@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
     {
         printf("bind() fallita.\n");
         close(masterSocket);
+         exit(0);
     }
     else
     {
@@ -161,6 +162,7 @@ int main(int argc, char *argv[])
     {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
         printf("listen() fallita.\n");
         close(masterSocket);
+         exit(0);
     }
 
     else
@@ -216,7 +218,7 @@ void connection_handler(void *socket_desc)
         printf("Socket chiusa.\n");
     }
 
-    pid = fork();
+   // pid = fork();
 
     //if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
     //{

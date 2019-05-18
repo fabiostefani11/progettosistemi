@@ -8,7 +8,7 @@ COSE DA FARE:
 7-sistemare problema chiusura server(multiThread). 			FATTO
 8-controllare se col multiThread funziona anche il multiclient. 	FATTO 	
 9++-journaling(penseremo a come scriverlo).
-10-problema chiusura server ( con ctrl c non funziona perchè entra in un loop infinito ) SI CHIUDE MA A VOLTE NON SI RIAPRE 
+10-problema chiusura server ( con ctrl c non funziona perchè entra in un loop infinito ) SI CHIUDE MA A VOLTE NON SI RIAPRE RISOLTO
 
 
 18 aprile 
@@ -69,3 +69,6 @@ Creato file provaLista.c, fa tutto bene con la lista (ricerca inserimento e canc
 15 MAGGIO
 
 Le azioni con le liste sembrano funzionare tutte bene, dobbiamo discutere sui valori di DISPONIBILE, forse possiamo eliminare 2 e 3.
+
+18 MAGGIO
+Risolto il problema che il server quando tentava di riaprirsi entrava in quel loop infinito, il problema era una fork di troppo,praticamente ogni volta che un client si connetteva faceva una fork del server, e quando noi chiudavamo il server principale, al momento della nuova chiamata ./server faceva ripartire quello delle fork, quindi ora possiamo tranquillamente chiudere e riaprire il server senza errori, la chiusura funziona sia con ctrl c che con la funzione kill, per il problema del client che dopo un pò non messaggia più con il server ho qualche idea del perchè ma ti spiegherò meglio a voce.

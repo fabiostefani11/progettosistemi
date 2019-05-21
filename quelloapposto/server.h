@@ -44,6 +44,7 @@ typedef struct
     int ombrelloni_liberi;
     int IDclient;
     lista lista;
+    int ombrelloni_Toccupati[101];
 } risposta;
 
 int uniscidata(char data[]);

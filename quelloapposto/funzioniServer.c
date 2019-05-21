@@ -267,13 +267,25 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
 
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
-        if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+
+        if (Risposta.ombrelloni_Toccupati[Messaggio.ID] == 0)
         {
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 4;
-            strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
+            Risposta.ombrelloni_Toccupati[Messaggio.ID] = 1;
+            if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+            {
+
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
+            }
+            else
+            {
+                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+                Risposta.ombrelloni_Toccupati[Messaggio.ID] = 0;
+            }
         }
         else
-            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+        {
+            strncpy(msg, "OMBRELLONE TEMPORANEAMENTE OCCUPATO\n", sizeof(char) * DIM);
+        }
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
@@ -287,14 +299,18 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
     }
-     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
     {
-
-        if (Risposta.Ombrellone[Messaggio.ID].disponibile == 4)
+        if (Risposta.ombrelloni_Toccupati[Messaggio.ID] == 1)
         {
-            inserimento(&Risposta.lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta.IDclient, Messaggio.data_inizio, Messaggio.data_fine);
-            Risposta.Ombrellone[Messaggio.ID].disponibile = 0;
-            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
+            if (ricerca(&Risposta.lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+            {
+                inserimento(&Risposta.lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta.IDclient, Messaggio.data_inizio, Messaggio.data_fine);
+                sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta.IDclient);
+                Risposta.ombrelloni_Toccupati[Messaggio.ID] = 0;
+            }
+            else
+                strncpy(msg, "ERRORE NELLA DATA O NELL'OMBRELLONE\n", sizeof(char) * DIM);
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);

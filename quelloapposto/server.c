@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     {
         printf("bind() fallita.\n");
         close(masterSocket);
-         exit(0);
+        exit(0);
     }
     else
     {
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
     {                                   //listen restituisce un valore negativo se fallisce, altrimenti 0
         printf("listen() fallita.\n");
         close(masterSocket);
-         exit(0);
+        exit(0);
     }
 
     else
@@ -218,7 +218,7 @@ void connection_handler(void *socket_desc)
         printf("Socket chiusa.\n");
     }
 
-   // pid = fork();
+    // pid = fork();
 
     //if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
     //{
@@ -241,7 +241,8 @@ void connection_handler(void *socket_desc)
             //divide la frase in una parola e 4 interi//
             Risposta.IDclient = id;
             Messaggio = dividiFrase(buf);
-            if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+
+            if (Messaggio.nparole == 3 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
             {
                 ombrellone_attuale = Messaggio.ID;
             }

@@ -237,6 +237,22 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         return Risposta;
     }
 
+    if (Messaggio.data_fine < Messaggio.data_inizio) //controllo se sono corretti i dati immessi
+    {
+        strncpy(msg, "Hai inserito una data di fine precedente a quella di inizio\n", sizeof(char) * DIM);
+        return Risposta;
+    }
+
+    if (Messaggio.ombrellone > 10) //controllo se sono corretti i dati immessi
+    {
+        strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
+        return Risposta;
+    }
+    else if (Messaggio.fila > 10)
+    {
+        strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
+        return Risposta;
+    }
     if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 1)) //scrive solo BOOK
     {
         if (Risposta.ombrelloni_liberi == 0)
@@ -394,15 +410,6 @@ risposta elaboraRisposta(risposta Risposta, messaggio Messaggio)
         else
             strncpy(msg, "PRENOTAZIONE INESISTENTE, O ID ERRATO\n", sizeof(char) * DIM);
     }
-
-    /*else if (Messaggio.ombrellone > 10)           //controllo se sono corretti i dati immessi
-    {
-        strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
-    }
-    else if (Messaggio.fila > 10)
-    {
-        strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
-    }*/
     else if (strncmp("EXIT", Messaggio.parola, 4) == 0)
     {
         strncpy(msg, "EXIT", sizeof(char) * DIM);

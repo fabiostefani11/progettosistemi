@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             }
             totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
             buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
-            printf("%s\n", buf);                 //stampa la stringa ricevuta
+            printf("%s\n", buf);               //stampa la stringa ricevuta
         }
 
         while (1)
@@ -78,7 +78,10 @@ int main(int argc, char *argv[])
             if (strncmp("EXIT", msg, 4) == 0)
             {
                 printf("Client esce...\n");
-                break;
+                close(mySocket);
+                printf("Socket chiusa per termine del messaggio.\n");
+
+                return 0;
             }
 
             ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
@@ -103,9 +106,5 @@ int main(int argc, char *argv[])
         }
 
         // chiusura della socket
-        close(mySocket);
-        printf("Socket chiusa per termine del messaggio.\n");
-
-        return 0;
     }
 }

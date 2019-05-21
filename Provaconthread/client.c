@@ -1,4 +1,3 @@
-#include "client.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -8,14 +7,17 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
+#define BUFFERSIZE 256
+#define PROTOPORT 8892
+
 int main(int argc, char *argv[])
 {
 
-    struct sockaddr_in sa;      //struttura della socket
-    memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
+    struct sockaddr_in serv_addr;      //struttura della socket
+    memset(&serv_addr, 0, sizeof(serv_addr)); //inizializza tutti i campi della struttura
     int mySocket;               //valore della funzione socket
     int ret;
-    char messaggio[512] = {0}; //stringa in cui si scrive il messaggio da inviare
+    char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
 
     // creazione del socket
     mySocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
@@ -28,12 +30,12 @@ int main(int argc, char *argv[])
         printf("Socket creata.\n");
 
     // inizializzazione dell'indirizzo del server
-    sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_port = htons(8888);                   //porta del server  htons->converte da formato del pc locale a quello della rete
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
+    serv_addr.sin_family = AF_INET;                     //famiglia indirizzi
+    serv_addr.sin_port = htons(8892);                   //porta del server  htons->converte da formato del pc locale a quello della rete
+    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
-    if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette il client alla socket, restituisce 0 se ha successo, altrimenti -1
+    if (connect(mySocket, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) //connette il client alla socket, restituisce 0 se ha successo, altrimenti -1
     {                                                              //il secondo campo è l'indirizzo del client
         printf("Connessione Fallita.\n");
         close(mySocket);
@@ -50,7 +52,7 @@ int main(int argc, char *argv[])
         char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
         printf("Il server risponde: ");
 
-        while (totBytesRicevuti < sizeof(messaggio))
+        while (totBytesRicevuti < sizeof(msg))
         {
             if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
             {
@@ -65,9 +67,9 @@ int main(int argc, char *argv[])
         while (1)
         {
             printf("Scrivi il messaggio: ");
-            fgets(messaggio, sizeof(messaggio), stdin);
+            fgets(msg, sizeof(msg), stdin);
 
-            if (write(mySocket, messaggio, sizeof(messaggio)) != sizeof(messaggio)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
                 printf("Errore nella ricezione della lunghezza del messaggio\n");
                 close(mySocket);
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
             }
             /*else
                 printf("Invio riuscito.\n");*/
-            if (strncmp("EXIT", messaggio, 4) == 0)
+            if (strncmp("EXIT", msg, 4) == 0)
             {
                 printf("Client esce...\n");
                 break;
@@ -89,7 +91,7 @@ int main(int argc, char *argv[])
             char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
             printf("Il server risponde: ");
 
-            while (totBytesRicevuti < sizeof(messaggio))
+            while (totBytesRicevuti < sizeof(msg))
             {
                 if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
                 {

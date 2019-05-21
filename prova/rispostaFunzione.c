@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+#include <time.h>
 
 #define PROTOPORT 5193 //numero della porta di default
 #define QLEN 6         //grandezza della coda
@@ -536,12 +537,18 @@ int main()
     fclose(f_ombrelloni);
     fclose(f_prenotazioni);
 
+    srand(time(0));
     int id = 1 + rand() % 1000;
+    int ombrellone_attuale = 0;
     Risposta.IDclient = id;
     printf("Il tuo ID è: %d\n", Risposta.IDclient);
     printf("Inserisci la frase: ");
     fgets(frase, sizeof(frase), stdin);
     Messaggio = dividiFrase(frase);
+    if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+    {
+        ombrellone_attuale = Messaggio.ID;
+    }
     //Risposta = elaboraRisposta(Risposta, Messaggio);
     strncpy(msg, elaboraRisposta(&Risposta, Messaggio), sizeof(msg));
     //strncpy(msg, Risposta->msg, sizeof(msg));
@@ -555,6 +562,11 @@ int main()
     }
     else
         printf("File ombrelloni aperto correttamente.\n");
+
+    /*if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
+    {
+        Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
+    };*/
 
     for (i = 1; i <= 100; i++)
     {

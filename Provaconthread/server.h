@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#define PROTOPORT 8888 //numero della porta di default
+#define PROTOPORT 8892 //numero della porta di default
 #define QLEN 6         //grandezza della coda
-#define BUFFERSIZE 512
+#define BUFFERSIZE 256
 
-#define DIM 512
+#define DIM 256
 #define dim 10
 
 typedef struct

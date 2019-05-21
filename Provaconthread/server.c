@@ -22,12 +22,6 @@ int masterSocket; // descrittore del master socket
 int c12;
 int client_sock;
 risposta Risposta;
-int csd; // client socket descriptor
-messaggio Messaggio;
-char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
-char msg[512] = {0};
-int port;
-int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 pid_t pid;
 FILE *f_ombrelloni, *f_prenotazioni;
 
@@ -47,11 +41,16 @@ void sighand(int sig)
 
 int main(int argc, char *argv[])
 {
-    memset(&Risposta, 0, sizeof(Risposta));
-    int i = 1;
+
+    int csd;
+    int port;
+    int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
     int ID, fila, numero, IDclient, data_inizio, data_fine;
 
     crealista(&Risposta.lista);
+
+    memset(&Risposta, 0, sizeof(Risposta));
+    int i = 1;
 
     if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
     {
@@ -102,12 +101,12 @@ int main(int argc, char *argv[])
         printf("Errore nel numero della porta %s. \n", argv[1]);
     }
 
-    struct sockaddr_in sa, client; //struttura per l'indirizzo del server
-    memset(&sa, 0, sizeof(sa));    //inizializza tutti i dati della struttura
+    struct sockaddr_in server, client; //struttura per l'indirizzo del server
+    memset(&server, 0, sizeof(server));    //inizializza tutti i dati della struttura
 
-    sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
-    sa.sin_port = htons(port);                   //porta del server  htons->converte dall'ordine di 16-bit dell'host all'ordine del network
+    server.sin_family = AF_INET;                     //famiglia indirizzi
+    server.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
+    server.sin_port = htons(port);                   //porta del server  htons->converte dall'ordine di 16-bit dell'host all'ordine del network
 
     signal(SIGINT, sighand);
     signal(SIGCHLD, sighand);
@@ -122,7 +121,7 @@ int main(int argc, char *argv[])
     else
         printf("Socket creata con successo.\n");
 
-    if (bind(masterSocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //la bind assegan un indirizzo locale ad una socket, e controlla l'esito
+    if (bind(masterSocket, (struct sockaddr *)&server, sizeof(server)) < 0) //la bind assegan un indirizzo locale ad una socket, e controlla l'esito
     {
         printf("bind() fallita.\n");
         close(masterSocket);
@@ -144,6 +143,9 @@ int main(int argc, char *argv[])
     c12 = sizeof(struct sockaddr_in);
     pthread_t thread_id;
     threadpool thpool = thpool_init(QLEN);
+     
+        ////////////////////////////////////////PROBLEMA////////////////////////////////////////
+
 
     /////////////////////////////////DA QUI IN GIU' IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     while ((client_sock = accept(masterSocket, (struct sockaddr *)&client, (socklen_t *)&c12)))
@@ -168,112 +170,6 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-/*
-printf("Connessione riuscita!!!!!\n");
-srand(time(0));
-int id = 1 + rand() % 1000;
-Risposta.IDclient = id;
-int ombrellone_attuale = 0;
-char mid[DIM] = "Il tuo id è ";
-char conv[DIM];
-sprintf(conv, "%d", id);
-strcat(mid, conv);
-if (write(csd, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
-{
-    printf("Errore nella ricezione della lunghezza del messaggio.\n");
-    close(csd);
-    printf("Socket chiusa.\n");
-}
-
-pid = fork();
-
-if (pid == 0) //se l'id del processo è 0, significa che il processo è un processo figlio
-{
-
-    close(masterSocket); // chiude il processo padre per continuare sul processo figlio
-    while (goo)
-    {
-
-        if (read(csd, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
-        {
-            printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
-            close(csd);
-            break;
-        }
-        else
-
-        {
-            printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
-
-            //divide la frase in una parola e 4 interi//
-            Messaggio = dividiFrase(buf);
-            if (Messaggio.nparole > 1 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
-            {
-                ombrellone_attuale = Messaggio.ID;
-            }
-            Risposta = elaboraRisposta(Risposta, Messaggio);
-
-            //confronta la parola con le varie possibilità e scrive la risposta nella socket
-
-            if (write(csd, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
-            {
-                printf("Errore nella ricezione della lunghezza del messaggio.\n");
-                close(csd);
-                printf("Socket chiusa.\n");
-            }
-            /* else
-                            printf("Invio riuscito.\n"); 
-
-            if (strncmp("EXIT", Risposta.msg, 4) == 0)
-            {
-                if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
-                {
-                    printf("Errore nell'apertura del file.\n");
-                    exit(-1);
-                }
-                if (Risposta.Ombrellone[ombrellone_attuale].disponibile == 4)
-                {
-                    Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
-                };
-                for (i = 1; i <= 100; i++)
-                {
-                    (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
-                             Risposta.Ombrellone[i].ID,
-                             Risposta.Ombrellone[i].fila,
-                             Risposta.Ombrellone[i].numero,
-                             Risposta.Ombrellone[i].disponibile,
-                             Risposta.Ombrellone[i].IDclient));
-                }
-                fclose(f_ombrelloni);
-                goo = 0;
-            }
-        }
-    }
-    ///////sul codice del prof qui c'è l'execl, ma non so a cosa serva quindi l'ho tolta
-}
-else //se l'id del processo è maggiore di 0, significa che il processo è padre
-{
-
-    if (wait(&status) < 0) //la funzione wait mette in attesa il processo padre finchè un processo figlio termina o riceve un comando di terminazione
-    {
-        printf("Errore nella wait().\n"); //la wait restituisce -1 se fallisce, altrimenti restituisce l'id del processo terminato
-        close(csd);
-        printf("Chiuso il Socket del processo figlio per errore nella wait.\n");
-    }
-    if (write(csd, &status, sizeof(status)) != sizeof(status)) //scrive sul socket figlio il valore di status
-                                                               //controlla se scrive il messaggio in tutta la sua lunghezza
-    {
-        printf("Errore nella ricezione della lunghezza del messaggio scritto dal Socket padre sul Socket figlio\n");
-        close(csd);
-        printf("Socket chiusa.\n");
-
-        close(masterSocket); //chiude il socket padre e quindi la comunicazione, ricominciando il ciclo
-    }
-}
-}
-return 0;
-}
-*/
 
 /*
     C socket server example, handles multiple clients using threads
@@ -286,6 +182,10 @@ return 0;
  * */
 void connection_handler(void *socket_desc)
 {
+
+    char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
+    char msg[256] = {0};
+    messaggio Messaggio;
 
     //Get the socket descriptor
     int sock = *(int *)socket_desc;
@@ -337,19 +237,18 @@ void connection_handler(void *socket_desc)
 
             //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
-            if (write(sock, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+            if (write(sock, Risposta.msg, sizeof(Risposta.msg)) != sizeof(Risposta.msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
                 printf("Errore nella ricezione della lunghezza del messaggio.\n");
                 close(sock);
                 printf("Socket chiusa.\n");
             }
         }
-            }
+    }
     //}
 
     if (strncmp("EXIT", msg, 4) == 0)
     {
-        int i;
         if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
         {
             printf("Errore nell'apertura del file ombrelloni.\n");
@@ -362,7 +261,7 @@ void connection_handler(void *socket_desc)
         {
             Risposta.Ombrellone[ombrellone_attuale].disponibile = 0;
         };
-        for (i = 1; i <= 100; i++)
+        for (int i = 1; i <= 100; i++)
         {
             (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
                      Risposta.Ombrellone[i].ID,

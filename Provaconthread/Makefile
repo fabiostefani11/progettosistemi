@@ -9,14 +9,11 @@ server.o: server.h server.c thpool.h
 funzioniServer.o: funzioniServer.c
 	gcc -g -c funzioniServer.c
 
-client: client.o funzioniClient.o
-	gcc -g -o client client.o funzioniClient.o
+client: client.o
+	gcc -g -o client client.o
 
-client.o: client.h client.c
+client.o: client.c
 	gcc -g -c client.c
-
-funzioniClient.o: funzioniClient.c
-	gcc -g -c funzioniClient.c
 
 thpool.o: thpool.h thpool.c
 	gcc -g -c thpool.c 

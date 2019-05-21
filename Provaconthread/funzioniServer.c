@@ -9,8 +9,10 @@
 #include <netinet/in.h>
 #include <sys/wait.h> /* wait */
 #include <signal.h>
+#include <time.h>
 #include <errno.h>
-#include <malloc.h>
+#include <pthread.h>
+#include "thpool.h"
 
 int uniscidata(char data[])
 {

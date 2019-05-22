@@ -25,7 +25,7 @@ risposta Risposta;
 int csd; // client socket descriptor
 messaggio Messaggio;
 char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei dati dai due socket
-char msg[256] = {0};
+
 int port;
 int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 pid_t pid;
@@ -193,8 +193,7 @@ void connection_handler(void *socket_desc)
 
     //Get the socket descriptor
     int sock = *(int *)socket_desc;
-    char *message, client_message[2000];
-
+    char msg[256] = {0};
     srand(time(0));
     int id = 1 + rand() % 1000;
     Risposta.IDclient = id;
@@ -256,6 +255,7 @@ void connection_handler(void *socket_desc)
 
     if (strncmp("EXIT", msg, 4) == 0)
     {
+        puts("Client disconesso");
         int i;
         if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
         {
@@ -280,9 +280,6 @@ void connection_handler(void *socket_desc)
             printf("Errore nell'apertura del file prenotazioni.\n");
             exit(-1);
         }
-        else
-            printf("File prenotazioni aperto correttamente.\n");
-
         stampaListaSuFile(&Risposta.lista, f_prenotazioni);
 
         fclose(f_prenotazioni);

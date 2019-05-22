@@ -79,8 +79,9 @@ int main(int argc, char *argv[])
                 printf("Invio riuscito.\n");*/
             if (strncmp("EXIT", msg, 4) == 0)
             {
-                printf("Client esce...\n");
-                break;
+                close(mySocket);
+                printf("Disconnessione dal server...\n");
+                exit(1);
             }
 
             ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
@@ -103,11 +104,6 @@ int main(int argc, char *argv[])
                 printf("%s", buf);                 //stampa la stringa ricevuta
             }
         }
-
-        // chiusura della socket
-        close(mySocket);
-        printf("Socket chiusa per termine del messaggio.\n");
-
-        return 0;
     }
+    return 0;
 }

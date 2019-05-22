@@ -243,7 +243,18 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
         //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-        //return Risposta_output;
+        return msg;
+    }
+
+    if (Messaggio.ombrellone > 10) //controllo se sono corretti i dati immessi
+    {
+        strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
+        return msg;
+    }
+
+    if (Messaggio.fila > 10)
+    {
+        strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
         return msg;
     }
 
@@ -278,13 +289,24 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
 
-        if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+        if (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 0)
         {
-            Risposta->Ombrellone[Messaggio.ID].disponibile = 4;
-            strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
+            Risposta->ombrelloni_Toccupati[Messaggio.ID] = 1;
+            if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+            {
+
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
+            }
+            else
+            {
+                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+                Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
+            }
         }
         else
-            strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+        {
+            strncpy(msg, "OMBRELLONE TEMPORANEAMENTE OCCUPATO\n", sizeof(char) * DIM);
+        }
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
@@ -300,12 +322,16 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 5))
     {
-
-        if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
+        if (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 1)
         {
-            inserimento(&Risposta->lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta->IDclient, Messaggio.data_inizio, Messaggio.data_fine);
-            Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
-            sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
+            if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
+            {
+                inserimento(&Risposta->lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta->IDclient, Messaggio.data_inizio, Messaggio.data_fine);
+                sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
+                Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
+            }
+            else
+                strncpy(msg, "ERRORE NELLA DATA O NELL'OMBRELLONE\n", sizeof(char) * DIM);
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
@@ -407,17 +433,13 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
     ///////assegno tutti i valori alla varialbile di ritorno della funzione
-    /*strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-    Risposta_output.ombrelloni_liberi = Risposta->ombrelloni_liberi;
-    Risposta_output.IDclient = Risposta->IDclient;
-    Risposta_output.lista = Risposta->lista;
-    for (i = 1; i <= 100; i++)
-    {
-        Risposta_output.Ombrellone[i] = Risposta->Ombrellone[i];
-    }
-    return Risposta->output;*/
+    //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+    //Risposta_output.ombrelloni_liberi = Risposta.ombrelloni_liberi;
+    //Risposta_output.IDclient = Risposta.IDclient;
+    //Risposta_output.lista = Risposta.lista;
+    //for (i = 1; i <= 100; i++)
+    //{
+    //    Risposta_output.Ombrellone[i] = Risposta.Ombrellone[i];
+    //}
     return msg;
-
-    //printf("Dopo strncpy msg: %s Risposta->msg: %s\n", msg, Risposta->msg);
-    //return Risposta->msg;
 }

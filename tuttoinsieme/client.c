@@ -1,4 +1,3 @@
-#include "client.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -7,6 +6,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+
+#define BUFFERSIZE 512
+#define PROTOPORT 8888
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +31,7 @@ int main(int argc, char *argv[])
 
     // inizializzazione dell'indirizzo del server
     sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_port = htons(5193);                   //porta del server  htons->converte da formato del pc locale a quello della rete
+    sa.sin_port = htons(8888);                   //porta del server  htons->converte da formato del pc locale a quello della rete
     sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
             }
             totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
             buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
-            printf("%s\n", buf);                 //stampa la stringa ricevuta
+            printf("%s\n", buf);               //stampa la stringa ricevuta
         }
 
         while (1)

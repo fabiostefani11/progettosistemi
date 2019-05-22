@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define PROTOPORT 5193 //numero della porta di default
+#define PROTOPORT 8888 //numero della porta di default
 #define QLEN 6         //grandezza della coda
 #define BUFFERSIZE 256
 
@@ -46,6 +46,7 @@ typedef struct
     int ombrelloni_liberi;
     int IDclient;
     lista lista;
+    int ombrelloni_Toccupati[101];
 } risposta;
 
 int uniscidata(char data[]);

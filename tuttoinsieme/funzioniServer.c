@@ -246,6 +246,13 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         return msg;
     }
 
+    if (Messaggio.data_fine < Messaggio.data_inizio) //se la data non è nel formato corretto ritorna un errore
+    {
+        strncpy(msg, "Data di fine precedente alla data di inizio.\n", sizeof(char) * DIM);
+        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+        return msg;
+    }
+
     if (Messaggio.ombrellone > 10) //controllo se sono corretti i dati immessi
     {
         strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);

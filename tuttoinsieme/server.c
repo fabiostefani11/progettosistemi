@@ -17,7 +17,6 @@
 
 void connection_handler(void *);
 int goo = 1;
-int go = 1;
 int masterSocket; // descrittore del master socket
 int c12;
 int client_sock;
@@ -35,7 +34,6 @@ FILE *f_ombrelloni, *f_prenotazioni;
 void sighand(int sig)
 {
     printf("\n");
-    goo = 0;
     if (sig == SIGINT)
     {
         printf("hai premuto CTRL-C ... chiusura del Master Socket.\n");
@@ -200,6 +198,7 @@ void connection_handler(void *socket_desc)
     int ombrellone_attuale = 0;
     char mid[DIM] = "Il tuo id è ";
     char conv[DIM];
+    int go = 1;
     sprintf(conv, "%d", id);
     strcat(mid, conv);
     if (write(sock, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
@@ -215,7 +214,7 @@ void connection_handler(void *socket_desc)
     //{
 
     // close(sock); // chiude il processo padre per continuare sul processo figlio
-    while (goo)
+    while (go)
     {
 
         if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
@@ -284,7 +283,7 @@ void connection_handler(void *socket_desc)
 
         fclose(f_prenotazioni);
         fclose(f_ombrelloni);
-        close(sock);
-        goo = 0;
+        //close(sock);
+        go = 0;
     }
 }

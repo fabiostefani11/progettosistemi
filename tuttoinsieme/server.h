@@ -59,3 +59,4 @@ int ricerca(lista *l, int ID, int datainizio, int datafine);
 void elimTesta(lista *l);
 int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero);
 void stampaListaSuFile(lista *l, FILE *f);
+void aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni);

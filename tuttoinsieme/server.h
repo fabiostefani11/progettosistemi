@@ -57,6 +57,6 @@ void inserimento(lista *l, int ID, int fila, int numero, int IDclient, int data_
 int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichiesta, int fineRichiesta);
 int ricerca(lista *l, int ID, int datainizio, int datafine);
 void elimTesta(lista *l);
-int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero);
+int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero, int data_inizio);
 void stampaListaSuFile(lista *l, FILE *f);
-void aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni);
+int aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni);

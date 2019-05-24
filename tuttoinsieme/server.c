@@ -254,8 +254,25 @@ void connection_handler(void *socket_desc)
 
     if (strncmp("UCCIDITI", msg, 4) == 0)
     {
+        int controllo;
         puts("Client disconesso");
-        aggiornaFile(&Risposta, ombrellone_attuale, f_ombrelloni, f_prenotazioni);
+        controllo = aggiornaFile(&Risposta, ombrellone_attuale, f_ombrelloni, f_prenotazioni);
+        if (controllo == 0)
+        {
+            printf("Scrittura sui file eseguita correttamente.\n");
+        }
+        if (controllo == 1)
+        {
+            printf("Errore nella scrittura sul file Ombrelloni.txt\n");
+        }
+        if (controllo == 2)
+        {
+            printf("Errore nella scrittura sul file Prenotazioni.txt\n");
+        }
+        if (controllo == 3)
+        {
+            printf("Errore nella scrittura di entrambi i file.\n");
+        }
         //close(sock);
         go = 0;
     }

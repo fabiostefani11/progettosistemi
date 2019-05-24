@@ -120,13 +120,13 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
-void aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni)
+int aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni)
 {
+    int ok = 0;
     int i;
     if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
     {
-        printf("Errore nell'apertura del file.\n");
-        exit(-1);
+        ok = 1;
     }
     if (Risposta->Ombrellone[ombrellone_attuale].disponibile == 4)
     {
@@ -143,13 +143,15 @@ void aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni
     }
     if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
     {
-        printf("Errore nell'apertura del file prenotazioni.\n");
-        exit(-1);
+        ok = ok + 2;
     }
+
     stampaListaSuFile(&Risposta->lista, f_prenotazioni);
 
     fclose(f_prenotazioni);
     fclose(f_ombrelloni);
+
+    return ok;
 }
 
 void stampaListaSuFile(lista *l, FILE *f)
@@ -241,12 +243,12 @@ void elimTesta(lista *l)
     free(aux);
 }
 
-int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero)
+int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero, int data_inizio)
 {
     int trovato = 0;
     while (*l)
     {
-        if (((*l)->dato.IDclient == IDclient) && ((*l)->dato.ID == ((fila * 10) + numero) - 10))
+        if (((*l)->dato.IDclient == IDclient) && ((*l)->dato.ID == ((fila * 10) + numero) - 10) && ((*l)->dato.data_inizio == data_inizio))
         {
             elimTesta(l);
             trovato = 1;
@@ -446,7 +448,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
 
     else if ((strncmp("CANCEL", Messaggio.parola, 6) == 0) && (Messaggio.nparole == 5))
     {
-        if (eliminaPrenotazione(&Risposta->lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone) == 1)
+        if (eliminaPrenotazione(&Risposta->lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone, Messaggio.data_fine) == 1)
         {
 
             strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);

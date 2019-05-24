@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 
     else
     {
+        strncpy(msg, "", sizeof(char) * 256);
         printf("Connessione riuscita.\n");
         int bytesRicevuti;
         int totBytesRicevuti = 0;
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
 
         while (1)
         {
+            strncpy(msg, "", sizeof(char) * 256);
             printf("Scrivi il messaggio: ");
             fgets(msg, sizeof(msg), stdin);
 

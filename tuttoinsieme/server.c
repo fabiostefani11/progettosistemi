@@ -253,7 +253,7 @@ void connection_handler(void *socket_desc)
     }
     //}
 
-    if (strncmp("EXIT", msg, 4) == 0)
+    if (strncmp("UCCIDITI", msg, 4) == 0)
     {
         puts("Client disconesso");
         int i;
@@ -284,6 +284,7 @@ void connection_handler(void *socket_desc)
 
         fclose(f_prenotazioni);
         fclose(f_ombrelloni);
+        close(sock);
         goo = 0;
     }
 }

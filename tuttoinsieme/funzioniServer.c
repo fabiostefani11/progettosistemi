@@ -433,7 +433,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     }*/
     else if (strncmp("EXIT", Messaggio.parola, 4) == 0)
     {
-        strncpy(msg, "EXIT", sizeof(char) * DIM);
+        strncpy(msg, "UCCIDITI", sizeof(char) * DIM);
     }
     else
     {

@@ -1,4 +1,3 @@
-#include "client.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -7,16 +6,42 @@
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <signal.h>
+
+#define BUFFERSIZE 512
+#define PROTOPORT 8888
+
+int go = 1;
+int mySocket; //valore della funzione socket
+
+void sighand(int sig)
+{
+    printf("\n");
+    if (sig == SIGALRM)
+
+    {
+        printf("Sessione scaduta.\n");
+        close(mySocket);
+        printf("Disconnessione dal server...\n");
+        exit(0);
+    }
+    if (sig == SIGINT)
+    {
+        printf("hai premuto CTRL-C ... chiusura del Client.\n");
+        close(mySocket);
+        exit(0);
+    }
+}
 
 int main(int argc, char *argv[])
 {
 
     struct sockaddr_in sa;      //struttura della socket
     memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
-    int mySocket;               //valore della funzione socket
     int ret;
     char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
-
+    signal(SIGALRM, sighand);
+    signal(SIGINT, sighand);
     // creazione del socket
     mySocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
     if (mySocket < 0)
@@ -29,7 +54,7 @@ int main(int argc, char *argv[])
 
     // inizializzazione dell'indirizzo del server
     sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_port = htons(5193);                   //porta del server  htons->converte da formato del pc locale a quello della rete
+    sa.sin_port = htons(8888);                   //porta del server  htons->converte da formato del pc locale a quello della rete
     sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
@@ -44,6 +69,7 @@ int main(int argc, char *argv[])
 
     else
     {
+        strncpy(msg, "", sizeof(char) * 256);
         printf("Connessione riuscita.\n");
         int bytesRicevuti;
         int totBytesRicevuti = 0;
@@ -59,26 +85,29 @@ int main(int argc, char *argv[])
             }
             totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
             buf[bytesRicevuti] = '\0';         //aggiuge il carattere di chiusura della stringa
-            printf("%s\n", buf);                 //stampa la stringa ricevuta
+            printf("%s\n", buf);               //stampa la stringa ricevuta
         }
 
-        while (1)
+        while (go)
         {
+            strncpy(msg, "", sizeof(char) * 256);
             printf("Scrivi il messaggio: ");
             fgets(msg, sizeof(msg), stdin);
-
+            alarm(60);
             if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
             {
                 printf("Errore nella ricezione della lunghezza del messaggio\n");
                 close(mySocket);
                 printf("Socket chiusa.\n");
             }
+
             /*else
                 printf("Invio riuscito.\n");*/
             if (strncmp("EXIT", msg, 4) == 0)
             {
-                printf("Client esce...\n");
-                break;
+                close(mySocket);
+                printf("Disconnessione dal server...\n");
+                exit(1);
             }
 
             ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
@@ -101,11 +130,6 @@ int main(int argc, char *argv[])
                 printf("%s", buf);                 //stampa la stringa ricevuta
             }
         }
-
-        // chiusura della socket
-        close(mySocket);
-        printf("Socket chiusa per termine del messaggio.\n");
-
-        return 0;
     }
+    return 0;
 }

@@ -11,6 +11,8 @@
 #include <signal.h>
 #include <errno.h>
 #include <malloc.h>
+#include "thpool.h"
+
 
 int uniscidata(char data[])
 {
@@ -26,6 +28,29 @@ int uniscidata(char data[])
     strcat(anno, giorno);
 
     return atoi(anno);
+}
+
+aggiornamento dividiAggiornamento(char msg[])
+{
+    aggiornamento Aggiornamento;
+    char numero[3];
+    int k = 0;
+    int i = 0;
+    while (msg[k] != '-')
+    {
+        numero[k] = msg[k];
+        k++;
+    }
+    k++;
+    Aggiornamento.IDCLient = atoi(numero);
+
+    while (msg[k] != '\n')
+    {
+        Aggiornamento.parola[i] = msg[k];
+        k++;
+        i++;
+    }
+    return Aggiornamento;
 }
 
 messaggio dividiFrase(char msg[])
@@ -120,39 +145,6 @@ messaggio dividiFrase(char msg[])
     return Messaggio;
 }
 
-int aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni)
-{
-    int ok = 0;
-    int i;
-    if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
-    {
-        ok = 1;
-    }
-    if (Risposta->Ombrellone[ombrellone_attuale].disponibile == 4)
-    {
-        Risposta->Ombrellone[ombrellone_attuale].disponibile = 0;
-    };
-    for (i = 1; i <= 100; i++)
-    {
-        (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
-                 Risposta->Ombrellone[i].ID,
-                 Risposta->Ombrellone[i].fila,
-                 Risposta->Ombrellone[i].numero,
-                 Risposta->Ombrellone[i].disponibile,
-                 Risposta->Ombrellone[i].IDclient));
-    }
-    if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
-    {
-        ok = ok + 2;
-    }
-
-    stampaListaSuFile(&Risposta->lista, f_prenotazioni);
-
-    fclose(f_prenotazioni);
-    fclose(f_ombrelloni);
-
-    return ok;
-}
 
 void stampaListaSuFile(lista *l, FILE *f)
 {

@@ -20,7 +20,7 @@ void sighand(int sig)
     if (sig == SIGALRM)
 
     {
-        printf("Sessione scaduta.\n");
+        printf("Sessione scaduta per inattività.\n");
         close(mySocket);
         printf("Disconnessione dal server...\n");
         exit(0);

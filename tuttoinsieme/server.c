@@ -14,7 +14,9 @@
 #include <pthread.h>
 #include "thpool.h"
 #include <malloc.h>
+#include <semaphore.h>
 
+sem_t mutex;
 void aggiornaFile(void *);
 void connection_handler(void *);
 int goo = 1;
@@ -37,7 +39,7 @@ void sighand(int sig)
     printf("\n");
     if (sig == SIGINT)
     {
-        printf("hai premuto CTRL-C ... chiusura del Master Socket.\n");
+        printf(RED"hai premuto CTRL-C ... chiusura del Master Socket.\n"CRESET);
         close(masterSocket);
     }
     else if (sig == SIGCHLD)
@@ -61,6 +63,7 @@ void sighand(int sig)
 
 int main(int argc, char *argv[])
 {
+    sem_init(&mutex, 0, 1);
     int ID, fila, numero, IDclient, data_inizio, data_fine;
     char update[DIM];
     aggiornamento Aggiornamento;
@@ -261,6 +264,7 @@ void connection_handler(void *socket_desc)
             //divide la frase in una parola e 4 interi//
             Risposta.IDclient = id;
             //wait
+            sem_wait(&mutex);
             if ((f_aggiornamenti = fopen("aggiornamenti.txt", "a")) == NULL)
             {
                 printf("Errore nell'apertura del file Aggiornamenti.\n");
@@ -271,6 +275,7 @@ void connection_handler(void *socket_desc)
             fprintf(f_aggiornamenti, "%d-%s", id, buf);
             fclose(f_aggiornamenti);
             //signal
+            sem_post(&mutex);
 
             Messaggio = dividiFrase(buf);
 
@@ -348,11 +353,13 @@ void aggiornaFile(void *Risposta)
         fclose(f_ombrelloni);
 
         //wait
+        sem_wait(&mutex);
         if ((f_aggiornamenti = fopen("aggiornamenti.txt", "w")) == NULL)
         {
             printf("errore apertura file aggiornamenti.\n");
         }
         fclose(f_aggiornamenti);
         //signal
+        sem_post(&mutex);
     }
 }

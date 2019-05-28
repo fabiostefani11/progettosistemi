@@ -8,6 +8,10 @@
 #include <netinet/in.h>
 #include <signal.h>
 
+#define RED "\x1b[31m"
+#define CRESET "\x1b[0m"
+
+
 #define BUFFERSIZE 512
 #define PROTOPORT 8888
 
@@ -70,7 +74,8 @@ int main(int argc, char *argv[])
     else
     {
         strncpy(msg, "", sizeof(char) * 256);
-        printf("Connessione riuscita.\n");
+        printf("Connessione riuscita con la socket.\n");
+        printf(RED"In attesa di risposta dal server...\n"CRESET);
         int bytesRicevuti;
         int totBytesRicevuti = 0;
         char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server

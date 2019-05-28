@@ -3,6 +3,9 @@
 #define PROTOPORT 8888 //numero della porta di default
 #define QLEN 3        //grandezza della coda
 #define BUFFERSIZE 256
+#define RED "\x1b[31m"
+#define CRESET "\x1b[0m"
+
 
 #define DIM 256
 #define dim 10

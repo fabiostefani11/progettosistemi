@@ -1,8 +1,10 @@
 #include <stdio.h>
 
 #define PROTOPORT 8888 //numero della porta di default
-#define QLEN 6         //grandezza della coda
+#define QLEN 3         //grandezza della coda
 #define BUFFERSIZE 256
+#define RED "\x1b[31m"
+#define CRESET "\x1b[0m"
 
 #define DIM 256
 #define dim 10
@@ -17,6 +19,12 @@ typedef struct
     int data_inizio;
     int data_fine;
 } ombrellone;
+
+typedef struct
+{
+    char parola[DIM];
+    int IDCLient;
+} aggiornamento;
 
 typedef struct nodo
 {
@@ -59,4 +67,6 @@ int ricerca(lista *l, int ID, int datainizio, int datafine);
 void elimTesta(lista *l);
 int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero, int data_inizio);
 void stampaListaSuFile(lista *l, FILE *f);
-int aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni);
+aggiornamento dividiAggiornamento(char msg[]);
+char *ricercaAvailableNumero(lista *l, int datainizio, int datafine);
+char *ricercaAvailable(lista *l, int fila, int datainizio, int datafine);

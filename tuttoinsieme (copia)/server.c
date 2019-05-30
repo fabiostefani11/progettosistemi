@@ -14,7 +14,10 @@
 #include <pthread.h>
 #include "thpool.h"
 #include <malloc.h>
+#include <semaphore.h>
 
+sem_t mutex;
+void aggiornaFile(void *);
 void connection_handler(void *);
 int goo = 1;
 int masterSocket; // descrittore del master socket
@@ -28,7 +31,7 @@ char buf[BUFFERSIZE]; //array di stringhe che serve come buffer di transito dei 
 int port;
 int status; //il parametro status il processo che termina può comunicare al padre informazioni sul suo stato di terminazione (ad es. l’esito della sua esecuzione).
 pid_t pid;
-FILE *f_ombrelloni, *f_prenotazioni;
+FILE *f_ombrelloni, *f_prenotazioni, *f_aggiornamenti;
 
 //questa funzione non la metto nel .h e nel .c perchè dà errore sulla variabile mastersocket
 void sighand(int sig)
@@ -36,7 +39,7 @@ void sighand(int sig)
     printf("\n");
     if (sig == SIGINT)
     {
-        printf("hai premuto CTRL-C ... chiusura del Master Socket.\n");
+        printf(RED "hai premuto CTRL-C ... chiusura del Master Socket.\n" CRESET);
         close(masterSocket);
     }
     else if (sig == SIGCHLD)
@@ -60,7 +63,10 @@ void sighand(int sig)
 
 int main(int argc, char *argv[])
 {
+    sem_init(&mutex, 0, 1);
     int ID, fila, numero, IDclient, data_inizio, data_fine;
+    char update[DIM];
+    aggiornamento Aggiornamento;
 
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
@@ -102,8 +108,33 @@ int main(int argc, char *argv[])
             inserimento(&Risposta.lista, ID, fila, numero, IDclient, data_inizio, data_fine);
         }
     }
+
+    if ((f_aggiornamenti = fopen("aggiornamenti.txt", "r")) == NULL)
+    {
+        printf("Errore nell'apertura del file aggiornamenti.\n");
+        exit(-1);
+    }
+    else
+        printf("File aggiornamenti aperto correttamente.\n");
+
+    printf("Sto controllando se ci sono aggiornamenti.\n");
+    while (1)
+    {
+        if (fgets(update, DIM, f_aggiornamenti) == NULL)
+        {
+            break;
+        }
+        else
+        {
+            Aggiornamento = dividiAggiornamento(update);
+            Messaggio = dividiFrase(Aggiornamento.parola);
+            Risposta.IDclient = Aggiornamento.IDCLient;
+            elaboraRisposta(&Risposta, Messaggio);
+        }
+    }
     fclose(f_ombrelloni);
     fclose(f_prenotazioni);
+    fclose(f_aggiornamenti);
 
     if (argc > 1) //da togliere
     {
@@ -161,6 +192,7 @@ int main(int argc, char *argv[])
     c12 = sizeof(struct sockaddr_in);
     pthread_t thread_id;
     threadpool thpool = thpool_init(QLEN);
+    thpool_add_work(thpool, aggiornaFile, ((void *)&Risposta));
 
     /////////////////////////////////DA QUI IN GIU' IL CICLO PER LA CONVERSAZIONE///////////////////////////////////////////////
     while ((client_sock = accept(masterSocket, (struct sockaddr *)&client, (socklen_t *)&c12)))
@@ -201,6 +233,7 @@ void connection_handler(void *socket_desc)
     int go = 1;
     sprintf(conv, "%d", id);
     strcat(mid, conv);
+
     if (write(sock, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
     {
         printf("Errore nella ricezione della lunghezza del messaggio.\n");
@@ -230,6 +263,20 @@ void connection_handler(void *socket_desc)
 
             //divide la frase in una parola e 4 interi//
             Risposta.IDclient = id;
+            //wait
+            sem_wait(&mutex);
+            if ((f_aggiornamenti = fopen("aggiornamenti.txt", "a")) == NULL)
+            {
+                printf("Errore nell'apertura del file Aggiornamenti.\n");
+                exit(-1);
+            }
+            else
+                printf("File Aggiornamenti aperto correttamente.\n");
+            fprintf(f_aggiornamenti, "%d-%s", id, buf);
+            fclose(f_aggiornamenti);
+            //signal
+            sem_post(&mutex);
+
             Messaggio = dividiFrase(buf);
 
             if (Messaggio.nparole == 3 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
@@ -252,28 +299,67 @@ void connection_handler(void *socket_desc)
     }
     //}
 
-    if (strncmp("UCCIDITI", msg, 4) == 0)
+    if (strncmp("USCITA", msg, 6) == 0)
     {
-        int controllo;
-        puts("Client disconesso");
-        controllo = aggiornaFile(&Risposta, ombrellone_attuale, f_ombrelloni, f_prenotazioni);
-        if (controllo == 0)
-        {
-            printf("Scrittura sui file eseguita correttamente.\n");
-        }
-        if (controllo == 1)
-        {
-            printf("Errore nella scrittura sul file Ombrelloni.txt\n");
-        }
-        if (controllo == 2)
-        {
-            printf("Errore nella scrittura sul file Prenotazioni.txt\n");
-        }
-        if (controllo == 3)
-        {
-            printf("Errore nella scrittura di entrambi i file.\n");
-        }
-        //close(sock);
+
+        printf("Client %d disconesso\n", id);
         go = 0;
+    }
+}
+
+void aggiornaFile(void *Risposta)
+{
+
+    while (1)
+    {
+        sleep(20);
+        risposta Ris = *(risposta *)Risposta;
+        int ok = 0;
+        int i;
+        if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
+        {
+            printf("errore apertura file ombrelloni.\n");
+        }
+
+        for (i = 1; i <= 100; i++)
+        {
+            if (Ris.Ombrellone[i].disponibile == 4)
+            {
+                (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                         Ris.Ombrellone[i].ID,
+                         Ris.Ombrellone[i].fila,
+                         Ris.Ombrellone[i].numero,
+                         0,
+                         Ris.Ombrellone[i].IDclient));
+            }
+            else
+            {
+                (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                         Ris.Ombrellone[i].ID,
+                         Ris.Ombrellone[i].fila,
+                         Ris.Ombrellone[i].numero,
+                         Ris.Ombrellone[i].disponibile,
+                         Ris.Ombrellone[i].IDclient));
+            }
+        }
+        if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
+        {
+            printf("errore apertura file prenotazioni.\n");
+        }
+
+        stampaListaSuFile(&Ris.lista, f_prenotazioni);
+
+        fclose(f_prenotazioni);
+        fclose(f_ombrelloni);
+
+        //wait
+        sem_wait(&mutex);
+        if ((f_aggiornamenti = fopen("aggiornamenti.txt", "w")) == NULL)
+        {
+            printf("errore apertura file aggiornamenti.\n");
+        }
+        fclose(f_aggiornamenti);
+        //signal
+        sem_post(&mutex);
     }
 }

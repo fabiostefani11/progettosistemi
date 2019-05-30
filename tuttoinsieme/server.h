@@ -1,11 +1,10 @@
 #include <stdio.h>
 
 #define PROTOPORT 8888 //numero della porta di default
-#define QLEN 3        //grandezza della coda
+#define QLEN 3         //grandezza della coda
 #define BUFFERSIZE 256
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
-
 
 #define DIM 256
 #define dim 10
@@ -69,4 +68,5 @@ void elimTesta(lista *l);
 int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero, int data_inizio);
 void stampaListaSuFile(lista *l, FILE *f);
 aggiornamento dividiAggiornamento(char msg[]);
-//void aggiornaFile(risposta *Risposta, FILE *f_ombrelloni, FILE *f_prenotazioni,FILE *f_aggiornamenti);
+char *ricercaAvailableNumero(lista *l, int datainizio, int datafine);
+char *ricercaAvailable(lista *l, int fila, int datainizio, int datafine);

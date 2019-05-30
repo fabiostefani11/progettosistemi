@@ -39,7 +39,7 @@ void sighand(int sig)
     printf("\n");
     if (sig == SIGINT)
     {
-        printf(RED"hai premuto CTRL-C ... chiusura del Master Socket.\n"CRESET);
+        printf(RED "hai premuto CTRL-C ... chiusura del Master Socket.\n" CRESET);
         close(masterSocket);
     }
     else if (sig == SIGCHLD)
@@ -299,7 +299,7 @@ void connection_handler(void *socket_desc)
     }
     //}
 
-    if (strncmp("UCCIDITI", msg, 4) == 0)
+    if (strncmp("USCITA", msg, 6) == 0)
     {
 
         printf("Client %d disconesso\n", id);

@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <errno.h>
 #include <malloc.h>
+#include "thpool.h"
 
 int uniscidata(char data[])
 {
@@ -26,6 +27,29 @@ int uniscidata(char data[])
     strcat(anno, giorno);
 
     return atoi(anno);
+}
+
+aggiornamento dividiAggiornamento(char msg[])
+{
+    aggiornamento Aggiornamento;
+    char numero[3];
+    int k = 0;
+    int i = 0;
+    while (msg[k] != '-')
+    {
+        numero[k] = msg[k];
+        k++;
+    }
+    k++;
+    Aggiornamento.IDCLient = atoi(numero);
+
+    while (msg[k] != '\n')
+    {
+        Aggiornamento.parola[i] = msg[k];
+        k++;
+        i++;
+    }
+    return Aggiornamento;
 }
 
 messaggio dividiFrase(char msg[])
@@ -60,6 +84,17 @@ messaggio dividiFrase(char msg[])
     if (strlen(frase[1]) <= 2)
     {
         Messaggio.fila = atoi(frase[1]);
+    }
+    if ((Messaggio.nparole == 4) && (strncmp("AVAILABLE", Messaggio.parola, 9) == 0))
+    {
+        if (frase[2][2] != '/' || frase[2][5] != '/' || frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
+        {
+            strcpy(Messaggio.parola, "ERRORE_DATA");
+            return Messaggio;
+        }
+        Messaggio.data_inizio = uniscidata(frase[2]);
+        Messaggio.data_fine = uniscidata(frase[3]);
+        return Messaggio;
     }
     else if (strlen(frase[1]) > 2)
     {
@@ -99,7 +134,7 @@ messaggio dividiFrase(char msg[])
     }
     if (Messaggio.nparole == 6)
     {
-        if (frase[3][2] != '/' || frase[3][5] != '/' || frase[4][2] != '/' || frase[4][5] != '/') //controllo se la data è nel formato corretto
+        if (frase[4][2] != '/' || frase[4][5] != '/' || frase[5][2] != '/' || frase[5][5] != '/') //controllo se la data è nel formato corretto
         {
             strcpy(Messaggio.parola, "ERRORE_DATA");
             return Messaggio;
@@ -118,40 +153,6 @@ messaggio dividiFrase(char msg[])
     }
 
     return Messaggio;
-}
-
-int aggiornaFile(risposta *Risposta, int ombrellone_attuale, FILE *f_ombrelloni, FILE *f_prenotazioni)
-{
-    int ok = 0;
-    int i;
-    if ((f_ombrelloni = fopen("ombrelloni.txt", "w")) == NULL)
-    {
-        ok = 1;
-    }
-    if (Risposta->Ombrellone[ombrellone_attuale].disponibile == 4)
-    {
-        Risposta->Ombrellone[ombrellone_attuale].disponibile = 0;
-    };
-    for (i = 1; i <= 100; i++)
-    {
-        (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
-                 Risposta->Ombrellone[i].ID,
-                 Risposta->Ombrellone[i].fila,
-                 Risposta->Ombrellone[i].numero,
-                 Risposta->Ombrellone[i].disponibile,
-                 Risposta->Ombrellone[i].IDclient));
-    }
-    if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)
-    {
-        ok = ok + 2;
-    }
-
-    stampaListaSuFile(&Risposta->lista, f_prenotazioni);
-
-    fclose(f_prenotazioni);
-    fclose(f_ombrelloni);
-
-    return ok;
 }
 
 void stampaListaSuFile(lista *l, FILE *f)
@@ -203,6 +204,91 @@ int ricerca(lista *l, int ID, int datainizio, int datafine)
     }
     else
         return 1;
+}
+
+char *ricercaAvailable(lista *l, int fila, int datainizio, int datafine)
+{
+    int z = 0;
+    int liberi_fila[11] = {0};
+    int k = 0;
+    char *stringa = malloc(sizeof(char) * DIM);
+    char *voce = malloc(sizeof(char) * DIM);
+
+    for (int n = 1; n < 11; n++)
+    {
+        liberi_fila[n] = n;
+    }
+
+    while (*l)
+    {
+        if ((*l)->dato.fila == fila)
+        {
+            if (confrontoDate((*l)->dato.data_inizio, (*l)->dato.data_fine, datainizio, datafine) == 1)
+            {
+                liberi_fila[((*l)->dato.numero)] = 0;
+            }
+        }
+        l = &(*l)->next;
+    }
+
+    for (int i = 1; i < 11; i++)
+    {
+        if (liberi_fila[i] != 0)
+        {
+            sprintf(voce, "%d ", liberi_fila[i]);
+            strcat(stringa, voce);
+            z++;
+        }
+    }
+    if (z == 0) //nessuno libero
+    {
+        strncpy(stringa, "NAVAILABLE\n", sizeof(char) * DIM);
+    }
+    else
+    {
+        strcat(stringa, "\n");
+    }
+    return stringa;
+}
+
+char *ricercaAvailableNumero(lista *l, int datainizio, int datafine)
+{
+    int z = 0;
+    int liberi_fila[101] = {0};
+    int k = 0;
+    char *stringa = malloc(sizeof(char) * DIM);
+    char *voce = malloc(sizeof(char) * DIM);
+
+    for (int n = 1; n < 101; n++)
+    {
+        liberi_fila[n] = n;
+    }
+
+    while (*l)
+    {
+        if (confrontoDate((*l)->dato.data_inizio, (*l)->dato.data_fine, datainizio, datafine) == 1)
+        {
+            liberi_fila[((*l)->dato.ID)] = 0;
+        }
+
+        l = &(*l)->next;
+    }
+    for (int i = 1; i < 101; i++)
+    {
+        if (liberi_fila[i] != 0)
+        {
+            z++;
+        }
+    }
+    if (z == 0) //nessuno libero
+    {
+        strncpy(stringa, "NAVAILABLE\n", sizeof(char) * DIM);
+    }
+    else
+    {
+        sprintf(stringa, "AVAILABLE %d\n", z);
+    }
+    return stringa;
 }
 
 int confrontoDate(int inizioPrenotazione, int finePrenotazione, int inizioRichiesta, int fineRichiesta)
@@ -270,6 +356,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
 {
     //risposta Risposta_output;
     char *msg = malloc(sizeof(char) * DIM);
+    strncpy(msg, "", sizeof(char) * DIM);
     int k;
     int i;
 
@@ -396,6 +483,28 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         else
             sprintf(msg, "AVAILABLE %d\n", Risposta->ombrelloni_liberi); //stampa available e il numero di ombrelloni liberi
     }
+    else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 4)) //scrive available per sapere il numero di ombrelloni liberi
+    {
+        if (Messaggio.fila > 10)
+        {
+            strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
+        }
+        else
+        {
+            strncpy(msg, ricercaAvailable(&Risposta->lista, Messaggio.fila, Messaggio.data_inizio, Messaggio.data_fine), sizeof(char) * DIM);
+        }
+    }
+    else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 3)) //scrive available per sapere il numero di ombrelloni liberi
+    {
+        if (Messaggio.fila > 10)
+        {
+            strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
+        }
+        else
+        {
+            strncpy(msg, ricercaAvailableNumero(&Risposta->lista, Messaggio.data_inizio, Messaggio.data_fine), sizeof(char) * DIM);
+        }
+    }
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 2)) //chiede il numero di ombrelloni liberi in una fila
     {
         if (Messaggio.fila > 10)
@@ -467,7 +576,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     }*/
     else if (strncmp("EXIT", Messaggio.parola, 4) == 0)
     {
-        strncpy(msg, "UCCIDITI", sizeof(char) * DIM);
+        strncpy(msg, "USCITA", sizeof(char) * DIM);
     }
     else
     {

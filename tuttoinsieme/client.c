@@ -98,8 +98,18 @@ int main(int argc, char *argv[])
 
             if (argc > 1 && primo == 0)
             {
-                strncpy(msg, argv[1], sizeof(char) * 256);
-                strcat(msg,"\n");
+                strcpy(msg, argv[1]);
+
+                if (argc > 2)
+                {
+                    int x;
+                    for (x = 2; x < argc; x++)
+                    {
+                        strcat(msg, " ");
+                        strcat(msg, argv[x]);
+                    }
+                }
+                strcat(msg, "\n");
                 if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                 {
                     printf("Errore nella ricezione della lunghezza del messaggio\n");

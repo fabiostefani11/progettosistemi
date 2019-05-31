@@ -11,10 +11,10 @@
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
 
-
 #define BUFFERSIZE 512
 #define PROTOPORT 8888
 
+int primo = 0;
 int go = 1;
 int mySocket; //valore della funzione socket
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     {
         strncpy(msg, "", sizeof(char) * 256);
         printf("Connessione riuscita con la socket.\n");
-        printf(RED"In attesa di risposta dal server...\n"CRESET);
+        printf(RED "In attesa di risposta dal server...\n" CRESET);
         int bytesRicevuti;
         int totBytesRicevuti = 0;
         char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
@@ -95,15 +95,31 @@ int main(int argc, char *argv[])
 
         while (go)
         {
-            strncpy(msg, "", sizeof(char) * 256);
-            printf("Scrivi il messaggio: ");
-            fgets(msg, sizeof(msg), stdin);
-            alarm(60);
-            if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+
+            if (argc > 1 && primo == 0)
             {
-                printf("Errore nella ricezione della lunghezza del messaggio\n");
-                close(mySocket);
-                printf("Socket chiusa.\n");
+                strncpy(msg, argv[1], sizeof(char) * 256);
+                strcat(msg,"\n");
+                if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                {
+                    printf("Errore nella ricezione della lunghezza del messaggio\n");
+                    close(mySocket);
+                    printf("Socket chiusa.\n");
+                }
+                primo++;
+            }
+            else
+            {
+                strncpy(msg, "", sizeof(char) * 256);
+                printf("Scrivi il messaggio: ");
+                fgets(msg, sizeof(msg), stdin);
+                alarm(60);
+                if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
+                {
+                    printf("Errore nella ricezione della lunghezza del messaggio\n");
+                    close(mySocket);
+                    printf("Socket chiusa.\n");
+                }
             }
 
             /*else

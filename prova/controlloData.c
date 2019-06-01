@@ -4,22 +4,6 @@
 
 #define DIM 256
 
-int uniscidata(char *data)
-{
-    char giorno[DIM] = {0};
-    char mese[DIM] = {0};
-    char anno[DIM] = {0};
-
-    strcpy(giorno, strtok(data, "/"));
-    strcpy(mese, strtok(NULL, "/"));
-    strcpy(anno, strtok(NULL, "/"));
-
-    strcat(anno, mese);
-    strcat(anno, giorno);
-
-    return atoi(anno);
-}
-
 int controlloData(int giorno, int mese, int anno)
 {
     if (giorno < 0 || mese < 0 || anno < 0 || giorno > 31 || mese > 12)
@@ -55,24 +39,16 @@ int controlloData(int giorno, int mese, int anno)
     return 1;
 }
 
-int main()
+int uniscidata(char data[])
 {
-
     int giorno, mese, anno;
-    char *data_1 = (char *)malloc(sizeof(char) * 11);
-    char *data_2 = (char *)malloc(sizeof(char) * 11);
-    ;
     int data_fine;
     int i = 0;
-    printf("Inserisci una data: ");
-    scanf("%s", data_1);
-
-    strcpy(data_2, data_1);
 
     char *GIORNO, *MESE, *ANNO;
 
     char *token;
-    token = strtok(data_1, "/");
+    token = strtok(data, "/");
     while (token != NULL)
     {
         if (i == 0)
@@ -98,11 +74,23 @@ int main()
 
     if (controlloData(giorno, mese, anno) == 0)
     {
-        printf("Data inesistente.\n");
+        data_fine = -1;
     }
     else
     {
-        data_fine = uniscidata(data_2);
-        printf("la data finale è: %d\n", data_fine);
+        strcat(ANNO, MESE);
+        strcat(ANNO, GIORNO);
+        data_fine = atoi(ANNO);
     }
+
+    return data_fine;
+}
+
+int main()
+{
+    char data[DIM] = {0};
+    printf("Inserisci una data: ");
+    scanf("%s", data);
+
+    printf("la data finale è: %d\n", uniscidata(data));
 }

@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     int ID, fila, numero, IDclient, data_inizio, data_fine;
     char update[DIM];
     aggiornamento Aggiornamento;
-
+    char data_odierna[DIM];
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
     int i = 1;
@@ -187,7 +187,14 @@ int main(int argc, char *argv[])
     }
 
     else
+    {
+        printf("Inserisci la data odierna: ");
+
+        scanf("%s", data_odierna);
+        Risposta.data_oggi = uniscidata(data_odierna);
+
         printf("In attesa di una connessione da un client....\n");
+    }
 
     c12 = sizeof(struct sockaddr_in);
     pthread_t thread_id;
@@ -276,7 +283,7 @@ void connection_handler(void *socket_desc)
             fclose(f_aggiornamenti);
             //signal
             sem_post(&mutex);
-
+            
             Messaggio = dividiFrase(buf);
 
             if (Messaggio.nparole == 3 && (strncmp("BOOK", Messaggio.parola, 4) == 0))

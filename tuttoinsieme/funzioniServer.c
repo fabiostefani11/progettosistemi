@@ -13,20 +13,86 @@
 #include <malloc.h>
 #include "thpool.h"
 
+int controlloData(int giorno, int mese, int anno)
+{
+    if (giorno < 0 || mese < 0 || anno < 0 || giorno > 31 || mese > 12)
+    {
+        return 0;
+    }
+    if (mese == 2)
+    {
+        if ((anno % 400 == 0 || anno % 4 == 0 && anno % 100 != 0) && (giorno > 29))
+        {
+            return 0;
+        }
+        else if (giorno > 28)
+        {
+            return 0;
+        }
+    }
+    if ((mese == 4) || (mese == 6) || ((mese == 9)) || (mese == 11))
+    {
+        if (giorno > 30)
+        {
+            return 0;
+        }
+    }
+    if ((mese == 1) || (mese == 3) || (mese == 5) || (mese == 7) || (mese == 8) || (mese == 10) || (mese == 12))
+    {
+        if (giorno > 31)
+        {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int uniscidata(char data[])
 {
-    char giorno[DIM] = {0};
-    char mese[DIM] = {0};
-    char anno[DIM] = {0};
+    int giorno, mese, anno;
+    int data_fine;
+    int i = 0;
 
-    strcpy(giorno, strtok(data, "/"));
-    strcpy(mese, strtok(NULL, "/"));
-    strcpy(anno, strtok(NULL, "/"));
+    char *GIORNO, *MESE, *ANNO;
 
-    strcat(anno, mese);
-    strcat(anno, giorno);
+    char *token;
+    token = strtok(data, "/");
+    while (token != NULL)
+    {
+        if (i == 0)
+        {
+            GIORNO = token;
+        }
+        if (i == 1)
+        {
+            MESE = token;
+        }
+        if (i == 2)
+        {
+            ANNO = token;
+        }
+        token = strtok(NULL, "/");
 
-    return atoi(anno);
+        i++;
+    }
+
+    giorno = atoi(GIORNO);
+    mese = atoi(MESE);
+    anno = atoi(ANNO);
+
+    if (controlloData(giorno, mese, anno) == 0)
+    {
+        data_fine = -1;
+    }
+    else
+    {
+        strcat(ANNO, MESE);
+        strcat(ANNO, GIORNO);
+        data_fine = atoi(ANNO);
+    }
+
+    return data_fine;
 }
 
 aggiornamento dividiAggiornamento(char msg[])
@@ -113,12 +179,32 @@ messaggio dividiFrase(char msg[])
     }
     if ((Messaggio.nparole == 4) && (strncmp("BOOK", Messaggio.parola, 4) == 0))
     {
-        if (frase[2][2] != '/' || frase[2][5] != '/') //controllo se la data è nel formato corretto
+        if (frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
         {
             strcpy(Messaggio.parola, "ERRORE_DATA");
             return Messaggio;
         }
-        Messaggio.data_fine = uniscidata(frase[2]);
+        Messaggio.data_fine = uniscidata(frase[3]);
+        return Messaggio;
+    }
+    if ((Messaggio.nparole == 4) && (strncmp("CONFERMO", Messaggio.parola, 8) == 0))
+    {
+        if (frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
+        {
+            strcpy(Messaggio.parola, "ERRORE_DATA");
+            return Messaggio;
+        }
+        Messaggio.data_fine = uniscidata(frase[3]);
+        return Messaggio;
+    }
+    if ((Messaggio.nparole == 4) && (strncmp("NCONFERMO", Messaggio.parola, 9) == 0))
+    {
+        if (frase[3][2] != '/' || frase[3][5] != '/') //controllo se la data è nel formato corretto
+        {
+            strcpy(Messaggio.parola, "ERRORE_DATA");
+            return Messaggio;
+        }
+        Messaggio.data_fine = uniscidata(frase[3]);
         return Messaggio;
     }
     else if (strlen(frase[2]) > 2)
@@ -371,6 +457,13 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     int k;
     int i;
 
+    if ((Messaggio.data_fine == -1) || (Messaggio.data_inizio == -1)) //se la data non è nel formato corretto ritorna un errore
+    {
+        strncpy(msg, "Data inesistente.\n", sizeof(char) * DIM);
+        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+        return msg;
+    }
+
     if (strncmp("ERRORE_DATA", Messaggio.parola, 11) == 0) //se la data non è nel formato corretto ritorna un errore
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
@@ -432,20 +525,37 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         }
         else
         {
-            //Codice prenotazione che inizia oggi e che finisce in futuro
+            if (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 0)
+            {
+                Risposta->ombrelloni_Toccupati[Messaggio.ID] = 1;
+                if ((ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Risposta->data_oggi, Messaggio.data_fine) == 0) && (Risposta->Ombrellone[Messaggio.ID].disponibile == 0))
+                {
+                    Risposta->Ombrellone[Messaggio.ID].disponibile = 4;
+                    Risposta->ombrelloni_liberi--;
+                    strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO DATAFINE \n", sizeof(char) * DIM);
+                }
+                else
+                {
+                    strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+                    Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
+                }
+            }
+            else
+            {
+                strncpy(msg, "OMBRELLONE TEMPORANEAMENTE OCCUPATO\n", sizeof(char) * DIM);
+            }
         }
     }
 
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 5)) //prenotazione per il futuro, scrive BOOK fila numero e le 2 date
     {
-
         if (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 0)
         {
             Risposta->ombrelloni_Toccupati[Messaggio.ID] = 1;
             if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Messaggio.data_inizio, Messaggio.data_fine) == 0)
             {
 
-                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
+                strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO DATAINIZIO DATAFINE, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO DATAINIZIO DATAFINE \n", sizeof(char) * DIM);
             }
             else
             {
@@ -460,12 +570,27 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     }
     else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 3))
     {
-
         if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
             Risposta->Ombrellone[Messaggio.ID].disponibile = 1;
             Risposta->Ombrellone[Messaggio.ID].IDclient = Risposta->IDclient;
             sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
+        }
+        else
+            strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("CONFERMO", Messaggio.parola, 8) == 0) && (Messaggio.nparole == 4))
+    {
+        if ((Risposta->Ombrellone[Messaggio.ID].disponibile == 4) && (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 1))
+        {
+            if (ricerca(&Risposta->lista, ((Messaggio.fila * 10) + Messaggio.ombrellone) - 10, Risposta->data_oggi, Messaggio.data_fine) == 0)
+            {
+                inserimento(&Risposta->lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta->IDclient, Risposta->data_oggi, Messaggio.data_fine);
+                Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
+                Risposta->Ombrellone[Messaggio.ID].disponibile = 1;
+                Risposta->Ombrellone[Messaggio.ID].IDclient = Risposta->IDclient;
+                sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
+            }
         }
         else
             strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
@@ -491,6 +616,27 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
             Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
+            strncpy(msg, "PRENOTAZIONE TEMPORANEA ANNULLATA\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("NCONFERMO", Messaggio.parola, 9) == 0) && (Messaggio.nparole == 4))
+    {
+        if ((Risposta->Ombrellone[Messaggio.ID].disponibile == 4) && (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 1))
+        {
+            Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
+            Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
+            strncpy(msg, "PRENOTAZIONE TEMPORANEA ANNULLATA\n", sizeof(char) * DIM);
+        }
+        else
+            strncpy(msg, "OMBRELLONE ERRATO\n", sizeof(char) * DIM);
+    }
+    else if ((strncmp("NCONFERMO", Messaggio.parola, 9) == 0) && (Messaggio.nparole == 5))
+    {
+        if (Risposta->ombrelloni_Toccupati[Messaggio.ID] == 1)
+        {
+            Risposta->ombrelloni_Toccupati[Messaggio.ID] = 0;
             strncpy(msg, "PRENOTAZIONE TEMPORANEA ANNULLATA\n", sizeof(char) * DIM);
         }
         else

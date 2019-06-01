@@ -5,7 +5,7 @@
             "name": "Debugger",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/rispostaFunzione",
+            "program": "${workspaceFolder}/controlloData",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

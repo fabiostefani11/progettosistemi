@@ -232,7 +232,7 @@ void connection_handler(void *socket_desc)
     int sock = *(int *)socket_desc;
     char msg[256] = {0};
     srand(time(0));
-    int id = 1 + rand() % 1000;
+    int id = 1 + rand() % 10000;
     Risposta.IDclient = id;
     int ombrellone_attuale = 0;
     char mid[DIM] = "Il tuo id è ";

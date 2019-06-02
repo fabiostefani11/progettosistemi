@@ -5,6 +5,7 @@
 #define BUFFERSIZE 256
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
+#define GREEN   "\x1b[32m"
 
 #define DIM 256
 #define dim 10
@@ -72,3 +73,4 @@ void stampaListaSuFile(lista *l, FILE *f);
 aggiornamento dividiAggiornamento(char msg[]);
 char *ricercaAvailableNumero(lista *l, int datainizio, int datafine);
 char *ricercaAvailable(lista *l, int fila, int datainizio, int datafine);
+void leggoFile(risposta *Risposta, FILE *f_ombrelloni, FILE *f_prenotazioni, FILE *f_aggiornamenti);

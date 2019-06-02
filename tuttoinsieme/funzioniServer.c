@@ -13,6 +13,123 @@
 #include <malloc.h>
 #include "thpool.h"
 
+void leggoFile(risposta *Risposta, FILE *f_ombrelloni, FILE *f_prenotazioni, FILE *f_aggiornamenti)
+{
+    int ID, fila, numero, IDclient, data_inizio, data_fine;
+    int data;
+    char update[DIM];
+    aggiornamento Aggiornamento;
+    messaggio Messaggio1;
+    int i = 0;
+    int k, n = 1;
+    int j = 1;
+
+    for (k = 1; k <= 100; k++)
+    {
+        Risposta->Ombrellone[k].ID = k;
+        Risposta->Ombrellone[k].fila = j;
+        Risposta->Ombrellone[k].numero = n;
+        Risposta->Ombrellone[k].disponibile = 0;
+        Risposta->Ombrellone[k].IDclient = 0;
+
+        if (n == 10)
+        {
+            j++;
+            n = 0;
+        }
+        n++;
+    }
+
+    if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
+    {
+        printf("Errore nell'apertura del file ombrelloni.\n");
+        exit(-1);
+    }
+    else
+        printf("File ombrelloni aperto correttamente.\n");
+
+    if ((f_prenotazioni = fopen("prenotazioni.txt", "r")) == NULL)
+    {
+        printf("Errore nell'apertura del file prenotazioni.\n");
+        exit(-1);
+    }
+    else
+        printf("File prenotazioni aperto correttamente.\n");
+
+    while (!feof(f_ombrelloni))
+    {
+        if (i == 0)
+        {
+            if (fscanf(f_ombrelloni, "%d", &data) == 1)
+                i++;
+        }
+        else
+        {
+            if (data == Risposta->data_oggi)
+            {
+                if (fscanf(f_ombrelloni, "%d %d %d %d %d", &Risposta->Ombrellone[i].ID, &Risposta->Ombrellone[i].fila, &Risposta->Ombrellone[i].numero, &Risposta->Ombrellone[i].disponibile, &Risposta->Ombrellone[i].IDclient) == 5)
+                {
+                    i++;
+                }
+            }
+            else
+                break;
+        }
+    }
+
+    while (!feof(f_prenotazioni))
+    {
+        if (fscanf(f_prenotazioni, "%d %d %d %d %d %d", &ID, &fila, &numero, &IDclient, &data_inizio, &data_fine) == 6)
+        {
+            if (Risposta->data_oggi < data_fine)
+            {
+                if (data_inizio <= Risposta->data_oggi)
+                {
+                    inserimento(&Risposta->lista, ID, fila, numero, IDclient, Risposta->data_oggi, data_fine);
+                    Risposta->Ombrellone[ID].disponibile = 1;
+                    Risposta->Ombrellone[ID].IDclient = IDclient;
+                }
+                else
+                    inserimento(&Risposta->lista, ID, fila, numero, IDclient, data_inizio, data_fine);
+            }
+        }
+    }
+    for (k = 1; k <= 100; k++)
+    {
+        if (Risposta->Ombrellone[k].disponibile == 0)
+        {
+            Risposta->ombrelloni_liberi++;
+        }
+    }
+
+    if ((f_aggiornamenti = fopen("aggiornamenti.txt", "r")) == NULL)
+    {
+        printf("Errore nell'apertura del file aggiornamenti.\n");
+        exit(-1);
+    }
+    else
+        printf("File aggiornamenti aperto correttamente.\n");
+
+    printf("Sto controllando se ci sono aggiornamenti.\n");
+    while (1)
+    {
+        if (fgets(update, DIM, f_aggiornamenti) == NULL)
+        {
+            break;
+        }
+        else
+        {
+            Aggiornamento = dividiAggiornamento(update);
+            Messaggio1 = dividiFrase(Aggiornamento.parola);
+            Risposta->IDclient = Aggiornamento.IDCLient;
+            elaboraRisposta(Risposta, Messaggio1);
+        }
+    }
+    fclose(f_ombrelloni);
+    fclose(f_prenotazioni);
+    fclose(f_aggiornamenti);
+}
+
 int controlloData(int giorno, int mese, int anno)
 {
     if (giorno < 0 || mese < 0 || anno < 0 || giorno > 31 || mese > 12)
@@ -21,7 +138,7 @@ int controlloData(int giorno, int mese, int anno)
     }
     if (mese == 2)
     {
-        if ((anno % 400 == 0 || anno % 4 == 0 && anno % 100 != 0) && (giorno > 29))
+        if ((anno % 400 == 0 || ((anno % 4 == 0) && (anno % 100 != 0))) && (giorno > 29))
         {
             return 0;
         }
@@ -464,6 +581,13 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         return msg;
     }
 
+    if ((Messaggio.data_fine < Risposta->data_oggi) || (Messaggio.data_inizio < Risposta->data_oggi)) //se la data non è nel formato corretto ritorna un errore
+    {
+        strncpy(msg, "Inserita una data precedente alla data odierna.\n", sizeof(char) * DIM);
+        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
+        return msg;
+    }
+
     if (strncmp("ERRORE_DATA", Messaggio.parola, 11) == 0) //se la data non è nel formato corretto ritorna un errore
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
@@ -514,7 +638,12 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
                 strncpy(msg, "AVAILABLE\nPER CONFERMARE SCRIVERE CONFERMO FILA NUMERO, PER ANNULLARE SCRIVERE NCONFERMO FILA NUMERO \n", sizeof(char) * DIM);
             }
             else
-                strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM); //ombrellone occupato
+            {
+                if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
+                    strncpy(msg, "OMBRELLONE TEMPORANEAMENTE OCCUPATO\n", sizeof(char) * DIM); //ombrellone occupato
+                else
+                    strncpy(msg, "NAVAILABLE\n", sizeof(char) * DIM);
+            }
         }
     }
     else if ((strncmp("BOOK", Messaggio.parola, 4) == 0) && (Messaggio.nparole == 4)) //scrive BOOK e fila e numero ombrellone

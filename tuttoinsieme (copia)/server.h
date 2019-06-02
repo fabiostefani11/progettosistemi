@@ -54,10 +54,12 @@ typedef struct
     int ombrelloni_liberi;
     int IDclient;
     lista lista;
+    int data_oggi;
     int ombrelloni_Toccupati[101];
 } risposta;
 
 int uniscidata(char data[]);
+int controlloData(int giorno, int mese, int anno);
 messaggio dividiFrase(char msg[]);
 char *elaboraRisposta(risposta *Risposta, messaggio Messaggio);
 void crealista(lista *l);

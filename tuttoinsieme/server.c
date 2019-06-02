@@ -64,77 +64,18 @@ void sighand(int sig)
 int main(int argc, char *argv[])
 {
     sem_init(&mutex, 0, 1);
-    int ID, fila, numero, IDclient, data_inizio, data_fine;
-    char update[DIM];
-    aggiornamento Aggiornamento;
+
     char data_odierna[DIM];
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
-    int i = 1;
+
     printf("\nPid figlio server: %d\nPid del padre: %d\n", (int)getpid(), (int)getppid());
 
-    if ((f_ombrelloni = fopen("ombrelloni.txt", "r")) == NULL)
-    {
-        printf("Errore nell'apertura del file ombrelloni.\n");
-        exit(-1);
-    }
-    else
-        printf("File ombrelloni aperto correttamente.\n");
+    printf("Inserisci la data odierna: ");
+    scanf("%s", data_odierna);
+    Risposta.data_oggi = uniscidata(data_odierna);
 
-    if ((f_prenotazioni = fopen("prenotazioni.txt", "r")) == NULL)
-    {
-        printf("Errore nell'apertura del file prenotazioni.\n");
-        exit(-1);
-    }
-    else
-        printf("File prenotazioni aperto correttamente.\n");
-
-    while (!feof(f_ombrelloni))
-    {
-        if (fscanf(f_ombrelloni, "%d %d %d %d %d", &Risposta.Ombrellone[i].ID, &Risposta.Ombrellone[i].fila, &Risposta.Ombrellone[i].numero, &Risposta.Ombrellone[i].disponibile, &Risposta.Ombrellone[i].IDclient) == 5)
-        {
-            if (Risposta.Ombrellone[i].disponibile == 0)
-            {
-                Risposta.ombrelloni_liberi++;
-            }
-            i++;
-        }
-    }
-
-    while (!feof(f_prenotazioni))
-    {
-        if (fscanf(f_prenotazioni, "%d %d %d %d %d %d", &ID, &fila, &numero, &IDclient, &data_inizio, &data_fine) == 6)
-        {
-            inserimento(&Risposta.lista, ID, fila, numero, IDclient, data_inizio, data_fine);
-        }
-    }
-
-    if ((f_aggiornamenti = fopen("aggiornamenti.txt", "r")) == NULL)
-    {
-        printf("Errore nell'apertura del file aggiornamenti.\n");
-        exit(-1);
-    }
-    else
-        printf("File aggiornamenti aperto correttamente.\n");
-
-    printf("Sto controllando se ci sono aggiornamenti.\n");
-    while (1)
-    {
-        if (fgets(update, DIM, f_aggiornamenti) == NULL)
-        {
-            break;
-        }
-        else
-        {
-            Aggiornamento = dividiAggiornamento(update);
-            Messaggio = dividiFrase(Aggiornamento.parola);
-            Risposta.IDclient = Aggiornamento.IDCLient;
-            elaboraRisposta(&Risposta, Messaggio);
-        }
-    }
-    fclose(f_ombrelloni);
-    fclose(f_prenotazioni);
-    fclose(f_aggiornamenti);
+    leggoFile(&Risposta, f_ombrelloni, f_prenotazioni, f_aggiornamenti);
 
     if (argc > 1) //da togliere
     {
@@ -188,11 +129,6 @@ int main(int argc, char *argv[])
 
     else
     {
-        printf("Inserisci la data odierna: ");
-
-        scanf("%s", data_odierna);
-        Risposta.data_oggi = uniscidata(data_odierna);
-
         printf("In attesa di una connessione da un client....\n");
     }
 
@@ -234,12 +170,14 @@ void connection_handler(void *socket_desc)
     srand(time(0));
     int id = 1 + rand() % 1000;
     Risposta.IDclient = id;
-    int ombrellone_attuale = 0;
+    int ombrellone_attuale[10] = {0};
     char mid[DIM] = "Il tuo id è ";
     char conv[DIM];
     int go = 1;
     sprintf(conv, "%d", id);
     strcat(mid, conv);
+
+    printf(GREEN "Client %d conesso\n" CRESET, id);
 
     if (write(sock, mid, sizeof(mid)) != sizeof(mid)) //controlla se scrive il messaggio in tutta la sua lunghezza
     {
@@ -260,8 +198,22 @@ void connection_handler(void *socket_desc)
         if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
         {
             printf("Errore nella lunghezza del messaggio presente sul Socket client.\n");
+            for (int i = 0; i < 10; i++)
+            {
+                if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4)
+                {
+                    Risposta.Ombrellone[ombrellone_attuale[i]].disponibile = 0;
+                    Risposta.ombrelloni_liberi++;
+                }
+                if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1)
+                {
+                    Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] = 0;
+                }
+            }
+
+            printf(RED "Client %d disconnesso\n" CRESET, id);
+            go = 0;
             close(sock);
-            break;
         }
         else
 
@@ -283,16 +235,21 @@ void connection_handler(void *socket_desc)
             fclose(f_aggiornamenti);
             //signal
             sem_post(&mutex);
-            
+
             Messaggio = dividiFrase(buf);
 
-            if (Messaggio.nparole == 3 && (strncmp("BOOK", Messaggio.parola, 4) == 0))
-            {
-                ombrellone_attuale = Messaggio.ID;
-            }
-
             strncpy(msg, elaboraRisposta(&Risposta, Messaggio), sizeof(char) * DIM);
-            //Risposta = elaboraRisposta(Risposta, Messaggio);
+
+            int j = 0;
+
+            if ((strncmp("AVAILABLE", msg, 9) == 0) && (strncmp("BOOK", Messaggio.parola, 4) == 0))
+            {
+                while (ombrellone_attuale[j] != 0)
+                {
+                    j++;
+                }
+                ombrellone_attuale[j] = Messaggio.ID;
+            }
 
             //confronta la parola con le varie possibilità e scrive la risposta nella socket
 
@@ -303,14 +260,24 @@ void connection_handler(void *socket_desc)
                 printf("Socket chiusa.\n");
             }
         }
-    }
-    //}
-
-    if (strncmp("USCITA", msg, 6) == 0)
-    {
-
-        printf("Client %d disconesso\n", id);
-        go = 0;
+        if (strncmp("USCITA", msg, 6) == 0)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4)
+                {
+                    Risposta.Ombrellone[ombrellone_attuale[i]].disponibile = 0;
+                    Risposta.ombrelloni_liberi++;
+                }
+                if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1)
+                {
+                    Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] = 0;
+                }
+            }
+            go = 0;
+            printf(RED "Client %d disconnesso\n" CRESET, id);
+            close(sock);
+        }
     }
 }
 
@@ -319,7 +286,7 @@ void aggiornaFile(void *Risposta)
 
     while (1)
     {
-        sleep(20);
+        sleep(10);
         risposta Ris = *(risposta *)Risposta;
         int ok = 0;
         int i;
@@ -328,25 +295,32 @@ void aggiornaFile(void *Risposta)
             printf("errore apertura file ombrelloni.\n");
         }
 
-        for (i = 1; i <= 100; i++)
+        for (i = 0; i <= 100; i++)
         {
-            if (Ris.Ombrellone[i].disponibile == 4)
+            if (i == 0)
             {
-                (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
-                         Ris.Ombrellone[i].ID,
-                         Ris.Ombrellone[i].fila,
-                         Ris.Ombrellone[i].numero,
-                         0,
-                         Ris.Ombrellone[i].IDclient));
+                fprintf(f_ombrelloni, "%d \n", Ris.data_oggi);
             }
             else
             {
-                (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
-                         Ris.Ombrellone[i].ID,
-                         Ris.Ombrellone[i].fila,
-                         Ris.Ombrellone[i].numero,
-                         Ris.Ombrellone[i].disponibile,
-                         Ris.Ombrellone[i].IDclient));
+                if (Ris.Ombrellone[i].disponibile == 4)
+                {
+                    (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                             Ris.Ombrellone[i].ID,
+                             Ris.Ombrellone[i].fila,
+                             Ris.Ombrellone[i].numero,
+                             0,
+                             Ris.Ombrellone[i].IDclient));
+                }
+                else
+                {
+                    (fprintf(f_ombrelloni, "%d %d %d %d %d \n",
+                             Ris.Ombrellone[i].ID,
+                             Ris.Ombrellone[i].fila,
+                             Ris.Ombrellone[i].numero,
+                             Ris.Ombrellone[i].disponibile,
+                             Ris.Ombrellone[i].IDclient));
+                }
             }
         }
         if ((f_prenotazioni = fopen("prenotazioni.txt", "w")) == NULL)

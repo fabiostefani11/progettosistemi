@@ -701,6 +701,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     {
         if (Risposta->Ombrellone[Messaggio.ID].disponibile == 4)
         {
+            inserimento(&Risposta->lista, Messaggio.ID, Messaggio.fila, Messaggio.ombrellone, Risposta->IDclient, Risposta->data_oggi, Risposta->data_oggi);
             Risposta->Ombrellone[Messaggio.ID].disponibile = 1;
             Risposta->Ombrellone[Messaggio.ID].IDclient = Risposta->IDclient;
             sprintf(msg, "PRENOTAZIONE CONFERMATA, IL TUO ID È: %d \n", Risposta->IDclient);
@@ -843,6 +844,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
                 Risposta->Ombrellone[Messaggio.ID].disponibile = 0;
                 Risposta->ombrelloni_liberi++;
                 Risposta->Ombrellone[Messaggio.ID].IDclient = 0;
+                eliminaPrenotazione(&Risposta->lista, Messaggio.IDclient, Messaggio.fila, Messaggio.ombrellone, Risposta->data_oggi);
                 strncpy(msg, "CANCEL OK\n", sizeof(char) * DIM);
             }
             else

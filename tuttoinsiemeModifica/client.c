@@ -14,7 +14,7 @@
 #define BUFFERSIZE 512
 #define PROTOPORT 8888
 
-int primo = 0;
+int primo = 0; //per argomenti
 int go = 1;
 int mySocket; //valore della funzione socket
 
@@ -42,8 +42,7 @@ int main(int argc, char *argv[])
 
     struct sockaddr_in sa;      //struttura della socket
     memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
-    int ret;
-    char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
+    char msg[256] = {0};        //stringa in cui si scrive il messaggio da inviare
     signal(SIGALRM, sighand);
     signal(SIGINT, sighand);
     // creazione del socket
@@ -68,8 +67,6 @@ int main(int argc, char *argv[])
         close(mySocket);
         printf("Socket chiusa.\n");
     }
-
-    // scrive un messaggio sulla stringa e lo invia al server
 
     else
     {
@@ -131,18 +128,12 @@ int main(int argc, char *argv[])
                     printf("Socket chiusa.\n");
                 }
             }
-
-            /*else
-                printf("Invio riuscito.\n");*/
             if (strncmp("EXIT", msg, 4) == 0)
             {
                 close(mySocket);
                 printf("Disconnessione dal server...\n");
                 exit(1);
             }
-
-            ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
-
             // ricezione dati dal server
             int bytesRicevuti;
             int totBytesRicevuti = 0;

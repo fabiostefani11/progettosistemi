@@ -10,5 +10,7 @@ int main()
     giorno = local->tm_mday;
     mese = local->tm_mon + 1;
     anno = local->tm_year + 1900;
-    printf("%02d/%02d/%d\n", giorno, mese, anno);
+    char *dataodierna;
+    sprintf(dataodierna,"%02d/%02d/%d\n", giorno, mese, anno);
+    printf("%s",dataodierna);
 }

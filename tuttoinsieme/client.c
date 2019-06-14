@@ -10,11 +10,12 @@
 
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
+#define GREEN "\x1b[32m"
 
-#define BUFFERSIZE 512
 #define PROTOPORT 8888
+#define DIM 256
 
-int primo = 0;
+int primo = 0; //per argomenti
 int go = 1;
 int mySocket; //valore della funzione socket
 
@@ -24,14 +25,14 @@ void sighand(int sig)
     if (sig == SIGALRM)
 
     {
-        printf("Sessione scaduta per inattività.\n");
+        printf(RED "Sessione scaduta per inattività.\n" CRESET);
         close(mySocket);
-        printf("Disconnessione dal server...\n");
+        printf(RED "Disconnessione dal server...\n" CRESET);
         exit(0);
     }
     if (sig == SIGINT)
     {
-        printf("hai premuto CTRL-C ... chiusura del Client.\n");
+        printf(RED "hai premuto CTRL-C ... chiusura del Client.\n" CRESET);
         close(mySocket);
         exit(0);
     }
@@ -42,50 +43,47 @@ int main(int argc, char *argv[])
 
     struct sockaddr_in sa;      //struttura della socket
     memset(&sa, 0, sizeof(sa)); //inizializza tutti i campi della struttura
-    int ret;
-    char msg[256] = {0}; //stringa in cui si scrive il messaggio da inviare
+    char msg[DIM] = {0};        //stringa in cui si scrive il messaggio da inviare
     signal(SIGALRM, sighand);
     signal(SIGINT, sighand);
     // creazione del socket
     mySocket = socket(AF_INET, SOCK_STREAM, 0); //af_inet=ipv4 stream->socket tcp  0->protocollo di default
     if (mySocket < 0)
     {
-        printf("Fallimento nella creazione della Socket.\n");
+        printf(RED "Fallimento nella creazione della Socket.\n" CRESET);
         close(mySocket);
     }
     else
-        printf("Socket creata.\n");
+        printf(GREEN "Socket creata.\n" CRESET);
 
     // inizializzazione dell'indirizzo del server
     sa.sin_family = AF_INET;                     //famiglia indirizzi
-    sa.sin_port = htons(8888);                   //porta del server  htons->converte da formato del pc locale a quello della rete
+    sa.sin_port = htons(PROTOPORT);              //porta del server  htons->converte da formato del pc locale a quello della rete
     sa.sin_addr.s_addr = inet_addr("127.0.0.1"); //ip del server  inet_addr->converte numero in notazione puntata in numero a 32 bit
 
     // richiesta di connessione
     if (connect(mySocket, (struct sockaddr *)&sa, sizeof(sa)) < 0) //connette il client alla socket, restituisce 0 se ha successo, altrimenti -1
     {                                                              //il secondo campo è l'indirizzo del client
-        printf("Connessione Fallita.\n");
+        printf(RED "Connessione Fallita.\n" CRESET);
         close(mySocket);
-        printf("Socket chiusa.\n");
+        printf(RED "Socket chiusa.\n" CRESET);
     }
-
-    // scrive un messaggio sulla stringa e lo invia al server
 
     else
     {
-        strncpy(msg, "", sizeof(char) * 256);
-        printf("Connessione riuscita con la socket.\n");
+        strncpy(msg, "", sizeof(char) * DIM);
+        printf(GREEN "Connessione riuscita con la socket.\n" CRESET);
         printf(RED "In attesa di risposta dal server...\n" CRESET);
         int bytesRicevuti;
         int totBytesRicevuti = 0;
-        char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
+        char buf[DIM]; //stringa di dati ricevuti dal server
         printf("Il server risponde: ");
 
         while (totBytesRicevuti < sizeof(msg))
         {
-            if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+            if ((bytesRicevuti = recv(mySocket, buf, DIM - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
             {
-                printf("Ricezione fallita.\n");
+                printf(RED "Ricezione fallita.\n" CRESET);
                 close(mySocket);
             }
             totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali
@@ -112,48 +110,42 @@ int main(int argc, char *argv[])
                 strcat(msg, "\n");
                 if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                 {
-                    printf("Errore nella ricezione della lunghezza del messaggio\n");
+                    printf(RED "Errore nella ricezione della lunghezza del messaggio\n" CRESET);
                     close(mySocket);
-                    printf("Socket chiusa.\n");
+                    printf(RED "Socket chiusa.\n" CRESET);
                 }
                 primo++;
             }
             else
             {
-                strncpy(msg, "", sizeof(char) * 256);
+                strncpy(msg, "", sizeof(char) * DIM);
                 printf("Scrivi il messaggio: ");
                 fgets(msg, sizeof(msg), stdin);
                 alarm(60);
                 if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                 {
-                    printf("Errore nella ricezione della lunghezza del messaggio\n");
+                    printf(RED "Errore nella ricezione della lunghezza del messaggio\n" CRESET);
                     close(mySocket);
-                    printf("Socket chiusa.\n");
+                    printf(RED "Socket chiusa.\n" CRESET);
                 }
             }
-
-            /*else
-                printf("Invio riuscito.\n");*/
             if (strncmp("EXIT", msg, 4) == 0)
             {
                 close(mySocket);
-                printf("Disconnessione dal server...\n");
+                printf(RED "Disconnessione dal server...\n" CRESET);
                 exit(1);
             }
-
-            ///////////////DA QUI IN GIU' E' PER LA CONVERSAZIONE//////////////////////
-
             // ricezione dati dal server
             int bytesRicevuti;
             int totBytesRicevuti = 0;
-            char buf[BUFFERSIZE]; //stringa di dati ricevuti dal server
+            char buf[DIM]; //stringa di dati ricevuti dal server
             printf("Il server risponde: ");
 
             while (totBytesRicevuti < sizeof(msg))
             {
-                if ((bytesRicevuti = recv(mySocket, buf, BUFFERSIZE - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
+                if ((bytesRicevuti = recv(mySocket, buf, DIM - 1, 0)) <= 0) //restituisce il humero di byte ricevuti, altrimenti riceve <=0
                 {
-                    printf("Ricezione fallita.\n");
+                    printf(RED "Ricezione fallita.\n" CRESET);
                     close(mySocket);
                 }
                 totBytesRicevuti += bytesRicevuti; //tiene la grandezza dei byte totali

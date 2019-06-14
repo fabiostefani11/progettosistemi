@@ -2,10 +2,9 @@
 
 #define PROTOPORT 8888 //numero della porta di default
 #define QLEN 3         //grandezza della coda
-#define BUFFERSIZE 256
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
-#define GREEN   "\x1b[32m"
+#define GREEN "\x1b[32m"
 
 #define DIM 256
 #define dim 10
@@ -15,7 +14,7 @@ typedef struct
     int ID;
     int numero;
     int fila;
-    int disponibile; //0=disponibile 1=occupato adesso 2=occupato in futuro 3=occupato sia adesso che in futuro 4=temporaneamente occupato
+    int disponibile; //0=disponibile 1=occupato adesso 4=temporaneamente occupato
     int IDclient;
     int data_inizio;
     int data_fine;
@@ -50,7 +49,7 @@ typedef struct
 
 typedef struct
 {
-    ombrellone Ombrellone[DIM];
+    ombrellone Ombrellone[101];
     char msg[DIM];
     int ombrelloni_liberi;
     int IDclient;

@@ -1,2 +1,0 @@
-#define BUFFERSIZE 512
-#define PROTOPORT 5193

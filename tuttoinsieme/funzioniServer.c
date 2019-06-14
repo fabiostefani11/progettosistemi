@@ -1,17 +1,9 @@
 #include "server.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/wait.h> /* wait */
-#include <signal.h>
-#include <errno.h>
 #include <malloc.h>
-#include "thpool.h"
 
 void leggoFile(risposta *Risposta, FILE *f_ombrelloni, FILE *f_prenotazioni, FILE *f_aggiornamenti)
 {
@@ -568,7 +560,6 @@ int eliminaPrenotazione(lista *l, int IDclient, int fila, int numero, int data_i
 
 char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
 {
-    //risposta Risposta_output;
     char *msg = malloc(sizeof(char) * DIM);
     strncpy(msg, "", sizeof(char) * DIM);
     int k;
@@ -577,29 +568,29 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     if ((Messaggio.data_fine == -1) || (Messaggio.data_inizio == -1)) //se la data non è nel formato corretto ritorna un errore
     {
         strncpy(msg, "Data inesistente.\n", sizeof(char) * DIM);
-        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
         return msg;
     }
-
-    if ((Messaggio.data_fine < Risposta->data_oggi) || (Messaggio.data_inizio < Risposta->data_oggi)) //se la data non è nel formato corretto ritorna un errore
+    if ((Messaggio.data_inizio = !0) && (Messaggio.data_fine != 0))
     {
-        strncpy(msg, "Inserita una data precedente alla data odierna.\n", sizeof(char) * DIM);
-        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-        return msg;
+        if ((Messaggio.nparole > 3) && ((Messaggio.data_fine < Risposta->data_oggi) || (Messaggio.data_inizio < Risposta->data_oggi))) //se la data non è nel formato corretto ritorna un errore
+        {
+            strncpy(msg, "Inserita una data precedente alla data odierna.\n", sizeof(char) * DIM);
+            return msg;
+        }
     }
 
     if (strncmp("ERRORE_DATA", Messaggio.parola, 11) == 0) //se la data non è nel formato corretto ritorna un errore
     {
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
-        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
         return msg;
     }
-
-    if (Messaggio.data_fine < Messaggio.data_inizio) //se la data non è nel formato corretto ritorna un errore
+    if ((Messaggio.data_inizio = !0) && (Messaggio.data_fine != 0))
     {
-        strncpy(msg, "Data di fine precedente alla data di inizio.\n", sizeof(char) * DIM);
-        //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-        return msg;
+        if (Messaggio.data_fine < Messaggio.data_inizio) //se la data non è nel formato corretto ritorna un errore
+        {
+            strncpy(msg, "Data di fine precedente alla data di inizio.\n", sizeof(char) * DIM);
+            return msg;
+        }
     }
 
     if (Messaggio.ombrellone > 10) //controllo se sono corretti i dati immessi
@@ -862,15 +853,6 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         else
             strncpy(msg, "PRENOTAZIONE INESISTENTE, O ID ERRATO\n", sizeof(char) * DIM);
     }
-
-    /*else if (Messaggio.ombrellone > 10)           //controllo se sono corretti i dati immessi
-    {
-        strncpy(msg, "Numero Ombrellone inesistente, scrivere un numero da 1 a 10\n", sizeof(char) * DIM);
-    }
-    else if (Messaggio.fila > 10)
-    {
-        strncpy(msg, "Fila Ombrellone inesistente, scrivere una fila da 1 a 10\n", sizeof(char) * DIM);
-    }*/
     else if (strncmp("EXIT", Messaggio.parola, 4) == 0)
     {
         strncpy(msg, "USCITA", sizeof(char) * DIM);
@@ -879,14 +861,6 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
     {
         strncpy(msg, "Messaggio non valido, scrivere di nuovo\n", sizeof(char) * DIM);
     }
-    ///////assegno tutti i valori alla varialbile di ritorno della funzione
-    //strncpy(Risposta_output.msg, msg, sizeof(char) * DIM);
-    //Risposta_output.ombrelloni_liberi = Risposta.ombrelloni_liberi;
-    //Risposta_output.IDclient = Risposta.IDclient;
-    //Risposta_output.lista = Risposta.lista;
-    //for (i = 1; i <= 100; i++)
-    //{
-    //    Risposta_output.Ombrellone[i] = Risposta.Ombrellone[i];
-    //}
+
     return msg;
 }

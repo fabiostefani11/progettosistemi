@@ -1,0 +1,74 @@
+COSE DA FARE:
+1-Risolvere problema confermo e salvare ID dopo la conferma associandolo alla prenotazione dell'ombrellone	FATTO
+2-funzione cancel con controllo ID		FATTO
+3-preparare file per le prenotazioni future che venga letto e riempia una lista FATTO
+4-modifica di funzione BOOK e 5 parole che vada direttamente alle prenotazioni future, sistemando la funzione di ricerca con le date
+5-fare struttura unica con 2 strutture, una per le attuali e una per le future, che andranno rispettivamente in ombrelloni.txt e in prenotazioni.txt
+6-se uno vuole prenotare per oggi, lo si manda a BOOK 3 PAROLE e andrà a modificare la struttura attuale, se uno vuole prenotare per il futuro o per un periodo che va da oggi al futuro, deve usare BOOK 5 PAROLE, e va a modificare sia la struttura attuale, che quella futura.
+7-sistemare problema chiusura server(multiThread). 			FATTO
+8-controllare se col multiThread funziona anche il multiclient. 	FATTO 	
+9++-journaling(penseremo a come scriverlo).
+10-problema chiusura server ( con ctrl c non funziona perchè entra in un loop infinito ) SI CHIUDE MA A VOLTE NON SI RIAPRE RISOLTO
+
+
+18 aprile 
+
+-Inserito un messaggio di errore nel caso uno scriva fila o numero inesistente
+infatti se prima uno scriveva esempio book 35 12, il server rispondeva available....
+(riga 138)
+
+-Ho pensato di associare un id quando il client si connette e usare questo come codice di conferma 
+per le prenotazioni, ho aggiunto un campo alle due strutture messaggio e risposta in modo tale 
+da fare un controllo se l'id che scrive sia effettivamente quello.
+Per risolvere il problema di quando uno vuole confermare la prenotazione e il numero delle parole
+sono 5 come per le prenotazioni future, si potrebbe dividere la frase in base alla prima parola
+(ho messo CONFERMO)
+(riga 143 server.c)
+(riga 48 client.c)
+(da riga 138 a riga 188 funzioniserver.c)
+(riga 57 funzioniserver.c)
+
+30 aprile 
+
+Ho risolto il problema, ora si riesce a fare tutto quello che si riusciva a fare prima, e in più c0è il codice per la conferma, che mette effettivamente disponibile a 1 se si conferma.
+Ho aggiunto anche un pezzo di codice con NCONFERMO FILA NUMERO, col quale annulliamo la prenotazione temporanea, e riporta lo stato dell'ombrellone a 0.(Poi al posto di NCONFERMO metteremo il timer di risposta).
+Ho aggiunto una variabile in server.c(riga 145 / 202-205) che si salva l'id dell'ombrellone del comando precedente a quello attuale.
+Ho usato questa variabile per evitare che degli ombrellone nel file restino con stato=4, infatti se uno scrive exit prima di confermare la prenotazione, il server.c controlla se lo stato dell'ombrellone del comando precedente è a 4, e nel caso lo mette a 0.
+
+3 maggio
+
+Ho riscritto la funzione AVAILABLE FILA, ma il problema delle stampe a caso rimane.
+
+4 maggio
+
+FINALMENTE NON STAMPA PIÙ COSE A CASO. Ho risolto inizializzando msg nella funzione AVAILABLE FILA.
+
+9 Maggio
+
+Risolto problema di BOOK 5 PAROLE, ora divide bene la frase e stampa "manca codice prenotazione futura".
+Ho sistemato la funzione CONFERMO e NCONFERMO, aggiungendo il controllo che lo stato dell'ombrellone sia a 4, per evitare che uno vada a occupare o liberare un altro ombrellone se si sbaglia a scrivere.
+
+Ho anche tolto il controllo dell'ID in quelle due funzioni, presumendo sia praticamente impossibile che un utente vada a confermare una prenotazione di un altro utente, visto che se fa BOOK non glielo fa fare perchè il primo utente ha già impostato lo stato a 4, quindi il secondo utente dovrebbe scrivere direttamente CONFERMO FILA NUMERO indovinando un ombrellone che è già temporaneamente occupato.
+
+Ho riscritto il file aggiungendo un intero inizializzato a 0, in cui dovrà andare l'IDclient delle prenotazioni attuali, che attribuiamo all'ombrellone quando uno conferma la prenotazione.
+
+Nella funzione CONFERMO ho messo che vada ad aggiornare anche l'IDclient associato all'ombrellone, che serve per le prenotazioni attuali.
+
+Ho finito la funzione CANCEL che prima controlla se l'ombrellone è effettivamente occupato, e poi controlla l'ID.
+
+
+
+9-13 MAGGIO
+creato funziona che associa un thread ad ogni client che si connette, il server ora rimane sempre in ascolto, funziona anche con più client;
+ho provato a vedere se funziona la prenotaziona temporanea, e alcune volte segna correttamente navailable all'altro ma delle volte permette di confermare la prenotaziona ad entrambi ( forse ci mette un pò ), tendenzialmente funziona tutto. aggiungo un punto sulle cose da fare ( chiusura server )
+
+13 MAGGIO
+
+Creato file provaLista.c, fa tutto bene con la lista (ricerca inserimento e cancellazione), solo non scrive sul file.
+
+15 MAGGIO
+
+Le azioni con le liste sembrano funzionare tutte bene, dobbiamo discutere sui valori di DISPONIBILE, forse possiamo eliminare 2 e 3.
+
+18 MAGGIO
+Risolto il problema che il server quando tentava di riaprirsi entrava in quel loop infinito, il problema era una fork di troppo,praticamente ogni volta che un client si connetteva faceva una fork del server, e quando noi chiudavamo il server principale, al momento della nuova chiamata ./server faceva ripartire quello delle fork, quindi ora possiamo tranquillamente chiudere e riaprire il server senza errori, la chiusura funziona sia con ctrl c che con la funzione kill, per il problema del client che dopo un pò non messaggia più con il server ho qualche idea del perchè ma ti spiegherò meglio a voce.

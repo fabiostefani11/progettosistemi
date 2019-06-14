@@ -1,0 +1,9 @@
+MODI PER CHIUDERE PROCESSO DA TERMINALE:
+1-kill ID
+2-killall ./server	Uccide tutti i processi che si chiamano "./server"
+3-pkill server      Uccide tutti i processi che hanno nel loro nome la parola "server"
+
+
+PER VEDERE PROCESSI APERTI:
+1-ps aux   Mostra tutti i processi in esecuzione
+2-ps aux | grep ./server 	Mostra tutti i processi che si chiamano "./server" in esecuzione

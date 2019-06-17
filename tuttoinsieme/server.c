@@ -36,7 +36,8 @@ void sighand(int sig)
     }
     if (sig == SIGTERM)
     {
-        printf(RED "SIGTERM RICEVUTO...\n" CRESET);
+        printf(RED "Terminato\n" CRESET);
+        close(masterSocket);
     }
     exit(0);
 }
@@ -57,10 +58,10 @@ int main(int argc, char *argv[])
     crealista(&Risposta.lista);
     memset(&Risposta, 0, sizeof(Risposta));
 
-    printf("\nPid figlio server: %d\nPid del padre(Terminale): %d\n", (int)getpid(), (int)getppid());
+    printf("\nPid server: %d\n", (int)getpid());
 
     Risposta.data_oggi = uniscidata(dataodierna);
-    printf("%d\n", Risposta.data_oggi);
+    printf("Data odierna: %02d/%02d/%d\n", giorno, mese, anno);
 
     leggoFile(&Risposta, f_ombrelloni, f_prenotazioni, f_aggiornamenti);
 
@@ -109,7 +110,6 @@ int main(int argc, char *argv[])
     }
 
     c12 = sizeof(struct sockaddr_in);
-    pthread_t thread_id;
     threadpool thpool = thpool_init(QLEN);
     thpool_add_work(thpool, aggiornaFile, ((void *)&Risposta));
 
@@ -159,38 +159,36 @@ void connection_handler(void *socket_desc)
     {
 
         if (read(sock, buf, sizeof(buf)) != sizeof(buf)) //legge quello che c'è scritto sul socket figlio, e lo scrive in buf
-        {
-            printf(RED "Errore nella lunghezza del messaggio presente sul Socket client.\n" CRESET);
-            for (int i = 0; i < 10; i++)
             {
-                if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4)
+                printf(RED "Errore nella lunghezza del messaggio presente sul Socket client.\n" CRESET);
+                for (int i = 0; i < 10; i++)
                 {
-                    Risposta.Ombrellone[ombrellone_attuale[i]].disponibile = 0;
-                    Risposta.ombrelloni_liberi++;
+                    if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4)
+                    {
+                        Risposta.Ombrellone[ombrellone_attuale[i]].disponibile = 0;
+                        Risposta.ombrelloni_liberi++;
+                    }
+                    if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1)
+                    {
+                        Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] = 0;
+                    }
                 }
-                if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1)
-                {
-                    Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] = 0;
-                }
-            }
 
-            printf(RED "Client %d disconnesso\n" CRESET, id);
-            go = 0;
-            close(sock);
-        }
+                printf(RED "Client %d disconnesso\n" CRESET, id);
+                go = 0;
+                close(sock);
+            }
         else
 
         {
-            printf("Il client ha detto: %s", buf); //stampa a schermo quello che ha letto dal client
             Risposta.IDclient = id;
+            printf("Il client %d ha detto: %s", Risposta.IDclient, buf); //stampa a schermo quello che ha letto dal client
             sem_wait(&mutex);
             if ((f_aggiornamenti = fopen("aggiornamenti.txt", "a")) == NULL)
             {
                 printf(RED "Errore nell'apertura del file Aggiornamenti.\n" CRESET);
                 exit(-1);
             }
-            else
-                printf(GREEN "File Aggiornamenti aperto correttamente.\n" CRESET);
             fprintf(f_aggiornamenti, "%d-%s", id, buf);
             fclose(f_aggiornamenti);
             sem_post(&mutex);
@@ -220,12 +218,12 @@ void connection_handler(void *socket_desc)
         {
             for (int i = 0; i < 10; i++)
             {
-                if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4)
+                if (Risposta.Ombrellone[ombrellone_attuale[i]].disponibile == 4) //libera i temporaneanmente occupati attuali
                 {
                     Risposta.Ombrellone[ombrellone_attuale[i]].disponibile = 0;
                     Risposta.ombrelloni_liberi++;
                 }
-                if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1)
+                if (Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] == 1) //libera i temp. occ. futuri
                 {
                     Risposta.ombrelloni_Toccupati[ombrellone_attuale[i]] = 0;
                 }

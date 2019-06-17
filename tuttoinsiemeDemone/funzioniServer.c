@@ -570,9 +570,18 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         strncpy(msg, "Data inesistente.\n", sizeof(char) * DIM);
         return msg;
     }
-    if ((Messaggio.data_inizio = !0) && (Messaggio.data_fine != 0))
+    if (Messaggio.data_fine != 0)
     {
-        if ((Messaggio.nparole > 3) && ((Messaggio.data_fine < Risposta->data_oggi) || (Messaggio.data_inizio < Risposta->data_oggi))) //se la data non è nel formato corretto ritorna un errore
+        if (Messaggio.data_fine < Risposta->data_oggi) //se la data non è nel formato corretto ritorna un errore
+        {
+            strncpy(msg, "Inserita una data precedente alla data odierna.\n", sizeof(char) * DIM);
+            return msg;
+        }
+    }
+
+    if (Messaggio.data_inizio != 0)
+    {
+        if (Messaggio.data_inizio < Risposta->data_oggi) //se la data non è nel formato corretto ritorna un errore
         {
             strncpy(msg, "Inserita una data precedente alla data odierna.\n", sizeof(char) * DIM);
             return msg;
@@ -584,7 +593,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
         strncpy(msg, "Data inserita in un formato non corretto.\n", sizeof(char) * DIM);
         return msg;
     }
-    if ((Messaggio.data_inizio = !0) && (Messaggio.data_fine != 0))
+    if ((Messaggio.data_inizio != 0) && (Messaggio.data_fine != 0))
     {
         if (Messaggio.data_fine < Messaggio.data_inizio) //se la data non è nel formato corretto ritorna un errore
         {
@@ -793,6 +802,7 @@ char *elaboraRisposta(risposta *Risposta, messaggio Messaggio)
             strncpy(msg, ricercaAvailableNumero(&Risposta->lista, Messaggio.data_inizio, Messaggio.data_fine), sizeof(char) * DIM);
         }
     }
+
     else if (strncmp("AVAILABLE", Messaggio.parola, 9) == 0 && (Messaggio.nparole == 2)) //chiede il numero di ombrelloni liberi in una fila
     {
         if (Messaggio.fila > 10)

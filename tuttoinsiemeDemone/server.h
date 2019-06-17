@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#define PROTOPORT 8888 //numero della porta di default
-#define QLEN 3         //grandezza della coda
+#define PROTOPORT 8889 //numero della porta di default
+#define QLEN 24         //grandezza della coda
 #define RED "\x1b[31m"
 #define CRESET "\x1b[0m"
 #define GREEN "\x1b[32m"

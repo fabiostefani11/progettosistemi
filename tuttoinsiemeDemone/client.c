@@ -12,7 +12,7 @@
 #define CRESET "\x1b[0m"
 #define GREEN "\x1b[32m"
 
-#define PROTOPORT 8888
+#define PROTOPORT 8889
 #define DIM 256
 
 int primo = 0; //per argomenti
@@ -68,7 +68,6 @@ int main(int argc, char *argv[])
         close(mySocket);
         printf(RED "Socket chiusa.\n" CRESET);
     }
-
     else
     {
         strncpy(msg, "", sizeof(char) * DIM);
@@ -93,6 +92,7 @@ int main(int argc, char *argv[])
 
         while (go)
         {
+            alarm(60);
 
             if (argc > 1 && primo == 0)
             {
@@ -121,7 +121,6 @@ int main(int argc, char *argv[])
                 strncpy(msg, "", sizeof(char) * DIM);
                 printf("Scrivi il messaggio: ");
                 fgets(msg, sizeof(msg), stdin);
-                alarm(60);
                 if (write(mySocket, msg, sizeof(msg)) != sizeof(msg)) //controlla se scrive il messaggio in tutta la sua lunghezza
                 {
                     printf(RED "Errore nella ricezione della lunghezza del messaggio\n" CRESET);
